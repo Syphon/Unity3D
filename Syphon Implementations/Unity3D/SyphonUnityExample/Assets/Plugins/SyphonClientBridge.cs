@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 
 public class SyphonClientBridge : MonoBehaviour 
 {
+	public int desiredWidth = 1024;
+	public int desiredHeight = 768;
 	private Texture2D _texture;
 			
 	// Frees the Syphon Server and clears our Unity Plugin's GL resources
@@ -11,14 +13,14 @@ public class SyphonClientBridge : MonoBehaviour
 	private static extern void syphonClientDestroyResources();
 
 	// Syphon Client Update Texture takes in a texture from Unity, and populates it with the contents of a
-	// Syphon Server.
+	// Syphon Server. This also lazily inits the server for you, ensuring the proper OpenGL context is set.
 	[DllImport ("SyphonUnityPlugin")]
 	private static extern void syphonClientUpdateTexture(int nativeTexture, int width, int height);
 
 	// Use this for initialization
 	void Awake () 
 	{		
-		_texture = new Texture2D(512, 512, TextureFormat.ARGB32, false);
+		_texture = new Texture2D(desiredWidth, desiredHeight, TextureFormat.ARGB32, false);
 		_texture.Apply(false);
 		
 		if(renderer)
