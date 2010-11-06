@@ -21,7 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		1B429BF3125EEB2100245772 /* Syphon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B429BF2125EEB2100245772 /* Syphon.framework */; };
+		1B1AF9F31284E2D800013428 /* Syphon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B1AF9F21284E2D800013428 /* Syphon.framework */; };
+		1B1AF9FE1284E2E000013428 /* Syphon.framework in Copy Framework */ = {isa = PBXBuildFile; fileRef = 1B1AF9F21284E2D800013428 /* Syphon.framework */; };
 		1B9CA811121ECE3400BEF37A /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B9CA810121ECE3400BEF37A /* OpenGL.framework */; };
 		1BA90D6E1224A95500197D3A /* SyphonServerUnity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BA90D6D1224A95500197D3A /* SyphonServerUnity.m */; };
 		1BE9744E121E30A40024DB80 /* SyphonClientUnity.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE9744D121E30A40024DB80 /* SyphonClientUnity.m */; };
@@ -46,6 +47,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1B1AF9FE1284E2E000013428 /* Syphon.framework in Copy Framework */,
 			);
 			name = "Copy Framework";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -57,7 +59,7 @@
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		089C167FFE841241C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		1B429BF2125EEB2100245772 /* Syphon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Syphon.framework; path = "../../../Syphon Framework/build/Release/Syphon.framework"; sourceTree = SOURCE_ROOT; };
+		1B1AF9F21284E2D800013428 /* Syphon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Syphon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B9CA810121ECE3400BEF37A /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		1BA90D6D1224A95500197D3A /* SyphonServerUnity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyphonServerUnity.m; sourceTree = "<group>"; };
 		1BE9744D121E30A40024DB80 /* SyphonClientUnity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyphonClientUnity.m; sourceTree = "<group>"; };
@@ -74,7 +76,7 @@
 			files = (
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
 				1B9CA811121ECE3400BEF37A /* OpenGL.framework in Frameworks */,
-				1B429BF3125EEB2100245772 /* Syphon.framework in Frameworks */,
+				1B1AF9F31284E2D800013428 /* Syphon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,9 +125,9 @@
 		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1B429BF2125EEB2100245772 /* Syphon.framework */,
 				1B9CA810121ECE3400BEF37A /* OpenGL.framework */,
 				1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */,
+				1B1AF9F21284E2D800013428 /* Syphon.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -186,7 +188,6 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "SyphonUnityPlugin" */;
 			compatibilityVersion = "Xcode 3.1";
-			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -270,7 +271,7 @@
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(CONFIGURATION_BUILD_DIR)\"",
-					"\"$(SRCROOT)/../../../Syphon Framework/build/Release\"",
+					"\"$(SRCROOT)/build/Release\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -290,10 +291,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(CONFIGURATION_BUILD_DIR)\"",
-					"\"$(SRCROOT)/../../../Syphon Framework/build/Release\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/build/Release\"";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SyphonUnityPlugin_Prefix.pch;
