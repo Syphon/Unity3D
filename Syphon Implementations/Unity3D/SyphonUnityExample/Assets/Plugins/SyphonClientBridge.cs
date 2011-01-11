@@ -27,21 +27,54 @@ public class SyphonClientBridge : MonoBehaviour
 			renderer.material.mainTexture = _texture;		
 	}
 	
+
+	static protected Material lineMaterial;
+	static protected void CreateLineMaterial() {
+		if( !lineMaterial ) {
+			lineMaterial = new Material( "Shader \"Lines/Colored Blended\" {" +
+				"SubShader { Pass { " +
+				" Blend SrcAlpha OneMinusSrcAlpha " +
+				" ZWrite Off "  +
+				"} } }" );
+			lineMaterial.hideFlags = HideFlags.HideAndDontSave;
+			lineMaterial.shader.hideFlags = HideFlags.HideAndDontSave;
+		}
+	}
+	
+	
+	
 	// YOU MUST USE ON RENDER OBJECT FOR UNITY CLIENT.
 	void OnRenderObject ()
 	{
 		// Unity 3.0 has GetNativeTextureID, which returns the texture ID.
 		// 2.x requires us to call GetInstanceID instead. 
 //		#if UNITY_3	
+		
+		CreateLineMaterial();
+		lineMaterial.SetPass(0);
+		
 			syphonClientUpdateTexture(_texture.GetNativeTextureID(), _texture.width, _texture.height);
 //		#elif UNITY_2
 //			syphonClientUpdateTexture(_texture.GetInstanceID());
 //		#endif
 	}
 	
-	// Also called in the editor when play is stopped
-	void OnApplicationQuit ()
-	{
-		syphonClientDestroyResources();
+	
+	void OnPostRender() {
+		CreateLineMaterial();
+		lineMaterial.SetPass( 0 );
 	}
+
+
+	public void cleanup(){
+			syphonClientDestroyResources();
+	}
+
+	void OnDisable ()
+	{
+		GL.InvalidateState();
+		Destroy(_texture);
+		cleanup();
+	}
+	
 }
