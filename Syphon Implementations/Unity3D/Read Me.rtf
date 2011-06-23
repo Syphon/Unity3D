@@ -1,0 +1,86 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;\red255\green0\blue0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww13060\viewh15080\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ri-2500\pardirnatural
+
+\f0\fs36 \cf0 Syphon for Unity, Public Beta 2
+\fs24 \cf2 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ri-2500\qj\pardirnatural
+\cf0 \
+
+\b About
+\b0 \
+\
+Syphon is a system for sending video between applications. You can use it to send high resolution and high frame rate video, 3D textures and synthesized content between your Unity 3D scene and other applications.\
+\
+Syphon for Unity includes a plugin, scripts for both client and server and a few sample scenes to get you started. \
+
+\b \
+Licensing
+\b0 \
+\
+Syphon for Unity is published under a BSD license. See the included License.txt file.\
+\
+
+\b Requirements
+\b0 \
+\
+Mac OS X 10.6.4 or greater\
+Unity 3.0 Pro (for 3rd party plugin support)\
+ \
+
+\b Installation
+\b0 \
+\
+Copy the Unity Syphon Plugin and scripts: SyphonUnityPlugin, SyphonClientBridge.cs\
+and SyphonServerBridge.cs  to your project's Assets/Plugins folder.\
+\
+
+\b Instructions
+\b0 \
+\
+
+\b General project setup:\
+
+\b0 Make sure the Skybox you want is assigned in the Edit -> Render Settings menu option.\
+It is also suggested to enable VBL sync to remove any screen tearing artefacts you may see.\
+\
+
+\b Client\
+
+\b0 \
+The UnityClientBridge.cs script finds the first available SyphonServer and applies its texture to the RenderObject you have applied the script to. Attach this to cloth simulation, planes, or any geometry to apply the Syphon Servers texture to it.\
+\
+You can set the desired width and height (in powers of two) for the internal texture used.\
+\
+
+\b Server\
+\
+
+\b0 Apply the UnityServerBridge.cs script to a camera instance you wish to make available to the outside world. \
+\
+You can set the desired width and height (in powers of two) for the internal texture used.\
+\
+
+\b \cf2 Known Issues
+\b0 \
+\
+Currently, there are issues with the UnitClientBridge and plugin that stops a compiled app from properly seeing an external server. This will be resolved in a future update.\cf0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+
+\b \cf0 Changes since Public Beta 1
+\b0 \
+- Fixes and improvements to the underlying Syphon framework.\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ri-2500\qj\pardirnatural
+
+\b \cf0 Credits
+\b0 \
+\
+Syphon for Unity3D - Tom Butterworth (bangnoise) and Anton Marini (vade),  and Brian Chasalow (Unity 3D integration and scripting)\
+\
+{\field{\*\fldinst{HYPERLINK "http://syphon.v002.info"}}{\fldrslt http://syphon.v002.info }}\
+\
+}
