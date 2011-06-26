@@ -163,17 +163,18 @@ void syphonClientUpdateTexture(int nativeTexture, int width, int height)
         glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
         
         // TODO: Add fit/fill/letterbox options for fitting surfaces into textures        
-        glBegin(GL_QUADS);
-        glTexCoord2f(surfaceSize.width, surfaceSize.height);
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0, 0.0);
         glVertex2f(0.0f, 0.0f);
         
-        glTexCoord2f(surfaceSize.width, 0.0);
-        glVertex2f(0.0f, nativeTextureSize.height);
-
-        glTexCoord2f(0.0, 0.0);
-        glVertex2f(nativeTextureSize.width, nativeTextureSize.height);
-
-        glTexCoord2f(0.0, surfaceSize.height);
+		glTexCoord2f(0.0, surfaceSize.height);
+		glVertex2f(0.0f, nativeTextureSize.height);
+		
+		glTexCoord2f(surfaceSize.width, surfaceSize.height);
+		glVertex2f(nativeTextureSize.width, nativeTextureSize.height);
+		
+		
+		glTexCoord2f(surfaceSize.width, 0.0);
         glVertex2f(nativeTextureSize.width, 0.0f);
         
         glEnd();
