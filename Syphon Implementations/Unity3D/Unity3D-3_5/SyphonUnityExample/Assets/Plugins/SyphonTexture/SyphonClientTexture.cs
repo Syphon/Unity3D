@@ -88,7 +88,9 @@ public class SyphonClientTexture : MonoBehaviour {
 		EnableCallbacks();
 	}
 	
+	//this is necessary for now, in each SyphonClientTexture instance. don't change this function.
 	public void OnRenderObject(){
+		if(clientObject != null)
 		clientObject.Render();
 	}
 	
