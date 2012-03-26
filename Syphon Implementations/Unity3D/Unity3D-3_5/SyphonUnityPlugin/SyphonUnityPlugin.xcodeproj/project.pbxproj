@@ -27,6 +27,7 @@
 		4150644214DB7D7600678564 /* SyphonUnity.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4150644114DB7D7600678564 /* SyphonUnity.mm */; };
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		E2095B83151FA7A700253956 /* Syphon.framework in Copy Framework */ = {isa = PBXBuildFile; fileRef = 1B1AF9F21284E2D800013428 /* Syphon.framework */; };
 		E238D9EC151F761A00B1DBE2 /* libmono.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E238D9EB151F761A00B1DBE2 /* libmono.0.dylib */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +48,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				E2095B83151FA7A700253956 /* Syphon.framework in Copy Framework */,
 			);
 			name = "Copy Framework";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -63,7 +65,6 @@
 		1BA90D6D1224A95500197D3A /* SyphonServerUnity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SyphonServerUnity.mm; sourceTree = "<group>"; };
 		1BE9744D121E30A40024DB80 /* SyphonClientUnity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SyphonClientUnity.m; sourceTree = "<group>"; };
 		32DBCF630370AF2F00C91783 /* SyphonUnityPlugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SyphonUnityPlugin_Prefix.pch; sourceTree = "<group>"; };
-		4132A62314E9F7AB009EB701 /* SyphonUnityPlugin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = SyphonUnityPlugin.xcodeproj; sourceTree = "<group>"; };
 		4150643514DB2DDA00678564 /* ServerWatcherUtility.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ServerWatcherUtility.mm; sourceTree = "<group>"; };
 		4150644014DB6E7A00678564 /* UnityPluginInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnityPluginInterface.h; sourceTree = "<group>"; };
 		4150644114DB7D7600678564 /* SyphonUnity.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SyphonUnity.mm; sourceTree = "<group>"; };
@@ -94,7 +95,6 @@
 		089C166AFE841209C02AAC07 /* SyphonUnityPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				4132A62314E9F7AB009EB701 /* SyphonUnityPlugin.xcodeproj */,
 				1BE9744D121E30A40024DB80 /* SyphonClientUnity.m */,
 				4150644114DB7D7600678564 /* SyphonUnity.mm */,
 				4150644314DB7D9200678564 /* SyphonUnity.h */,
@@ -174,11 +174,6 @@
 			name = "Other Sources";
 			sourceTree = "<group>";
 		};
-		4132A62414E9F7AB009EB701 /* Products */ = {
-			isa = PBXGroup;
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -223,12 +218,6 @@
 			);
 			mainGroup = 089C166AFE841209C02AAC07 /* SyphonUnityPlugin */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 4132A62414E9F7AB009EB701 /* Products */;
-					ProjectRef = 4132A62314E9F7AB009EB701 /* SyphonUnityPlugin.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				BD48069D1239AFCA00DFB19E /* Build Custom Framework */,
@@ -270,6 +259,7 @@
 			inputPaths = (
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Syphon.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
