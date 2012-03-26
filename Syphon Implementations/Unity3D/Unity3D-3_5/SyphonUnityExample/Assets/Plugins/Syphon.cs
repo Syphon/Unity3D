@@ -251,12 +251,6 @@ using System.Diagnostics;
 		}
 		
 	}
-
-	public void OnPostRender(){
-		foreach(SyphonClientObject obj in Syphon.UnsortedClients){
-			//obj.Render();
-		}		
-	}
 	
 	public void Awake() {
 

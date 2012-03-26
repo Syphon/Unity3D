@@ -26,11 +26,15 @@ Copyright (c)  2010-2012 Brian Chasalow, bangnoise (Tom Butterworth) & vade (Ant
 */
 
 Syphon for Unity 3.5, version 1.0
-report any and all crashes/freezes, preferably including crash logs.
-If Unity freezes, see http://www.thexlab.com/faqs/activitymonitor.html the section entitled 'sampling a process' and email me that log.
-if Unity crashes, see http://echoone.com/bugreports/console.html and email the relevant log.
-My email address is brian@chasalow.com - feel free to contact me if you have comments/suggestions/etc.
-More features to be added soon. If there's something missing that you want, let me know.
+
+Please report any and all crashes/freezes, preferably including crash logs
+
+http://code.google.com/p/syphon-implementations/issues
+
+If Unity freezes, see http://www.thexlab.com/faqs/activitymonitor.html the section entitled 'sampling a process' and send us that log.
+if Unity crashes, see http://echoone.com/bugreports/console.html and send the relevant log.
+
+More features to be added soon. If there's something missing that you want, let us know.
 
 Instructions-
 Add a Syphon.cs to your main camera. this will act as your Syphon manager.
@@ -42,6 +46,6 @@ Syphon Client:
 Add a SyphonClientTexture to any object in your scene.
 
 On the Syphon.cs script inspector:
-Click on a syphon server in the dropdown menu, then click 'add' to add it to the clients list.
+Click on a Syphon server in the dropdown menu, then click 'add' to add it to the clients list.
 On your SyphonClientTexture, in the public inspector fields, add the name and appName of the client you just added.
-take a look at the code in SyphonClientTexture.cs's ApplyTexture() method to see how to add additional functionality- adding the texture to projectors, bump maps, etc.
+Take a look at the code in SyphonClientTexture.cs's ApplyTexture() method to see how to add additional functionality- adding the texture to projectors, bump maps, etc.
