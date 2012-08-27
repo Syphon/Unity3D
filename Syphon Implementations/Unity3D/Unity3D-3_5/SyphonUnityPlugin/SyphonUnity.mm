@@ -33,62 +33,62 @@
 extern "C" {
 #endif
     
-static std::list<SyphonCacheData*> syphonServers;
-static std::list<SyphonCacheData*> syphonClients;
-
+    static std::list<SyphonCacheData*> syphonServers;
+    static std::list<SyphonCacheData*> syphonClients;
     
-void UnitySetGraphicsDevice (void* device, int deviceType, int eventType){
-    // If we've got an OpenGL device, remember device type. There's no OpenGL
-    // "device pointer" to remember since OpenGL always operates on a currently set
-    // global context.
     
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-    if (deviceType == kGfxRendererOpenGL)
-    {
-        //      NSLog(@"Set OpenGL graphics device: %i", deviceType);
-    }
-    
-    switch (eventType) {
-        case kGfxDeviceEventInitialize:
+    void UnitySetGraphicsDevice (void* device, int deviceType, int eventType){
+        // If we've got an OpenGL device, remember device type. There's no OpenGL
+        // "device pointer" to remember since OpenGL always operates on a currently set
+        // global context.
+        
+        NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+        
+        if (deviceType == kGfxRendererOpenGL)
         {
-            //                NSLog(@"init graphics device");
-            cachedContext = CGLGetCurrentContext();
-            NSString* bundlePath = [[[NSBundle mainBundle] bundlePath]
-                            stringByAppendingPathComponent:@"Contents/Data/Managed/Assembly-CSharp-firstpass.dll"];
-            if( [ [NSFileManager defaultManager] fileExistsAtPath:bundlePath isDirectory:NO]){
-    //            NSLog(@"in the app!");
-                pathToBundle = bundlePath;
-            }
-            else{
-  //              NSLog(@"in the editor");
-                char *path=NULL;
-                size_t size;
-                path=getcwd(path,size);
-                NSString* myString = [NSString stringWithUTF8String: path];
-                NSString* finalString = [myString stringByAppendingPathComponent:@"/Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll"];
-                pathToBundle = finalString;
-            }
-            [pathToBundle retain];
-            registerCallbacks();
-            break;
+            //      NSLog(@"Set OpenGL graphics device: %i", deviceType);
         }
-        case kGfxDeviceEventShutdown:
-        {
-            // NSLog(@"shutdown graphics device");
-            //if you are quitting the app, kill all callbacks. 
-            unregisterCallbacks();
-            break;
+        
+        switch (eventType) {
+            case kGfxDeviceEventInitialize:
+            {
+                //                NSLog(@"init graphics device");
+                cachedContext = CGLGetCurrentContext();
+                NSString* bundlePath = [[[NSBundle mainBundle] bundlePath]
+                                        stringByAppendingPathComponent:@"Contents/Data/Managed/Assembly-CSharp-firstpass.dll"];
+                if( [ [NSFileManager defaultManager] fileExistsAtPath:bundlePath isDirectory:NO]){
+                    //            NSLog(@"in the app!");
+                    pathToBundle = bundlePath;
+                }
+                else{
+                    //              NSLog(@"in the editor");
+                    char *path=NULL;
+                    size_t size;
+                    path=getcwd(path,size);
+                    NSString* myString = [NSString stringWithUTF8String: path];
+                    NSString* finalString = [myString stringByAppendingPathComponent:@"/Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll"];
+                    pathToBundle = finalString;
+                }
+                [pathToBundle retain];
+                registerCallbacks();
+                break;
+            }
+            case kGfxDeviceEventShutdown:
+            {
+                // NSLog(@"shutdown graphics device");
+                //if you are quitting the app, kill all callbacks. 
+                unregisterCallbacks();
+                break;
+            }
+            default:
+                break;
+                //NSLog(@"graphics device changed. - this doesnt ever get called i dont think");
+                
         }
-        default:
-            break;
-            //NSLog(@"graphics device changed. - this doesnt ever get called i dont think");
-            
+        
+        [pool drain];
+        
     }
-    
-    [pool drain];
-    
-}
     
     
     SyphonCacheData* CreateClientTexture(NSDictionary* serverPtr){
@@ -103,12 +103,12 @@ void UnitySetGraphicsDevice (void* device, int deviceType, int eventType){
     void KillClientTexture(SyphonCacheData* killMe){
         //NSLog(@"DESTROYED SOMETHIN AT %i", (int)killMe);
         if(killMe != nil && (int)killMe != 0){
-//            //if the cache data says it's not a server, then it's a client.
+            //            //if the cache data says it's not a server, then it's a client.
             if(!killMe->isAServer && killMe->syphonClient != nil){
                 syphonClientDestroyResources(killMe->syphonClient);
-//                NSLog(@"destroyed one");
+                //                NSLog(@"destroyed one");
             }
-//            
+            //            
             //remove the selected syphonServer from the list
             if (std::find(syphonClients.begin(), syphonClients.end(), killMe) !=
                 syphonClients.end())
@@ -125,18 +125,18 @@ void UnitySetGraphicsDevice (void* device, int deviceType, int eventType){
     SyphonCacheData* CreateServerTexture(const char* serverName){
 		SyphonCacheData* ptr = new SyphonCacheData();
         ptr->serverName = [[NSString alloc] initWithUTF8String:serverName];
-
+        
         //add it to a list
         syphonServers.push_back(ptr);
 		return ptr;
 	}	
-
+    
     void KillServerTexture(SyphonCacheData* killMe){
         if(killMe != nil){
             if(killMe->isAServer && killMe->syphonServer != nil){
                 //destroy the syphon server itself,
                 syphonServerDestroyResources(killMe->syphonServer);
-                }      
+            }      
             
             //remove the selected syphonServer from the list
             if (std::find(syphonServers.begin(), syphonServers.end(), killMe) !=
@@ -148,17 +148,17 @@ void UnitySetGraphicsDevice (void* device, int deviceType, int eventType){
         }        
     }
     
-//    void FlagServerToBeKilled(SyphonCacheData* ptr){
-//        if(ptr){
-//            ptr->destroyMe = true;
-//        }
-//    }
+    //    void FlagServerToBeKilled(SyphonCacheData* ptr){
+    //        if(ptr){
+    //            ptr->destroyMe = true;
+    //        }
+    //    }
     
     
     void UpdateTextureSizes(){
         for(std::list<SyphonCacheData*>::iterator list_iter =syphonClients.begin(); 
             list_iter != syphonClients.end(); list_iter++){
-
+            
             if((*list_iter)->updateTextureSizeFlag){
                 NSLog(@"SOMETHING CHANGED");
                 handleTextureSizeChanged(*list_iter);
@@ -174,25 +174,25 @@ void UnitySetGraphicsDevice (void* device, int deviceType, int eventType){
 				//NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", ofFBO);
 				glDeleteFramebuffersEXT(1, &syphonFBO);
                 glGenFramebuffersEXT(1, &syphonFBO);			
-
+                
 			}
             
             for(std::list<SyphonCacheData*>::iterator list_iter =syphonServers.begin(); 
                 list_iter != syphonServers.end(); list_iter++){
-                   //         NSLog(@"Syphon.Unity.cacheGraphicsContext:: Context changed. destroying/recreating: %@",(*list_iter)->serverName);
+                //         NSLog(@"Syphon.Unity.cacheGraphicsContext:: Context changed. destroying/recreating: %@",(*list_iter)->serverName);
                 
                 //don't destroy/create if it's not initialized yet!
                 if((*list_iter)->initialized){
-                syphonServerDestroyResources( (*list_iter)->syphonServer);
-               // NSLog(@"destroying resources.");
-                (*list_iter)->syphonServer = nil;
-                syphonServerCreate((*list_iter));
+                    syphonServerDestroyResources( (*list_iter)->syphonServer);
+                    // NSLog(@"destroying resources.");
+                    (*list_iter)->syphonServer = nil;
+                    syphonServerCreate((*list_iter));
                 }
             }
 		}
-
+        
     }
-            
+    
     
     void UnityRenderEvent(SyphonCacheData* ptr)
 	{
@@ -207,9 +207,9 @@ void UnitySetGraphicsDevice (void* device, int deviceType, int eventType){
             }
             //if it's a client
             if(!ptr->isAServer && ptr->initialized){                
-                    syphonClientPublishTexture((SyphonCacheData*)ptr);
+                syphonClientPublishTexture((SyphonCacheData*)ptr);
             }
-
+            
         }
     }
     
@@ -220,9 +220,9 @@ void UnitySetGraphicsDevice (void* device, int deviceType, int eventType){
             //NSLog(@"mytextureid: %i", *data);
             ptr->cacheTextureValues(mytextureID, width, height, true);
         }
-
-    }
         
+    }
+    
     void CacheClientTextureValues(int mytextureID, int width, int height, SyphonCacheData* ptr){
         if(ptr){
             ptr->cacheTextureValues(mytextureID, width, height, false);

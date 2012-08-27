@@ -38,11 +38,11 @@ static GLuint syphonFBO = 0;
 void syphonClientDestroyResources(SyphonClient* client)
 {
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-//    
-//    glDeleteFramebuffersEXT(1, &syphonFBO);
-//    syphonFBO = 0;
-//    
-//    // lets create our client if we dont have it. 
+    //    
+    //    glDeleteFramebuffersEXT(1, &syphonFBO);
+    //    syphonFBO = 0;
+    //    
+    //    // lets create our client if we dont have it. 
     if(client)
     {
         [client stop];
@@ -58,11 +58,11 @@ void syphonClientDestroyResources(SyphonClient* client)
 void syphonClientPublishTexture(SyphonCacheData* ptr){
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     if(ptr->syphonClient && [ptr->syphonClient isValid]){
-//        //should probably check if CGLGetCurrentContext() is == cachedContext
+        //        //should probably check if CGLGetCurrentContext() is == cachedContext
         
         //lock
         //CGLLockContext(cachedContext);
-
+        
         //cache previous bits
         GLint previousFBO, previousReadFBO, previousDrawFBO, previousMatrixMode;
         glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFBO);
@@ -94,24 +94,24 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
             glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
             glPopClientAttrib();
             glPopAttrib();
-           // CGLUnlockContext(cachedContext);
+            // CGLUnlockContext(cachedContext);
             [pool drain];
             return;
         }   
-
+        
         
         //setup state to how it 'should' be?
-//        glDisable (GL_CULL_FACE);
-//        glDisable (GL_LIGHTING);
-//        glDisable (GL_BLEND);
-//        glDisable (GL_ALPHA_TEST);
-//        glDepthFunc (GL_LEQUAL);
-//        glEnable (GL_DEPTH_TEST);
-//        glDepthMask (GL_FALSE);
+        glDisable (GL_CULL_FACE);
+        glDisable (GL_LIGHTING);
+        glDisable (GL_BLEND);
+        glDisable (GL_ALPHA_TEST);
+        glDepthFunc (GL_LEQUAL);
+        glEnable (GL_DEPTH_TEST);
+        glDepthMask (GL_FALSE);
         
         //get image!
         SyphonImage* image = [ptr->syphonClient newFrameImageForContext:CGLGetCurrentContext()];
-
+        
         
         
         //SAVE MATRIX STATE CODE
@@ -130,13 +130,11 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glLoadIdentity();				
         glColor4f(0, 0, 0, 0);
         //END SAVE MATRIX STATE CODE
-
-        
         
         glEnable(GL_TEXTURE_RECTANGLE_EXT);
         glBindTexture(GL_TEXTURE_RECTANGLE_EXT, [image textureName]);
         NSSize surfaceSize = [image textureSize];
-
+        
         if(ptr->textureWidth != surfaceSize.width || ptr->textureHeight != surfaceSize.height){
             //perform callback to unity here because the w/h changed
             ptr->textureWidth = (int)surfaceSize.width;
@@ -145,30 +143,25 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
             ptr->updateTextureSizeFlag = true;
         }
         
-        // Disable anything that needs disabling
-        glDisable(GL_LIGHTING);        
-        // blending off, we replace, saves us some blending and buffer function calculations
-        glDisable(GL_BLEND);
-        
         //okay, draw the shit
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
         glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
         glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );		
-//        glBegin(GL_QUADS);					
-//        glTexCoord2f(0, surfaceSize.height);
-//        glVertex2f(0, 0);
-//        
-//        glTexCoord2f(0, 0);
-//        glVertex2f(0, surfaceSize.height);					
-//        
-//        glTexCoord2f(surfaceSize.width, 0);
-//        glVertex2f(surfaceSize.width, surfaceSize.height);					
-//        
-//        glTexCoord2f(surfaceSize.width,surfaceSize.height);
-//        glVertex2f(surfaceSize.width, 0);					
-//        glEnd();
-
+        //        glBegin(GL_QUADS);					
+        //        glTexCoord2f(0, surfaceSize.height);
+        //        glVertex2f(0, 0);
+        //        
+        //        glTexCoord2f(0, 0);
+        //        glVertex2f(0, surfaceSize.height);					
+        //        
+        //        glTexCoord2f(surfaceSize.width, 0);
+        //        glVertex2f(surfaceSize.width, surfaceSize.height);					
+        //        
+        //        glTexCoord2f(surfaceSize.width,surfaceSize.height);
+        //        glVertex2f(surfaceSize.width, 0);					
+        //        glEnd();
+        
         glBegin(GL_QUADS);					
         glTexCoord2f(0, 0);
         glVertex2f(0, 0);        
@@ -179,10 +172,10 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glTexCoord2f(surfaceSize.width,0);
         glVertex2f(surfaceSize.width, 0);					
         glEnd();
-
+        
         glBindTexture(GL_TEXTURE_RECTANGLE_EXT, 0);
 		glDisable(GL_TEXTURE_RECTANGLE_EXT);
-
+        
         //POP MATRIX STATE CODE
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();			
@@ -198,9 +191,9 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
         glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);        
         
-
-                
-      //  CGLUnlockContext(cachedContext);
+        
+        
+        //  CGLUnlockContext(cachedContext);
     }
     [pool drain];
 }
