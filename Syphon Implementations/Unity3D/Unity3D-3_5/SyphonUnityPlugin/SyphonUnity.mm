@@ -199,11 +199,14 @@ extern "C" {
         if((int)ptr == 1){
             cacheGraphicsContext();            
         }
-		else if(ptr != nil){  
+		else if(ptr != nil){
+            
+            if(ptr->pluginType != PLUGIN_SYPHON)
+                return;
             
             //if it's a server
-            if(ptr->isAServer && ptr->initialized){
-                syphonServerPublishTexture((SyphonCacheData*)ptr);                 
+            if(ptr->isAServer && ptr->initialized && ptr->serverName != nil){
+                syphonServerPublishTexture((SyphonCacheData*)ptr);
             }
             //if it's a client
             if(!ptr->isAServer && ptr->initialized){                

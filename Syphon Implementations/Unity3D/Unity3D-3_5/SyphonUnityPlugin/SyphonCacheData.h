@@ -30,10 +30,14 @@
 //this class is used to sync the GL thread in unity, and the ofxQTKitVideoPlayer
 #import "SyphonServerObject.h"
 #import <Syphon/Syphon.h>
+enum PluginType{
+    PLUGIN_VTP, PLUGIN_SYPHON
+};
 
 class SyphonCacheData
 {
 	public:
+        const PluginType pluginType = PLUGIN_SYPHON;
 		SyphonCacheData();
         //init a client with a syphon server pointer
         SyphonCacheData(NSDictionary* ptr);
