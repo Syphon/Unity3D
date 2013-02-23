@@ -27,9 +27,9 @@ using UnityEngine;
 using UnityEditor;
 
 [InitializeOnLoad]
-public class Autorun
+public class AutorunSyphon
 {
-    static Autorun()
+    static AutorunSyphon()
     { 
 	//only cache the assembly/update the instance/etc if the syphon instance already exists in the scene
 	if(UnityEngine.Object.FindObjectOfType(typeof(Syphon)) != null){
