@@ -171,10 +171,9 @@ extern "C" {
         if(cachedContext != CGLGetCurrentContext()){
 			cachedContext = CGLGetCurrentContext();
             if(syphonFBO){				
-				//NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", ofFBO);
+                //NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
 				glDeleteFramebuffersEXT(1, &syphonFBO);
-                glGenFramebuffersEXT(1, &syphonFBO);			
-                
+                glGenFramebuffersEXT(1, &syphonFBO);
 			}
             
             for(std::list<SyphonCacheData*>::iterator list_iter =syphonServers.begin(); 
@@ -197,7 +196,7 @@ extern "C" {
     void UnityRenderEvent(SyphonCacheData* ptr)
 	{
         if((int)ptr == 1){
-            cacheGraphicsContext();            
+            cacheGraphicsContext();
         }
 		else if(ptr != nil){
             
@@ -216,7 +215,7 @@ extern "C" {
         }
     }
     
-    
+
     void CacheServerTextureValues(int mytextureID, int width, int height, SyphonCacheData* ptr){
         if(ptr){
             //int* data = reinterpret_cast<int*>(mytextureID);

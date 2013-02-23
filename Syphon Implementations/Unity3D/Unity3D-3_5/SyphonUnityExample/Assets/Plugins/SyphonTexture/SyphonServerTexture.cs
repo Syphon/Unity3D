@@ -1,4 +1,4 @@
-// Copyright (c)  2010-2012 Brian Chasalow, bangnoise (Tom Butterworth) & vade (Anton Marini).
+// Copyright(c)  2010-2012 Brian Chasalow, bangnoise (Tom Butterworth) & vade (Anton Marini).
 /*
    All rights reserved.
 
@@ -24,6 +24,7 @@
    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#if UNITY_STANDALONE_OSX
 
 //This script should be applied to any camera in the scene, and lets you host a syphon server. 
 //you may optionally use public variable renderGUI to show the GUI rendered by the camera. 
@@ -39,103 +40,94 @@ using System.Collections.Generic;
 
 public class SyphonServerTexture : MonoBehaviour {
 
-	private int syphonServerTextureInstance = 0; //returned from CreateServerTexture()
-	private bool syphonServerTextureInstanceInitialized = false;
-	private int storedWidth = 0;
-	private int storedHeight = 0;
-	private RenderTexture tex = null;
-	private int storedTexID = 0;
-	// Use this for initialization
-	public bool renderGUI = false;
+	// From Inspector
+	public bool renderGUI = true;
 	
-	void Start () {
-		Syphon instance = Syphon.Instance;
+	private int syphonServerTextureInstance = 0;			// The Syphon plugin cache pointer, returned from CreateServerTexture()
+	private bool syphonServerTextureValuesCached = false;	// Do the server knows our camera size and id?
+	private int cachedTexID = 0;				// current camera gl texture id
+	private int cachedWidth = 0;				// current camera texture width
+	private int cachedHeight = 0;				// current camera texture height
+	private RenderTexture srcTex = null;		// reference to the camera render source (when GUI in ON)
+	private RenderTexture dstTex = null;		// reference to the camera render destination (when GUI in ON)
+
+	void Start() {
+		//Syphon instance = Syphon.Instance;
 		syphonServerTextureInstance = Syphon.CreateServerTexture(gameObject.name);
 	}
 	
-	
-	public void OnDestroy(){
+	public void OnDestroy() {
 		if(syphonServerTextureInstance != 0)
-		Syphon.KillServerTexture(syphonServerTextureInstance);
-		
+			Syphon.KillServerTexture(syphonServerTextureInstance);
 		syphonServerTextureInstance = 0;
-		syphonServerTextureInstanceInitialized = false;
-		tex = null; 
-		storedWidth = 0;
-		storedHeight = 0;
-	}
-	
-	public void OnRenderImage(RenderTexture src, RenderTexture dst){
-		
-		//if you don't want to render the gui, just blit to the screen, cache the texture values and pass the screen texture to syphon.
-		if(!renderGUI)
-		{
-		Graphics.Blit(src, dst);		
-			 if(!syphonServerTextureInstanceInitialized || src.width != storedWidth || src.height != storedHeight || storedTexID != src.GetNativeTextureID()){
-				storedWidth = src.width;
-				storedHeight = src.height;
-				storedTexID = src.GetNativeTextureID();
-				cacheTextureValues();
-			}
-
-			GL.IssuePluginEvent((int)syphonServerTextureInstance);
-		}		
-		else{
-			 if(tex == null || (!syphonServerTextureInstanceInitialized || src.width != storedWidth || src.height != storedHeight || 
-			 storedTexID != src.GetNativeTextureID() )){
-				storedWidth = src.width;
-				storedHeight = src.height;
-				storedTexID = src.GetNativeTextureID();
-				tex = src;
-				cacheTextureValues();
-			}						
-		}						
+		syphonServerTextureValuesCached = false;
+		srcTex = null;
+		cachedTexID = 0;
 	}
 
-	
-	//if you DO want to render the gui in syphon, pass tex to syphon, THEN draw to the screen.
-	public IEnumerator OnPostRender(){
-			if(renderGUI && tex != null){
-				yield return new WaitForEndOfFrame();
-
-
-				//render to the main screen since the rt is null
-				RenderTexture.active = null;
-				 tex.SetGlobalShaderProperty ("_RenderTex");
-				 GL.PushMatrix ();
-				 GL.LoadOrtho ();
-				// // activate the first pass (in this case we know it is the only pass)
-				 Syphon.SafeMaterial.SetPass (0);
-				// // draw a quad that covers the viewport
-				GL.Begin (GL.QUADS);
-				//set the Z to be +100 so it's rendered on top of everything else
-				GL.TexCoord2 (0, 0); GL.Vertex3 (0, 0, 100f);
-				GL.TexCoord2 (1, 0); GL.Vertex3 (1, 0, 100f);
-				GL.TexCoord2 (1, 1); GL.Vertex3 (1, 1, 100f);
-				GL.TexCoord2 (0, 1); GL.Vertex3 (0, 1, 100f);
-				GL.End ();
-				GL.PopMatrix ();	
-				}
-				else{
-					yield return null;
-				}
-	}
-	
-	
-
-	//if you DO want to render the gui in syphon, mark the active render texture as the source tex, and render it.
-	public void LateUpdate(){
-		if(renderGUI && syphonServerTextureInstance != 0 && syphonServerTextureInstanceInitialized){
-			RenderTexture.active = tex;
-			GL.IssuePluginEvent((int)syphonServerTextureInstance);
+	//
+	// Cache the current texture data to server
+	public void cacheTextureValues( RenderTexture rt ) {
+		if (rt.GetNativeTextureID() != 0 && rt.width != 0 && rt.height != 0) {
+			Syphon.CacheServerTextureValues(rt.GetNativeTextureID(), rt.width, rt.height, syphonServerTextureInstance);
+			cachedTexID = rt.GetNativeTextureID();
+			cachedWidth = rt.width;
+			cachedHeight = rt.height;
+			syphonServerTextureValuesCached = true;
 		}
 	}
 	
 	
-	public void cacheTextureValues(){
-		if(storedWidth != 0 && storedHeight != 0 && storedTexID != 0){
-			Syphon.CacheServerTextureValues(storedTexID, storedWidth, storedHeight, syphonServerTextureInstance);
-			syphonServerTextureInstanceInitialized = true;
+	//////////////////////////////////////////////////////////////
+	//
+	// GAME LOOP CALLBACKS -- In order they are called
+	//
+	
+	//
+	// OnRenderImage() is called after all rendering is complete to render image, but the GUI is not rendered yet
+	// http://docs.unity3d.com/Documentation/ScriptReference/Camera.OnRenderImage.html
+	public void OnRenderImage(RenderTexture src, RenderTexture dst){
+		// Update texture data on Syphon server
+		if (!syphonServerTextureValuesCached || cachedTexID != src.GetNativeTextureID() || src.width != cachedWidth || src.height != cachedHeight)
+			cacheTextureValues( src );
+
+		// WITHOUT GUI: just blit to the screen and publish to syphon.
+		if (!renderGUI) {
+			// Reset shader (avoid bad frames, now sure why)
+			Syphon.SafeMaterial.SetPass(0);
+			// Copy src to dst
+			Graphics.Blit(src, dst);
+			// Publish texture to Syphon Server
+			if (syphonServerTextureInstance != 0)
+				GL.IssuePluginEvent((int)syphonServerTextureInstance);
+		}
+		// WITH GUI: save reference to render textures
+		else {
+			srcTex = src;
+			dstTex = dst;
+		}
+	}
+
+	//
+	// OnPostRender() is called after a camera has finished rendering the scene
+	// WaitForEndOfFrame() will make it be executed after GUI is rendered
+	public IEnumerator OnPostRender(){
+		// WITH GUI: wait Unity to render GUI, then blit to screen
+		if (renderGUI && srcTex != null) {
+			// Waits until the end of the frame after all cameras and GUI is rendered, just before displaying the frame on screen
+			yield return new WaitForEndOfFrame();
+			// Reset shader (avoid bad frames, now sure why)
+			Syphon.SafeMaterial.SetPass(0);
+			// Copy sr to dst
+			Graphics.Blit(srcTex, dstTex);
+			// Publish texture to Syphon Server
+			if (syphonServerTextureInstance != 0)
+				GL.IssuePluginEvent((int)syphonServerTextureInstance);
+		}
+		else {
+			yield return null;
 		}
 	}
 }
+
+#endif	// UNITY_STANDALONE_OSX

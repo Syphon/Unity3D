@@ -34,7 +34,7 @@ SyphonCacheData::SyphonCacheData()
     serverName = nil;
     initialized = false;
     updateTextureSizeFlag = false;
-
+    pluginType = PLUGIN_SYPHON;
 }
 
 SyphonCacheData::SyphonCacheData(NSDictionary* ptr)
@@ -47,6 +47,7 @@ SyphonCacheData::SyphonCacheData(NSDictionary* ptr)
     updateTextureSizeFlag = false;
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     syphonClient = [[SyphonClient alloc] initWithServerDescription:ptr options:nil newFrameHandler:nil];
+    pluginType = PLUGIN_SYPHON;
     [pool drain];
 }
 

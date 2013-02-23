@@ -31,13 +31,13 @@
 #import "SyphonServerObject.h"
 #import <Syphon/Syphon.h>
 enum PluginType{
-    PLUGIN_VTP, PLUGIN_SYPHON
+    PLUGIN_NONE, PLUGIN_VTP = 1000, PLUGIN_SYPHON = 2000
 };
 
 class SyphonCacheData
 {
 	public:
-        const PluginType pluginType = PLUGIN_SYPHON;
+        PluginType pluginType;
 		SyphonCacheData();
         //init a client with a syphon server pointer
         SyphonCacheData(NSDictionary* ptr);

@@ -98,9 +98,9 @@ void syphonServerDestroyResources(SyphonServer* server)
 
 void syphonServerPublishTexture(SyphonCacheData* ptr){    
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  if(!ptr->syphonServer){
+    if(!ptr->syphonServer){
         syphonServerCreate(ptr);
-  }
+    }
     
     if(ptr->syphonServer)
     {        
