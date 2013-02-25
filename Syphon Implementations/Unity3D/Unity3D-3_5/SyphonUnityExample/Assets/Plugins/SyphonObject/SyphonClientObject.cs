@@ -126,9 +126,11 @@ public class SyphonClientObject : ScriptableObject {
 		if(w != 0 && h != 0){
 			width = w;
 			height = h;
+			RenderTexture.active = null;
 			attachedTexture.Release();
 			attachedTexture.width = width;
 			attachedTexture.height = height;
+			Graphics.Blit( Syphon.NullTexture,attachedTexture);
 			
 			if(UpdateClientTextureSize != null){
 				UpdateClientTextureSize(this);
@@ -240,9 +242,10 @@ public class SyphonClientObject : ScriptableObject {
 			//you only need to render once per frame for each texture.
 //			if(lastTime != Time.time){
 					
+			Syphon.SafeMaterial.SetPass(0);
 			RenderTexture.active = attachedTexture;
 			GL.IssuePluginEvent(syphonClientPointer);
-			RenderTexture.active = null;
+			// RenderTexture.active = null;
 
 //			}
 //			else{

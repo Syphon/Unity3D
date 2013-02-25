@@ -149,7 +149,7 @@ using System.Diagnostics;
 					Syphon.Instance.nullTexture = new Texture2D(16, 16, TextureFormat.ARGB32, false);
 					Color[] pixels = new Color[Syphon.Instance.nullTexture.width*Syphon.Instance.nullTexture.height];
 					for(int i = 0; i < pixels.Length; i++){
-						pixels[i] = new Color(0, 0, 0, 1);
+						pixels[i] = new Color(0, 0, 0, 0);
 					}
 					Syphon.Instance.nullTexture.SetPixels(pixels);
 					Syphon.Instance.nullTexture.Apply();				
@@ -227,6 +227,7 @@ using System.Diagnostics;
 		
 	}
 
+
 	public static void cacheAssembly(){
 		updatedAssembly = true;
 		InitServerPlugin();
@@ -240,6 +241,8 @@ using System.Diagnostics;
 		if(!updatedAssembly){
 			cacheAssembly();
 		}
+		foreach(SyphonClientObject obj in unsortedClients)
+			obj.Render();
 	}
 
 	public void LateUpdate(){

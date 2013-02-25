@@ -110,7 +110,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glDepthMask (GL_FALSE);
         
         //get image!
-        SyphonImage* image = [ptr->syphonClient newFrameImageForContext:CGLGetCurrentContext()];
+        SyphonImage* image = [ptr->syphonClient newFrameImageForContext:cachedContext];
         
         
         

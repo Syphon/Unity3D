@@ -41,7 +41,7 @@ using System.Collections.Generic;
 public class SyphonServerTexture : MonoBehaviour {
 
 	// From Inspector
-	public bool renderGUI = true;
+	public bool renderGUI = false;
 	
 	private int syphonServerTextureInstance = 0;			// The Syphon plugin cache pointer, returned from CreateServerTexture()
 	private bool syphonServerTextureValuesCached = false;	// Do the server knows our camera size and id?
@@ -93,9 +93,8 @@ public class SyphonServerTexture : MonoBehaviour {
 
 		// WITHOUT GUI: just blit to the screen and publish to syphon.
 		if (!renderGUI) {
-			// Reset shader (avoid bad frames, now sure why)
-			Syphon.SafeMaterial.SetPass(0);
 			// Copy src to dst
+			Syphon.SafeMaterial.SetPass(0);
 			Graphics.Blit(src, dst);
 			// Publish texture to Syphon Server
 			if (syphonServerTextureInstance != 0)
@@ -116,9 +115,8 @@ public class SyphonServerTexture : MonoBehaviour {
 		if (renderGUI && srcTex != null) {
 			// Waits until the end of the frame after all cameras and GUI is rendered, just before displaying the frame on screen
 			yield return new WaitForEndOfFrame();
-			// Reset shader (avoid bad frames, now sure why)
-			Syphon.SafeMaterial.SetPass(0);
 			// Copy sr to dst
+			Syphon.SafeMaterial.SetPass(0);
 			Graphics.Blit(srcTex, dstTex);
 			// Publish texture to Syphon Server
 			if (syphonServerTextureInstance != 0)
