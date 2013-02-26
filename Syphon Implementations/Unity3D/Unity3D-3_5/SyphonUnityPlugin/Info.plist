@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>Public Beta 2</string>
+	<string>Public Beta 2 a4</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.2</string>
+	<string>0.2a4</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
