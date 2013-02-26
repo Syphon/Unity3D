@@ -192,7 +192,6 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);        
         
         
-        [image release];
         
         //  CGLUnlockContext(cachedContext);
     }

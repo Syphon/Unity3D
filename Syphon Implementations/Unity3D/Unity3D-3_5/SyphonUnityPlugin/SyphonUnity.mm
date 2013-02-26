@@ -62,9 +62,10 @@ extern "C" {
                 }
                 else{
                     //              NSLog(@"in the editor");
-                    char *path = getcwd(NULL, 0);
+                    char *path=NULL;
+                    size_t size;
+                    path=getcwd(path,size);
                     NSString* myString = [NSString stringWithUTF8String: path];
-                    free(path);
                     NSString* finalString = [myString stringByAppendingPathComponent:@"/Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll"];
                     pathToBundle = finalString;
                 }
