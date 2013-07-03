@@ -54,21 +54,23 @@ extern "C" {
             {
                 //                NSLog(@"init graphics device");
                 cachedContext = CGLGetCurrentContext();
-                NSString* bundlePath = [[[NSBundle mainBundle] bundlePath]
-                                        stringByAppendingPathComponent:@"Contents/Data/Managed/Assembly-CSharp-firstpass.dll"];
-                if( [ [NSFileManager defaultManager] fileExistsAtPath:bundlePath isDirectory:NO]){
-                    //            NSLog(@"in the app!");
-                    pathToBundle = bundlePath;
-                }
-                else{
-                    //              NSLog(@"in the editor");
-                    char *path = getcwd(NULL, 0);
-                    NSString* myString = [NSString stringWithUTF8String: path];
-                    free(path);
-                    NSString* finalString = [myString stringByAppendingPathComponent:@"/Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll"];
-                    pathToBundle = finalString;
-                }
-                [pathToBundle retain];
+//                NSString* bundlePath = [[[NSBundle mainBundle] bundlePath]
+//                                        stringByAppendingPathComponent:@"Contents/Data/Managed/Assembly-CSharp-firstpass.dll"];
+//                if( [ [NSFileManager defaultManager] fileExistsAtPath:bundlePath isDirectory:NO]){
+//                    //            NSLog(@"in the app!");
+//                    pathToBundle = bundlePath;
+//                }
+//                else{
+//                    //              NSLog(@"in the editor");
+//                    char *path=NULL;
+//                    size_t size;
+//                    path=getcwd(path,size);
+//                    NSString* myString = [NSString stringWithUTF8String: path];
+//                    NSString* finalString = [myString stringByAppendingPathComponent:@"/Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll"];
+//                    pathToBundle = finalString;
+//                }
+//                [pathToBundle retain];
+
                 registerCallbacks();
                 break;
             }
@@ -94,18 +96,24 @@ extern "C" {
 		SyphonCacheData* clientPtr = new SyphonCacheData(serverPtr);
         //add it to a list
         syphonClients.push_back(clientPtr);
-        NSLog(@"CREATED SOMETHIN AT %i, and added it to the list. count is now %i", (int)clientPtr, (int)syphonClients.size());
+        NSLog(@"CREATED CLIENT TEXTURE AT %i, and added it to the list. count is now %i", (int)clientPtr, (int)syphonClients.size());
 		return clientPtr;
 	}
 	
-    
+	void QueueToKillTexture(SyphonCacheData* killMe){
+        if(killMe != NULL && (int)killMe != 0){
+			killMe->destroyMe = true;
+		}
+	}
+	
     void KillClientTexture(SyphonCacheData* killMe){
-        //NSLog(@"DESTROYED SOMETHIN AT %i", (int)killMe);
-        if(killMe != nil && (int)killMe != 0){
+	NSLog(@"DESTROYED A CLIENT TEXTURE AT %i", (int)killMe);
+        if(killMe != NULL && (int)killMe != 0){
             //            //if the cache data says it's not a server, then it's a client.
             if(!killMe->isAServer && killMe->syphonClient != nil){
                 syphonClientDestroyResources(killMe->syphonClient);
-                //                NSLog(@"destroyed one");
+				killMe->syphonClient = nil;
+//                NSLog(@"destroyed one");
             }
             //            
             //remove the selected syphonServer from the list
@@ -113,11 +121,13 @@ extern "C" {
                 syphonClients.end())
             {
                 syphonClients.remove(killMe);
-                NSLog(@"removed one, count is now %i", (int)syphonClients.size());
+//                NSLog(@"removed one, count is now %i", (int)syphonClients.size());
             }
             //delete the cache data associated with it
             delete killMe;
-        }        
+			killMe->destroyMe = false;
+			killMe = NULL;
+        }
     }
     
     
@@ -131,11 +141,12 @@ extern "C" {
 	}	
     
     void KillServerTexture(SyphonCacheData* killMe){
-        if(killMe != nil){
+        if(killMe != NULL){
             if(killMe->isAServer && killMe->syphonServer != nil){
                 //destroy the syphon server itself,
                 syphonServerDestroyResources(killMe->syphonServer);
-            }      
+				killMe->syphonServer = nil;
+            }
             
             //remove the selected syphonServer from the list
             if (std::find(syphonServers.begin(), syphonServers.end(), killMe) !=
@@ -144,7 +155,9 @@ extern "C" {
             
             //delete the cache data associated with it
             delete killMe;
-        }        
+			killMe->destroyMe = false;
+			killMe = NULL;
+        }
     }
     
     //    void FlagServerToBeKilled(SyphonCacheData* ptr){
@@ -203,11 +216,19 @@ extern "C" {
                 return;
             
             //if it's a server
-            if(ptr->isAServer && ptr->initialized && ptr->serverName != nil){
+            if(ptr != nil && ptr->isAServer && ptr->initialized && ptr->serverName != nil){
+				//serialize destruction to same thread as drawing
+				if(ptr->destroyMe)
+					KillServerTexture((SyphonCacheData*)ptr);
+				else
                 syphonServerPublishTexture((SyphonCacheData*)ptr);
             }
             //if it's a client
-            if(!ptr->isAServer && ptr->initialized){                
+            if(ptr != nil && !ptr->isAServer && ptr->initialized){
+				//serialize destruction to same thread as drawing
+				if(ptr->destroyMe)
+					KillClientTexture((SyphonCacheData*)ptr);
+				else
                 syphonClientPublishTexture((SyphonCacheData*)ptr);
             }
             

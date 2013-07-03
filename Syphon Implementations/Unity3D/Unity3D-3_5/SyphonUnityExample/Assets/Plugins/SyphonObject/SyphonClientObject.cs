@@ -190,7 +190,7 @@ public class SyphonClientObject : ScriptableObject {
 		public void RetireServer(string appName, string name){
 			if(initialized && MatchesDescription(appName, name)){
 				retireServerQueue = true;
-				// DestroySyphonClient();
+//				 DestroySyphonClient();
 				 // Debug.Log("retired app:" + appName + " name: " + name );				
 			}
 		}
@@ -203,8 +203,9 @@ public class SyphonClientObject : ScriptableObject {
 
 	
 	public void DestroySyphonClient(){
-		//Debug.Log("destroying syphon client");
+//		UnityEngine.Debug.Log("destroying syphon client");
 		if(attachedTexture != null){
+			RenderTexture.active = null;
 			attachedTexture.Release();
 			//RenderTexture.active = null;
 			UnityEngine.Object.DestroyImmediate(attachedTexture);
@@ -212,8 +213,12 @@ public class SyphonClientObject : ScriptableObject {
 		}
 		
 		if(syphonClientPointer != 0 && initialized){
-			// Debug.Log("DESTROY plugin syphon client destroy method...");
-		 	Syphon.KillClientTexture(syphonClientPointer);
+			
+//			StackTrace stackTrace = new StackTrace();
+//			UnityEngine.Debug.Log("DESTROY plugin syphon client destroy method, from : " + stackTrace.GetFrame(1).GetMethod().Name);
+
+			Syphon.QueueToKillTexture(syphonClientPointer);
+			GL.IssuePluginEvent(syphonClientPointer);
 			syphonClientPointer = 0; 
 			initialized = false;			
 			if(RetireClient != null){
@@ -235,23 +240,12 @@ public class SyphonClientObject : ScriptableObject {
 	}
 	
 	public void Render(){
-		
-	
-		if(syphonClientPointer != 0 && initialized){
-		
-			//you only need to render once per frame for each texture.
-//			if(lastTime != Time.time){
-					
+		if(syphonClientPointer != 0 && initialized){		
+			//you need to render once per frame for each texture.
 			Syphon.SafeMaterial.SetPass(0);
 			RenderTexture.active = attachedTexture;
 			GL.IssuePluginEvent(syphonClientPointer);
 			// RenderTexture.active = null;
-
-//			}
-//			else{
-//				UnityEngine.Debug.Log("BANG! " + Time.time);
-//			}
-//			lastTime = Time.time;			
 		}
 	}
 	
@@ -263,8 +257,7 @@ public class SyphonClientObject : ScriptableObject {
 			DefineSyphonClient(announceServerQueueServer);
 			InitSyphonClient();
 		//	 StackTrace stackTrace = new StackTrace();
-		 //	 UnityEngine.Debug.Log("init'd syphon client " + boundAppName + " " + boundName + stackTrace.GetFrame(1).GetMethod().Name);
-			
+		 //	 UnityEngine.Debug.Log("init'd syphon client " + boundAppName + " " + boundName + stackTrace.GetFrame(1).GetMethod().Name);			
 //			Debug.Log("announced app:" + announceServerQueueServer.SyphonServerDescriptionAppName + " name: " + announceServerQueueServer.SyphonServerDescriptionName );
 			announceServerQueue = false;
 			announceServerQueueServer = null;

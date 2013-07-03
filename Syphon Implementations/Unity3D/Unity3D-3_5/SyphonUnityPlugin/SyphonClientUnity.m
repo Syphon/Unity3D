@@ -37,27 +37,31 @@ static GLuint syphonFBO = 0;
 //
 void syphonClientDestroyResources(SyphonClient* client)
 {
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    //    
-    //    glDeleteFramebuffersEXT(1, &syphonFBO);
-    //    syphonFBO = 0;
-    //    
-    //    // lets create our client if we dont have it. 
+//    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    //
+	
+	if(syphonFBO){
+		glDeleteFramebuffersEXT(1, &syphonFBO);
+		syphonFBO = 0;
+	}
+
     if(client)
     {
         [client stop];
         [client release];
         client = nil;
         
-        //NSLog(@"destroyed Syphon Client");
+//		NSLog(@"destroyed Syphon Client");
     }
-    [pool drain];
+//    [pool drain];
 }
 
 
 void syphonClientPublishTexture(SyphonCacheData* ptr){
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    if(ptr->syphonClient && [ptr->syphonClient isValid]){
+//	NSLog(@"PUBLISHIN SOMETHIN AT %i/ %@", (int)ptr, ptr->syphonClient);
+
+    if(ptr != NULL && ptr->syphonClient != nil && [ptr->syphonClient isValid]){
         //        //should probably check if CGLGetCurrentContext() is == cachedContext
         
         //lock
@@ -187,6 +191,9 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glPopClientAttrib();
         glPopAttrib();	
         
+		
+		[image release];
+		
         glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);	
         glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
         glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);        

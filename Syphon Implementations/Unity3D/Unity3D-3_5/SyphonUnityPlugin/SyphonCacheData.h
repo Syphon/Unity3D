@@ -57,4 +57,5 @@ class SyphonCacheData
         //client related
         SyphonClient* syphonClient;
         bool updateTextureSizeFlag;
+		bool destroyMe;
 };

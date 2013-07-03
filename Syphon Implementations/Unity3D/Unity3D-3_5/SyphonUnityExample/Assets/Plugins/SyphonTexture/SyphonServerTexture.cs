@@ -57,8 +57,10 @@ public class SyphonServerTexture : MonoBehaviour {
 	}
 	
 	public void OnDestroy() {
-		if(syphonServerTextureInstance != 0)
-			Syphon.KillServerTexture(syphonServerTextureInstance);
+		if(syphonServerTextureInstance != 0){
+			Syphon.QueueToKillTexture(syphonServerTextureInstance);
+			GL.IssuePluginEvent(syphonServerTextureInstance);
+		}
 		syphonServerTextureInstance = 0;
 		syphonServerTextureValuesCached = false;
 		srcTex = null;

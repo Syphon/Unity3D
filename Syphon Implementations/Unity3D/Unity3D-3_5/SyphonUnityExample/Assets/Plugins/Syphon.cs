@@ -49,8 +49,6 @@ using System.Diagnostics;
 		public static extern int CreateServerTexture(string serverName);
 	[DllImport ("SyphonUnityPlugin")]
 		public static extern bool CacheServerTextureValues(int textureId, int width, int height, int syphonServerTextureInstance);
-	[DllImport ("SyphonUnityPlugin")]
-		public static extern void KillServerTexture(int killMe);
 	
 	//client related
 	[DllImport ("SyphonUnityPlugin")]
@@ -58,7 +56,7 @@ using System.Diagnostics;
 	[DllImport ("SyphonUnityPlugin")]
 		public static extern bool CacheClientTextureValues(int textureId, int width, int height, int syphonClientTextureInstance);
 	[DllImport ("SyphonUnityPlugin")]
-		public static extern void KillClientTexture(int killMe);
+		public static extern void QueueToKillTexture(int killMe);
 	[DllImport ("SyphonUnityPlugin")]
 		public static extern void UpdateTextureSizes();
 
@@ -69,12 +67,7 @@ using System.Diagnostics;
 		private static extern int SyServerCount();
 	[DllImport ("SyphonUnityPlugin")]
 		private static extern int SyServerAtIndex(int counter, StringBuilder myAppName, StringBuilder myName, StringBuilder myUuId);
-	[DllImport ("SyphonUnityPlugin")]
-		private static extern void InitServerPlugin();
 	
-	
-	
-
 	
 	[SerializeField]
 	public Dictionary<string, Dictionary<string, SyphonServerObject>> servers = new Dictionary<string, Dictionary<string, SyphonServerObject>>();
@@ -181,6 +174,25 @@ using System.Diagnostics;
 	public delegate void RepaintServerListGUIHandler();
 	public event RepaintServerListGUIHandler RepaintServerListGUI;
 
+
+
+
+	[AttributeUsage (AttributeTargets.Method)]
+	public sealed class MonoPInvokeCallbackAttribute : Attribute {
+	    public MonoPInvokeCallbackAttribute (Type t) {}
+	}
+	
+	private delegate void OnTextureSizeChangedDelegate(int ptr, int width, int height);
+	private delegate void OnAnnounceServerDelegate(string appName, string name, string uuid, int serverPtr);
+	private delegate void OnRetireServerDelegate(string appName, string name,  string uuid);
+	private delegate void OnUpdateServerDelegate(string appName, string name, string uuid, int serverPtr);
+
+
+
+	[DllImport ("SyphonUnityPlugin")]
+		private static extern void InitDelegateCallbacks(OnTextureSizeChangedDelegate texSize, OnAnnounceServerDelegate announceServer, OnRetireServerDelegate retireServer, OnUpdateServerDelegate updateServer);
+	
+
 	//these are used to tell the associated client texture gameobject script to announce/etc a server
 	public delegate void AnnounceServerHandler(string appName, string name);
 	public static event AnnounceServerHandler AnnounceServer;
@@ -195,8 +207,8 @@ using System.Diagnostics;
 
       
 	public void initSyphonServers(){
-		 // StackTrace stackTrace = new StackTrace();
-		 // UnityEngine.Debug.Log("init'd syphon servers "+ stackTrace.GetFrame(1).GetMethod().Name);
+//		 StackTrace stackTrace = new StackTrace();
+//		 UnityEngine.Debug.Log("init'd syphon servers "+ stackTrace.GetFrame(1).GetMethod().Name);
 		
 		//clear the servers array
 		servers.Clear();
@@ -230,7 +242,7 @@ using System.Diagnostics;
 
 	public static void cacheAssembly(){
 		updatedAssembly = true;
-		InitServerPlugin();
+		InitDelegateCallbacks(OnTextureSizeChanged, OnAnnounceServer, OnRetireServer, OnUpdateServer);	
 	}
 		
 	public static bool assemblyIsUpdated(){
@@ -279,6 +291,7 @@ using System.Diagnostics;
 		initialized = true;
 	}
 	
+	[MonoPInvokeCallback (typeof (OnTextureSizeChangedDelegate))]
 	public static void OnTextureSizeChanged(int ptr, int width, int height){
 //		Debug.Log("Syphon Texture size changed! ptr: " + ptr + " w/h: " + width + " " + height);
 		
@@ -289,9 +302,10 @@ using System.Diagnostics;
 		}
 	}
 
+	[MonoPInvokeCallback (typeof (OnAnnounceServerDelegate))]
 	public static void OnAnnounceServer(string appName, string name, string uuid, int serverPtr){
-		// UnityEngine.Debug.Log("Announcing the server with the appName: "
-		// + appName + ", name: " + name + ", uuid: " + uuid + " server Pointer: "+ (int)serverPtr);
+//		 UnityEngine.Debug.Log("Announcing the server with the appName: "
+//		 + appName + ", name: " + name + ", uuid: " + uuid + " server Pointer: "+ (int)serverPtr);
 		
 		if(!Syphon.Servers.ContainsKey(appName)){
 			Syphon.Servers.Add(appName, new Dictionary<string, SyphonServerObject>());
@@ -311,7 +325,8 @@ using System.Diagnostics;
 			AnnounceServer(appName, name);
 	}
 	
-		public static void OnUpdateServer(string appName, string name, string uuid, int serverPtr){
+	[MonoPInvokeCallback (typeof (OnUpdateServerDelegate))]
+	public static void OnUpdateServer(string appName, string name, string uuid, int serverPtr){
 	//		UnityEngine.Debug.Log("Updating the server with the appName: " + appName + ", name: " + name + ", uuid: " + uuid);
 
 		// 	for(int i = 0; i < myself.myClientObjects.Count; i++){
@@ -324,7 +339,9 @@ using System.Diagnostics;
 					UpdateServer(appName, name);
 		}
 
+		[MonoPInvokeCallback (typeof (OnRetireServerDelegate))]
 		public static void OnRetireServer(string appName, string name,  string uuid){
+//		UnityEngine.Debug.Log(appName + " "+ name + " " + uuid + " are leaving now.");
 			if(Syphon.Servers.ContainsKey(appName)){
 				if(name == ""){
 					if(Syphon.Servers[appName].ContainsKey(Syphon.UNNAMED_STRING)){
@@ -350,6 +367,7 @@ using System.Diagnostics;
 
 			if(RetireServer != null)
 				RetireServer(appName, name);	
+		
 		}
 	
 	public void UpdateServerNames(){

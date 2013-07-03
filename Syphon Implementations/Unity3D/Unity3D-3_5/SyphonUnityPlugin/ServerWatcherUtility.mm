@@ -33,50 +33,50 @@
 #import <OpenGL/OpenGL.h>
 #import <string.h>
 #import "SyphonCacheData.h"
-#ifdef __cplusplus
-
-extern "C" {
-		typedef void* MonoDomain;
-		typedef void* MonoAssembly;
-		typedef void* MonoImage;
-		typedef void* MonoClass;
-		typedef void* MonoObject;
-		typedef void* MonoMethodDesc;
-		typedef void* MonoMethod;
-		typedef void* MonoString;
-		typedef int gboolean;
-		typedef void* gpointer;
+//#ifdef __cplusplus
+//
+//extern "C" {
+//		typedef void* MonoDomain;
+//		typedef void* MonoAssembly;
+//		typedef void* MonoImage;
+//		typedef void* MonoClass;
+//		typedef void* MonoObject;
+//		typedef void* MonoMethodDesc;
+//		typedef void* MonoMethod;
+//		typedef void* MonoString;
+//		typedef int gboolean;
+//		typedef void* gpointer;
 		
-		MonoDomain *mono_domain_get();
-		MonoAssembly *mono_domain_assembly_open(MonoDomain *domain, const char *assemblyName);
-		MonoImage *mono_assembly_get_image(MonoAssembly *assembly);
-        void  mono_assembly_close (MonoAssembly *assembly);
-		MonoMethodDesc *mono_method_desc_new(const char *methodString, gboolean useNamespace);
-		MonoMethodDesc *mono_method_desc_free(MonoMethodDesc *desc);
-		MonoMethod *mono_method_desc_search_in_image(MonoMethodDesc *methodDesc, MonoImage *image);
-		MonoObject *mono_runtime_invoke(MonoMethod *method, void *obj, void **params, MonoObject **exc);
-		MonoClass *mono_class_from_name(MonoImage *image, const char *namespaceString, const char *classnameString);
-		MonoMethod *mono_class_get_methods(MonoClass*, gpointer* iter);
-		MonoString *mono_string_new(MonoDomain *domain, const char *text);
-
-		char* mono_method_get_name (MonoMethod *method);
-}
-MonoDomain *domain;
-NSString *assemblyPath;
-MonoAssembly *monoAssembly;
-MonoImage *monoImage;
-
-MonoMethodDesc *updateServerDesc;
-MonoMethod *updateServer; 
-MonoMethodDesc *announceServerDesc;
-MonoMethod *announceServer;
-MonoMethodDesc *retireServerDesc;
-MonoMethod *retireServer;
-
-MonoMethodDesc *textureSizeChangedDesc;
-MonoMethod *textureSizeChanged;
-
-#endif
+//		MonoDomain *mono_domain_get();
+//		MonoAssembly *mono_domain_assembly_open(MonoDomain *domain, const char *assemblyName);
+//		MonoImage *mono_assembly_get_image(MonoAssembly *assembly);
+//        void  mono_assembly_close (MonoAssembly *assembly);
+//		MonoMethodDesc *mono_method_desc_new(const char *methodString, gboolean useNamespace);
+//		MonoMethodDesc *mono_method_desc_free(MonoMethodDesc *desc);
+//		MonoMethod *mono_method_desc_search_in_image(MonoMethodDesc *methodDesc, MonoImage *image);
+//		MonoObject *mono_runtime_invoke(MonoMethod *method, void *obj, void **params, MonoObject **exc);
+//		MonoClass *mono_class_from_name(MonoImage *image, const char *namespaceString, const char *classnameString);
+//		MonoMethod *mono_class_get_methods(MonoClass*, gpointer* iter);
+//		MonoString *mono_string_new(MonoDomain *domain, const char *text);
+//
+//		char* mono_method_get_name (MonoMethod *method);
+//}
+//MonoDomain *domain;
+//NSString *assemblyPath;
+//MonoAssembly *monoAssembly;
+//MonoImage *monoImage;
+//
+//MonoMethodDesc *updateServerDesc;
+//MonoMethod *updateServer; 
+//MonoMethodDesc *announceServerDesc;
+//MonoMethod *announceServer;
+//MonoMethodDesc *retireServerDesc;
+//MonoMethod *retireServer;
+//
+//MonoMethodDesc *textureSizeChangedDesc;
+//MonoMethod *textureSizeChanged;
+//
+//#endif
 
 @interface ServerWatcherUtility : NSObject 
 {
@@ -86,6 +86,12 @@ MonoMethod *textureSizeChanged;
 }
 
 @end
+
+static void (*OnTextureSizeChangedDelegate)(int, int, int);
+static void (*OnAnnounceServerDelegate)(const char*,const char*,const char*,int);
+static void (*OnUpdateServerDelegate)(const char*,const char*,const char*,int);
+static void (*OnRetireServerDelegate)(const char*,const char*,const char*);
+
 static NSString* pathToBundle = nil;
 
 static ServerWatcherUtility* watcherUtility;
@@ -96,17 +102,22 @@ static ServerWatcherUtility* watcherUtility;
 {
 
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
 	const char* param2 = [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
 	const char* param1 = [[[notification object] objectForKey:SyphonServerDescriptionAppNameKey] UTF8String];
 	const char* param3 = [[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] UTF8String];
-  //NSLog(@"announceing server! %s %s %s", param2, param1, param3);
-    
-    
-	MonoString* myString = mono_string_new(domain, param1);
-	MonoString* myString2 = mono_string_new(domain, param2);
-	MonoString* myString3 = mono_string_new(domain, param3);
-	void *args[] = { myString, myString2, myString3 };
-	mono_runtime_invoke(retireServer, NULL, args, NULL);
+        
+//	MonoString* myString = mono_string_new(domain, param1);
+//	MonoString* myString2 = mono_string_new(domain, param2);
+//	MonoString* myString3 = mono_string_new(domain, param3);
+//	void *args[] = { myString, myString2, myString3 };
+//	mono_runtime_invoke(retireServer, NULL, args, NULL);
+//	param1 = NULL;
+//	param2 = NULL;
+//	param3 = NULL;
+	
+	OnRetireServerDelegate(param1, param2, param3);
+	
 	[pool drain];
 
 }
@@ -127,11 +138,15 @@ static ServerWatcherUtility* watcherUtility;
         }
     }
     
-	MonoString* myString = mono_string_new(domain, param1);
-	MonoString* myString2 = mono_string_new(domain, param2);
-	MonoString* myString3 = mono_string_new(domain, param3);
-	void *args[] = { myString, myString2, myString3, &serverPtr };
-	mono_runtime_invoke(updateServer, NULL, args, NULL);
+//	MonoString* myString = mono_string_new(domain, param1);
+//	MonoString* myString2 = mono_string_new(domain, param2);
+//	MonoString* myString3 = mono_string_new(domain, param3);
+//	void *args[] = { myString, myString2, myString3, &serverPtr };
+//	mono_runtime_invoke(updateServer, NULL, args, NULL);
+//	param1 = NULL;
+//	param2 = NULL;
+//	param3 = NULL;
+	OnUpdateServerDelegate(param1, param2, param3, serverPtr);
 	
 	[pool drain];
 
@@ -141,7 +156,7 @@ static ServerWatcherUtility* watcherUtility;
 - (void)handleServerAnnounce:(NSNotification *)notification
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	const char* param2 = [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
+	const char* param2 =  [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
 	const char* param1 = [[[notification object] objectForKey:SyphonServerDescriptionAppNameKey] UTF8String];
 	const char* param3 = [[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] UTF8String];
     //  NSLog(@"announceing server! %s %s %s", param2, param1, param3);
@@ -154,11 +169,16 @@ static ServerWatcherUtility* watcherUtility;
         }
     }
     
-	MonoString* myString = mono_string_new(domain, param1);
-	MonoString* myString2 = mono_string_new(domain, param2);
-	MonoString* myString3 = mono_string_new(domain, param3);
-	void *args[] = { myString, myString2, myString3, &serverPtr };
-	mono_runtime_invoke(announceServer, NULL, args, NULL);
+//	MonoString* myString = mono_string_new(domain, param1);
+//	MonoString* myString2 = mono_string_new(domain, param2);
+//	MonoString* myString3 = mono_string_new(domain, param3);
+//	void *args[] = { myString, myString2, myString3, &serverPtr };
+//	mono_runtime_invoke(announceServer, NULL, args, NULL);
+//	param1 = NULL;
+//	param2 = NULL;
+//	param3 = NULL;
+	OnAnnounceServerDelegate(param1, param2, param3, serverPtr);
+
 	[pool drain];
 }
 
@@ -172,33 +192,45 @@ static ServerWatcherUtility* watcherUtility;
 #ifdef __cplusplus
 extern "C" {
 	
+	void InitDelegateCallbacks(void (*texSize)(int, int, int),
+							   void (*announceServer)(const char*,const char*,const char*,int),
+							   void (*retireServer)(const char*,const char*,const char*),
+							   void (*updateServer)(const char*,const char*,const char*,int)
+							   ){
+		
+		OnTextureSizeChangedDelegate = *texSize;
+		OnAnnounceServerDelegate = *announceServer;
+		OnRetireServerDelegate = *retireServer;
+		OnUpdateServerDelegate = *updateServer;
+	}
+	
 	
     void handleTextureSizeChanged(SyphonCacheData* ptr){
-        void *args[] = { &ptr, &(ptr->textureWidth), &(ptr->textureHeight) };
-        mono_runtime_invoke(textureSizeChanged, NULL, args, NULL);
-        
+//        void *args[] = { &ptr, &(ptr->textureWidth), &(ptr->textureHeight) };
+//        mono_runtime_invoke(textureSizeChanged, NULL, args, NULL);
+		OnTextureSizeChangedDelegate((int)ptr, ptr->textureWidth, ptr->textureHeight);
     }
 	
-	void monoMethods(){
-        announceServerDesc = mono_method_desc_new("Syphon:OnAnnounceServer", FALSE);
-		announceServer =  mono_method_desc_search_in_image(announceServerDesc, monoImage);
-		
-		retireServerDesc = mono_method_desc_new("Syphon:OnRetireServer", FALSE);
-		retireServer =  mono_method_desc_search_in_image(retireServerDesc, monoImage);
-	
-		updateServerDesc = mono_method_desc_new("Syphon:OnUpdateServer", FALSE);
-		updateServer =  mono_method_desc_search_in_image(updateServerDesc, monoImage);
-
-        textureSizeChangedDesc = mono_method_desc_new("Syphon:OnTextureSizeChanged", FALSE);
-		textureSizeChanged =  mono_method_desc_search_in_image(textureSizeChangedDesc, monoImage);
-
-        
-		mono_method_desc_free(announceServerDesc);
-    	mono_method_desc_free(retireServerDesc);
-		mono_method_desc_free(updateServerDesc);	
-		mono_method_desc_free(textureSizeChangedDesc);	
-
-	}
+//	void monoMethods(){
+//        announceServerDesc = mono_method_desc_new("Syphon:OnAnnounceServer", FALSE);
+//		announceServer =  mono_method_desc_search_in_image(announceServerDesc, monoImage);
+//		
+//		retireServerDesc = mono_method_desc_new("Syphon:OnRetireServer", FALSE);
+//		retireServer =  mono_method_desc_search_in_image(retireServerDesc, monoImage);
+//	
+//		updateServerDesc = mono_method_desc_new("Syphon:OnUpdateServer", FALSE);
+//		updateServer =  mono_method_desc_search_in_image(updateServerDesc, monoImage);
+//
+//        textureSizeChangedDesc = mono_method_desc_new("Syphon:OnTextureSizeChanged", FALSE);
+//		textureSizeChanged =  mono_method_desc_search_in_image(textureSizeChangedDesc, monoImage);
+//
+//        
+//		mono_method_desc_free(announceServerDesc);
+//    	mono_method_desc_free(retireServerDesc);
+//		mono_method_desc_free(updateServerDesc);	
+//		mono_method_desc_free(textureSizeChangedDesc);	
+//
+//	}
     
     //[[SyphonServerDirectory sharedDirectory] addObserver:watcherUtility forKeyPath:@"servers" options:0 context:nil];
     
@@ -244,19 +276,21 @@ extern "C" {
 //	 monoMethods();
 //}
 	
-	
-void InitServerPlugin(){
-    assemblyPath = pathToBundle;
-  //  NSLog(@"SYPHON PLUGIN INIT -BUILT: %@", assemblyPath); //check if this is the right path
-    //  [assemblyPath retain];
-    domain = mono_domain_get();
-    monoAssembly = mono_domain_assembly_open(domain, assemblyPath.UTF8String);
-    if(!monoAssembly){
-     NSLog(@"ERROR OPENING THE MONO ASSEMBLY. this means that there was a problem in the path to your Assembly. Probably means your Syphon plugin .bundle or Syphon.cs script is not in the .Plugins folder");
-    }
-    monoImage = mono_assembly_get_image(monoAssembly);
-    monoMethods();
-}
+
+
+ 
+//void InitServerPlugin(){
+//    assemblyPath = pathToBundle;
+//  //  NSLog(@"SYPHON PLUGIN INIT -BUILT: %@", assemblyPath); //check if this is the right path
+//    //  [assemblyPath retain];
+//    domain = mono_domain_get();
+//    monoAssembly = mono_domain_assembly_open(domain, assemblyPath.UTF8String);
+//    if(!monoAssembly){
+//     NSLog(@"ERROR OPENING THE MONO ASSEMBLY. this means that there was a problem in the path to your Assembly. Probably means your Syphon plugin .bundle or Syphon.cs script is not in the .Plugins folder");
+//    }
+//    monoImage = mono_assembly_get_image(monoAssembly);
+//    monoMethods();
+//}
 
 
 

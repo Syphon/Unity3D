@@ -36,7 +36,7 @@ public class SyphonClientTexture : MonoBehaviour {
 	public string clientName = "";
 	private SyphonClientObject clientObject;
 	void Start () {
-		clientObject =  Syphon.GetSyphonClient(clientAppName, clientName);
+		clientObject = Syphon.GetSyphonClient(clientAppName, clientName);
 		//if the client object exists,
 		if(clientObject != null){
 			//if the texture has been initialized, apply its texture to something.

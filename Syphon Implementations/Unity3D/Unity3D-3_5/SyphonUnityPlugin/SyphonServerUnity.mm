@@ -69,7 +69,7 @@ void* SyServerAtIndex(int myIndex, char* myAppName, char* myName, char* myUuId){
     
 void syphonServerDestroyResources(SyphonServer* server)
 {
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+//    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     // lets create our client if we dont have it. 
     if(server != nil)
@@ -81,7 +81,7 @@ void syphonServerDestroyResources(SyphonServer* server)
     }
 
     
-    [pool drain];
+//    [pool drain];
 }
 
 //    

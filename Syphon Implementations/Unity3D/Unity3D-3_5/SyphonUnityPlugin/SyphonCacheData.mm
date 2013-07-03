@@ -30,16 +30,19 @@
 #include "SyphonCacheData.h"
 SyphonCacheData::SyphonCacheData()
 {
+	//used for initializing servers
     syphonServer = nil;
     serverName = nil;
     initialized = false;
     updateTextureSizeFlag = false;
     pluginType = PLUGIN_SYPHON;
+	destroyMe = false;
 }
 
 SyphonCacheData::SyphonCacheData(NSDictionary* ptr)
 {
-    //deep copy constructor
+    //deep copy constructor. used for initializing clients with a server description.
+	destroyMe = false;
     syphonServer = nil;
     serverName = nil;
     initialized = false;
