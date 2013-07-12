@@ -61,16 +61,10 @@ public class SyphonClientObject : ScriptableObject {
 	[NonSerialized]
 	private bool initialized = false;
 	public bool Initialized{ get {return initialized; }}	
-	[NonSerialized]
-	private float lastTime = -1;	
-	[NonSerialized]
-	private bool announceServerQueue = false;
-	[NonSerialized]
-	private SyphonServerObject announceServerQueueServer = null;		
-	[NonSerialized]
-	private bool retireServerQueue = false;
-
 	
+//	[NonSerialized]
+//	public bool retireSyphonClientQueue = false;
+
 	public delegate void AnnounceClientHandler(SyphonClientObject obj);
 	public static event AnnounceClientHandler AnnounceClient;
 
@@ -92,34 +86,34 @@ public class SyphonClientObject : ScriptableObject {
 			boundName = server.SyphonServerDescriptionName;		
 		//initialize the texture
 		if(attachedTexture == null){
-		attachedTexture = new RenderTexture(128, 128, 0, RenderTextureFormat.ARGB32);
-		attachedTexture.filterMode = FilterMode.Bilinear;
-		attachedTexture.wrapMode = TextureWrapMode.Clamp;
+			attachedTexture = new RenderTexture(128, 128, 0, RenderTextureFormat.ARGB32);
+			attachedTexture.filterMode = FilterMode.Bilinear;
+			attachedTexture.wrapMode = TextureWrapMode.Clamp;
 		}
 //				Debug.Log("created syphon client: " + boundName + " " +boundAppName);
 		
 		//TODO: create the syphon client in plugin
 	}
 	
-	public void DefineSyphonClient(SyphonClientObject client){
-		
-		// UnityEngine.Debug.Log("created syphon client: " + boundName + " " +boundAppName);
-		//hold on to object reference
-		attachedServer = client.attachedServer;
-		boundAppName = client.AttachedServer.SyphonServerDescriptionAppName;
-		if(client.AttachedServer.SyphonServerDescriptionName == "")
-			boundName = Syphon.UNNAMED_STRING;
-		else
-			boundName = client.AttachedServer.SyphonServerDescriptionName;		
-		
-		//initialize the texture
-		if(attachedTexture == null){
-		attachedTexture = new RenderTexture(128, 128, 0, RenderTextureFormat.ARGB32);
-		attachedTexture.filterMode = FilterMode.Bilinear;
-		attachedTexture.wrapMode = TextureWrapMode.Clamp;
-		}
-		//TODO: create the syphon client in plugin		
-	}
+//	public void DefineSyphonClient(SyphonClientObject client){
+//		
+//		// UnityEngine.Debug.Log("created syphon client: " + boundName + " " +boundAppName);
+//		//hold on to object reference
+//		attachedServer = client.attachedServer;
+//		boundAppName = client.AttachedServer.SyphonServerDescriptionAppName;
+//		if(client.AttachedServer.SyphonServerDescriptionName == "")
+//			boundName = Syphon.UNNAMED_STRING;
+//		else
+//			boundName = client.AttachedServer.SyphonServerDescriptionName;		
+//		
+//		//initialize the texture
+//		if(attachedTexture == null){
+//		attachedTexture = new RenderTexture(128, 128, 0, RenderTextureFormat.ARGB32);
+//		attachedTexture.filterMode = FilterMode.Bilinear;
+//		attachedTexture.wrapMode = TextureWrapMode.Clamp;
+//		}
+//		//TODO: create the syphon client in plugin		
+//	}
 	
 	
 	public void UpdateTextureSize(int w, int h){
@@ -132,6 +126,8 @@ public class SyphonClientObject : ScriptableObject {
 			attachedTexture.height = height;
 			Graphics.Blit( Syphon.NullTexture,attachedTexture);
 			
+			
+			//every GameObject that is using this syphon server might want to know that the size changed.
 			if(UpdateClientTextureSize != null){
 				UpdateClientTextureSize(this);
 			}
@@ -145,10 +141,13 @@ public class SyphonClientObject : ScriptableObject {
 		if(Application.isPlaying && attachedServer.SyphonServerPointer != 0 && !initialized){
 			// Debug.Log("EXECUTING syphon client: " + boundAppName + " " + boundName);
 			attachedTexture.Create();
+			Syphon.SafeMaterial.SetPass(0);
 			RenderTexture.active = attachedTexture;
 			Graphics.Blit( Syphon.NullTexture,attachedTexture);
 			RenderTexture.active = null;
-			//RenderTexture.active = attachedTexture;		
+			
+			//this does not allocate GL resources- it simply creates a SyphonCacheData object on the heap
+			//and saves the pointer in Unity here
 		 	syphonClientPointer = Syphon.CreateClientTexture(attachedServer.SyphonServerPointer);
 			Syphon.CacheClientTextureValues(attachedTexture.GetNativeTextureID(), attachedTexture.width, attachedTexture.height, syphonClientPointer);
 			initialized = true;
@@ -173,37 +172,17 @@ public class SyphonClientObject : ScriptableObject {
 			}
 			return false;
 		}
-			
-		public void AnnounceServer(string appName, string name){
-			if(!initialized && MatchesDescription(appName, name)){
-				announceServerQueueServer = Syphon.GetSyphonServer(appName, name);
-				if(announceServerQueueServer != null){
-					announceServerQueue = true;
-				// //	DestroySyphonClient();
-				// 	DefineSyphonClient(server);
-				// 	InitSyphonClient();
-				// 	 Debug.Log("announced app:" + appName + " name: " + name );					
-				}
-
-			}
-		}
-		public void RetireServer(string appName, string name){
-			if(initialized && MatchesDescription(appName, name)){
-				retireServerQueue = true;
-//				 DestroySyphonClient();
-				 // Debug.Log("retired app:" + appName + " name: " + name );				
-			}
-		}
-		public void UpdateServer(string appName, string name){
-			if(MatchesDescription(appName, name)){
-				// Debug.Log("updated app:" + appName + " name: " + name );				
-			}
-		}
-
 
 	
+	public void UpdateServer(string appName, string name){
+		if(MatchesDescription(appName, name)){
+			//TODO: handle this? how?
+			// Debug.Log("updated app:" + appName + " name: " + name );				
+		}
+	}
+
 	public void DestroySyphonClient(){
-//		UnityEngine.Debug.Log("destroying syphon client");
+//		UnityEngine.Debug.Log("destroying syphon client" + syphonClientPointer + " " + BoundAppName + " " + boundName);
 		if(attachedTexture != null){
 			RenderTexture.active = null;
 			attachedTexture.Release();
@@ -213,23 +192,19 @@ public class SyphonClientObject : ScriptableObject {
 		}
 		
 		if(syphonClientPointer != 0 && initialized){
-			
-//			StackTrace stackTrace = new StackTrace();
-//			UnityEngine.Debug.Log("DESTROY plugin syphon client destroy method, from : " + stackTrace.GetFrame(1).GetMethod().Name);
-
 			Syphon.QueueToKillTexture(syphonClientPointer);
 			GL.IssuePluginEvent(syphonClientPointer);
 			syphonClientPointer = 0; 
-			initialized = false;			
+			initialized = false;	
+			
+			//let anySyphonClientTextures who's registered for updates know that we've retired.
 			if(RetireClient != null){
 				RetireClient(this);
 			}
 		}
 		else{
 //			Debug.Log("syphon client: " + boundAppName + " " + boundName + " was not initialized, so not cleaning up the plugin on exit.");
-		}
-		
-		
+		}			
 	}
 	
 	public static bool Match(SyphonClientObject a, SyphonClientObject b){
@@ -245,44 +220,24 @@ public class SyphonClientObject : ScriptableObject {
 			Syphon.SafeMaterial.SetPass(0);
 			RenderTexture.active = attachedTexture;
 			GL.IssuePluginEvent(syphonClientPointer);
-			// RenderTexture.active = null;
+			 RenderTexture.active = null;
 		}
 	}
 	
-	
-	
-	//make sure that announce/retire are performed on the main thread by putting commands in a queue
-	public void Update(){
-		if(announceServerQueue){
-			DefineSyphonClient(announceServerQueueServer);
-			InitSyphonClient();
-		//	 StackTrace stackTrace = new StackTrace();
-		 //	 UnityEngine.Debug.Log("init'd syphon client " + boundAppName + " " + boundName + stackTrace.GetFrame(1).GetMethod().Name);			
-//			Debug.Log("announced app:" + announceServerQueueServer.SyphonServerDescriptionAppName + " name: " + announceServerQueueServer.SyphonServerDescriptionName );
-			announceServerQueue = false;
-			announceServerQueueServer = null;
-		}
-		if(retireServerQueue){
-			DestroySyphonClient();
-			retireServerQueue = false;
-//			 Debug.Log("retired app:" + appName + " name: " + name );				
-		}
-		
-	}
+//	public void Update(){
+//		if(retireSyphonClientQueue){
+//			DestroySyphonClient();
+//			retireSyphonClientQueue = false;
+//		}
+//	}
 	
 	public void OnDestroy(){
-		DestroySyphonClient();		
-		Syphon.AnnounceServer -= new Syphon.AnnounceServerHandler(AnnounceServer);
-		Syphon.RetireServer -= new Syphon.RetireServerHandler(RetireServer);
-		Syphon.UpdateServer -= new Syphon.UpdateServerHandler(UpdateServer);		
-		Syphon.UpdateClientTextures -= new Syphon.UpdateClientTexturesHandler(Update);		
-
+		//when you destroy the client object, destroy the client.
+		DestroySyphonClient();
+		Syphon.UpdateServer -= new Syphon.UpdateServerHandler(UpdateServer);
 	}
 	
 	public void OnEnable(){
-		Syphon.AnnounceServer += new Syphon.AnnounceServerHandler(AnnounceServer);
-		Syphon.RetireServer += new Syphon.RetireServerHandler(RetireServer);
 		Syphon.UpdateServer += new Syphon.UpdateServerHandler(UpdateServer);
-		Syphon.UpdateClientTextures += new Syphon.UpdateClientTexturesHandler(Update);		
 	}
 }

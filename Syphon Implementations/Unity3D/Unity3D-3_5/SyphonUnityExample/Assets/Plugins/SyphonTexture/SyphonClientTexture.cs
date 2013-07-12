@@ -36,40 +36,46 @@ public class SyphonClientTexture : MonoBehaviour {
 	public string clientName = "";
 	private SyphonClientObject clientObject;
 	void Start () {
-		clientObject = Syphon.GetSyphonClient(clientAppName, clientName);
-		//if the client object exists,
-		if(clientObject != null){
-			//if the texture has been initialized, apply its texture to something.
-			ApplyTexture();
-		}
-		
+		setupTexture();
+	}
+	
+	void OnDestroy(){
+		Syphon.UnregisterClientInstance(this);
 	}
 
+	void setupTexture(){
+		//when you initialize the client texture, you should TRY to create the syphon client object. 
+		//if it needs to exist because the server is available, it will create it. if the server is offline,
+		//nothing will happen. this basically initializes a singleton for that particular server appName/name.		
+		clientObject = Syphon.CreateClient (clientAppName, clientName);
+//		if the client object exists
+		if(clientObject != null){
+			//and if the texture has been initialized, apply its texture to something.
+			ApplyTexture();
+			//only registers it if it doesn't already exist.
+			Syphon.RegisterClientInstance(this, clientObject);
+		}		
+	}
+
+	//this class has to watch for when servers come online, so that it knows when to create the client.	
+	public void AnnounceServer(string appName, string name){
+		if(appName == clientAppName && name == clientName){
+			setupTexture();
+		}
+	}
+		
 	//handle applying the client texture to your object whichever way you please.
 	public void ApplyTexture(){
-		if(clientObject.Initialized){
-		renderer.sharedMaterial.mainTexture = clientObject.AttachedTexture;		
-		renderer.sharedMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
+		if(clientObject != null && clientObject.Initialized){
+			renderer.sharedMaterial.mainTexture = clientObject.AttachedTexture;		
+			renderer.sharedMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
 		}
 	}
 
-	public void handleAnnounceClient(SyphonClientObject client){
-		if(!client.MatchesDescription(clientAppName, clientName)){
-			return; //if the announced client was not this client, ignore it.
-		}
-		
-		if(clientObject == null){
-			//if the client had been previously destroyed or not initialized, re-init now.
-			Start();
-		}
-		else if(clientObject != null){ 
-			ApplyTexture();
-		}
-	}
 	
 	public void handleRetireClient(SyphonClientObject client){
 		if(client == clientObject){
-			//your syphonClient may soon go null as it is either 1) being destroyed from the clients list or 2) the server has disappeared
+			//your syphonClient may soon go null as it is either 1) being destroyed from the clients list as there is no more reason to keep it alive or 2) the server has disappeared
 		}
 	}
 	
@@ -90,16 +96,19 @@ public class SyphonClientTexture : MonoBehaviour {
 	}
 	
 	private void EnableCallbacks(){
-		SyphonClientObject.AnnounceClient += new SyphonClientObject.AnnounceClientHandler(handleAnnounceClient);
+		Syphon.AnnounceServer += new Syphon.AnnounceServerHandler(AnnounceServer);
+
 		SyphonClientObject.RetireClient += new SyphonClientObject.RetireClientHandler(handleRetireClient);
 		SyphonClientObject.UpdateClientTextureSize += new SyphonClientObject.UpdateClientTextureSizeHandler(handleUpdateClientTextureSize);
 	}
 	
 	private void DisableCallbacks(){
-		SyphonClientObject.AnnounceClient -= new SyphonClientObject.AnnounceClientHandler(handleAnnounceClient);
+		Syphon.AnnounceServer -= new Syphon.AnnounceServerHandler(AnnounceServer);
+
 		SyphonClientObject.RetireClient -= new SyphonClientObject.RetireClientHandler(handleRetireClient);
 		SyphonClientObject.UpdateClientTextureSize -= new SyphonClientObject.UpdateClientTextureSizeHandler(handleUpdateClientTextureSize);
 	}
 	
+
 
 }

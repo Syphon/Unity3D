@@ -144,7 +144,25 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
             ptr->textureWidth = (int)surfaceSize.width;
             ptr->textureHeight = (int)surfaceSize.height;
             NSLog(@"w/h: %i, %i", ptr->textureWidth, ptr->textureHeight);
-            ptr->updateTextureSizeFlag = true;
+//            ptr->updateTextureSizeFlag = true;
+			handleTextureSizeChanged(ptr);
+			
+			if(ptr->textureWidth == 0 || ptr->textureHeight == 0){
+			
+				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, 0);
+				glDisable(GL_TEXTURE_RECTANGLE_EXT);
+
+				glPopClientAttrib();
+				glPopAttrib();
+				
+				glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
+				glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
+				glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);
+				
+				[image release];
+				return;
+			}
+
         }
         
         //okay, draw the shit
@@ -190,10 +208,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         
         glPopClientAttrib();
         glPopAttrib();	
-        
-		
-		[image release];
-		
+        				
         glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);	
         glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
         glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);        

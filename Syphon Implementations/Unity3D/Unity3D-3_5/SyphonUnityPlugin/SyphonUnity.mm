@@ -97,6 +97,14 @@ extern "C" {
         //add it to a list
         syphonClients.push_back(clientPtr);
         NSLog(@"CREATED CLIENT TEXTURE AT %i, and added it to the list. count is now %i", (int)clientPtr, (int)syphonClients.size());
+//		int idx = 0;
+//		
+//		for(std::list<SyphonCacheData*>::iterator list_iter =syphonClients.begin();
+//            list_iter != syphonClients.end(); list_iter++){
+//			NSLog(@"%i, list iter: %@", idx, [(*list_iter)->syphonClient serverDescription]);
+//			idx++;
+//		}
+		
 		return clientPtr;
 	}
 	
@@ -107,7 +115,7 @@ extern "C" {
 	}
 	
     void KillClientTexture(SyphonCacheData* killMe){
-	NSLog(@"DESTROYED A CLIENT TEXTURE AT %i", (int)killMe);
+		
         if(killMe != NULL && (int)killMe != 0){
             //            //if the cache data says it's not a server, then it's a client.
             if(!killMe->isAServer && killMe->syphonClient != nil){
@@ -124,10 +132,20 @@ extern "C" {
 //                NSLog(@"removed one, count is now %i", (int)syphonClients.size());
             }
             //delete the cache data associated with it
+			NSLog(@"DESTROYED A CLIENT TEXTURE AT %i, count is now %i", (int)killMe, (int)syphonClients.size());
+
             delete killMe;
 			killMe->destroyMe = false;
 			killMe = NULL;
         }
+		
+//		int idx = 0;
+		
+//		for(std::list<SyphonCacheData*>::iterator list_iter =syphonClients.begin();
+//            list_iter != syphonClients.end(); list_iter++){
+//			NSLog(@"remaining: %i, list iter: %@", idx, [(*list_iter)->syphonClient serverDescription]);
+//			idx++;
+//		}
     }
     
     

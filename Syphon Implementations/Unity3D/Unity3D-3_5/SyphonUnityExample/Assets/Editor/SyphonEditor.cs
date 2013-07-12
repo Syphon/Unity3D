@@ -29,27 +29,27 @@ using System.Collections;
 using System.Collections.Generic;
 [CustomEditor(typeof(Syphon))]
 public class SyphonEditor : Editor {
-	private int GUIServerSelectionIndex = 0;
+//	private int GUIServerSelectionIndex = 0;
 	private const string SERVERS_LABEL = "SERVERS: ";
 	private const string SERVERS_LABEL_NONE = "No Syphon servers detected.";
-	private string serverConfirmKey;
-	private string serverConfirmValue;
-	private bool showServerConfirmState = false;
+//	private string serverConfirmKey;
+//	private string serverConfirmValue;
+//	private bool showServerConfirmState = false;
 
-	[SerializeField]
-	private int GUIClientSelectionIndex = 0;	
+//	[SerializeField]
+//	private int GUIClientSelectionIndex = 0;	
 	private const string CLIENTS_LABEL = "CLIENTS: ";
 	private const string CLIENTS_LABEL_NONE = "No Syphon clients detected.";
 	private string clientConfirmKey;
 	private string clientConfirmValue;	
-	[SerializeField]
-	private bool showClientConfirmState = false;
-	[SerializeField]
-	SyphonClientObject selectedClientObj = null;
+//	[SerializeField]
+//	private bool showClientConfirmState = false;
+//	[SerializeField]
+//	SyphonClientObject selectedClientObj = null;
 	
 	private bool repaintGUI = false;
 	Syphon syphon;
-	private int foldoutState = -1;
+//	private int foldoutState = -1;
 	private bool addedSyphonDelegates = false;
 	private Syphon syphonTarget;
 	public Syphon SyphonTarget{
@@ -103,107 +103,108 @@ public class SyphonEditor : Editor {
 		GUILayout.Space(5);
 
 		GUILayout.Label(CLIENTS_LABEL);
-		if(SyphonTarget.clientAppNames.Count == 0)
-			GUILayout.Label(CLIENTS_LABEL_NONE);
+//		if(SyphonTarget.clientAppNames.Count == 0)
+//			GUILayout.Label(CLIENTS_LABEL_NONE);
 		
-		drawGUIClientEditor();	
+//		drawGUIClientEditor();	
 		
 
 		if(GUILayout.Button("clear clients list")){
-			foreach(SyphonClientObject obj in SyphonTarget.unsortedClients){
+			foreach(SyphonClientObject obj in Syphon.SyphonClients){
 				DestroyImmediate(obj);
 			}
-			SyphonTarget.unsortedClients.Clear();
-			SyphonTarget.UpdateClientNames();
+			Syphon.SyphonClients.Clear();
+//			SyphonTarget.UpdateClientNames();
 		}
 		
 		
 	//	DrawDefaultInspector();
 	}		
 	
-	public void drawGUIClientEditor(){
-		foreach(KeyValuePair<string,string[]> kvp in SyphonTarget.clientAppNames){
-			GUI.changed = false;
-			int selectIndex = 0;
-			
-			//if you're not drawing the one you've selected, the index is 0.
-			if(kvp.Key != clientConfirmKey){
-				selectIndex = 0;
-			}
-			//otherwise, the index is whatever the selected index is.
-			else
-			selectIndex = GUIClientSelectionIndex;
-			
-			selectIndex = EditorGUILayout.Popup(kvp.Key, selectIndex, kvp.Value);
-			if(GUI.changed){
-				//Debug.Log("Selected: " + kvp.Key + " : " +  kvp.Value[GUIClientSelectionIndex] + "!");
-				GUIClientSelectionIndex = selectIndex;
-				showClientConfirmState = true;
-				clientConfirmKey = kvp.Key;
-				clientConfirmValue = kvp.Value[GUIClientSelectionIndex];
-				selectedClientObj = Syphon.GetSyphonClient(clientConfirmKey, clientConfirmValue);
-			}
-		}
-		
-		if(showClientConfirmState && selectedClientObj != null){
-		
-			SyphonClientObject destroyObj = null;
-
-				GUILayout.BeginHorizontal();
-				GUILayout.BeginVertical();
-				GUILayout.Label("App: "+ selectedClientObj.AttachedServer.SyphonServerDescriptionAppName + "\nName: " +
-				 selectedClientObj.AttachedServer.SyphonServerDescriptionName);
-				if(GUILayout.Button("remove client")){
-					destroyObj = selectedClientObj;
-				}
-				GUILayout.EndVertical();
-				GUILayout.Label(new GUIContent("", selectedClientObj.AttachedTexture,"App: "+
-				 selectedClientObj.AttachedServer.SyphonServerDescriptionAppName + "\nName: "
-				 + selectedClientObj.AttachedServer.SyphonServerDescriptionName), GUILayout.MaxWidth(150), GUILayout.MaxHeight(128));
-				GUILayout.EndHorizontal();
-
-			if(destroyObj != null){
-				Syphon.DestroyClient(destroyObj);
-				showClientConfirmState = false;
-				GUIClientSelectionIndex = 0;
-			}			
-		}
-	}	
-	
+//	public void drawGUIClientEditor(){
+//		foreach(KeyValuePair<string,string[]> kvp in SyphonTarget.clientAppNames){
+//			GUI.changed = false;
+//			int selectIndex = 0;
+//			
+//			//if you're not drawing the one you've selected, the index is 0.
+//			if(kvp.Key != clientConfirmKey){
+//				selectIndex = 0;
+//			}
+//			//otherwise, the index is whatever the selected index is.
+//			else
+//			selectIndex = GUIClientSelectionIndex;
+//			
+//			selectIndex = EditorGUILayout.Popup(kvp.Key, selectIndex, kvp.Value);
+//			if(GUI.changed){
+//				//Debug.Log("Selected: " + kvp.Key + " : " +  kvp.Value[GUIClientSelectionIndex] + "!");
+//				GUIClientSelectionIndex = selectIndex;
+//				showClientConfirmState = true;
+//				clientConfirmKey = kvp.Key;
+//				clientConfirmValue = kvp.Value[GUIClientSelectionIndex];
+//				selectedClientObj = Syphon.GetSyphonClient(clientConfirmKey, clientConfirmValue);
+//			}
+//		}
+//		
+////		if(showClientConfirmState && selectedClientObj != null){
+////		
+////			SyphonClientObject destroyObj = null;
+////
+////				GUILayout.BeginHorizontal();
+////				GUILayout.BeginVertical();
+////				GUILayout.Label("App: "+ selectedClientObj.AttachedServer.SyphonServerDescriptionAppName + "\nName: " +
+////				 selectedClientObj.AttachedServer.SyphonServerDescriptionName);
+////				if(GUILayout.Button("remove client")){
+////					destroyObj = selectedClientObj;
+////				}
+////				GUILayout.EndVertical();
+////				GUILayout.Label(new GUIContent("", selectedClientObj.AttachedTexture,"App: "+
+////				 selectedClientObj.AttachedServer.SyphonServerDescriptionAppName + "\nName: "
+////				 + selectedClientObj.AttachedServer.SyphonServerDescriptionName), GUILayout.MaxWidth(150), GUILayout.MaxHeight(128));
+////				GUILayout.EndHorizontal();
+////
+////			if(destroyObj != null){
+////				Syphon.DestroyClient(destroyObj);
+////				showClientConfirmState = false;
+////				GUIClientSelectionIndex = 0;
+////			}			
+////		}
+//	}	
+//	
 	
 	public void drawGUIServerEditor(){
 
 		foreach(KeyValuePair<string,string[]> kvp in SyphonTarget.serverAppNames){
 			GUI.changed = false;
 			int selectIndex = 0;
-			if(kvp.Key != serverConfirmKey){
-				selectIndex = 0;
-			}
-			else
-			selectIndex = GUIServerSelectionIndex;
+//			if(kvp.Key != serverConfirmKey){
+//				selectIndex = 0;
+//			}
+//			else
+//			selectIndex = GUIServerSelectionIndex;
+			
 			selectIndex = EditorGUILayout.Popup(kvp.Key, selectIndex, kvp.Value);
-			if(GUI.changed){
-				//Debug.Log("Selected: " + kvp.Key + " : " +  kvp.Value[GUIServerSelectionIndex] + "!");
-				GUIServerSelectionIndex = selectIndex;
-				showServerConfirmState = true;
-				serverConfirmKey = kvp.Key;
-				serverConfirmValue = kvp.Value[selectIndex];
-			}
+//			if(GUI.changed){
+//				//Debug.Log("Selected: " + kvp.Key + " : " +  kvp.Value[GUIServerSelectionIndex] + "!");
+//				GUIServerSelectionIndex = selectIndex;
+//				showServerConfirmState = true;
+//				serverConfirmKey = kvp.Key;
+//				serverConfirmValue = kvp.Value[selectIndex];
+//			}
 		}
 		
-		if(showServerConfirmState && SyphonTarget.servers.ContainsKey(serverConfirmKey) && SyphonTarget.servers[serverConfirmKey].ContainsKey(serverConfirmValue) ){
-			GUILayout.BeginHorizontal();
-			GUILayout.Label("ADD CLIENT:\nAPP: " + serverConfirmKey + "\nNAME: " + serverConfirmValue);
-			if(GUILayout.Button("YES")){
-				Syphon.CreateClient(serverConfirmKey, serverConfirmValue);
-				showServerConfirmState = false;
-			}
-			else if(GUILayout.Button("NO")){
-				showServerConfirmState = false;				
-			}
-
-			GUILayout.EndHorizontal();
-		}
+//		if(showServerConfirmState && SyphonTarget.servers.ContainsKey(serverConfirmKey) && SyphonTarget.servers[serverConfirmKey].ContainsKey(serverConfirmValue) ){
+//			GUILayout.BeginHorizontal();
+//			GUILayout.Label("ADD CLIENT:\nAPP: " + serverConfirmKey + "\nNAME: " + serverConfirmValue);
+//			if(GUILayout.Button("YES")){
+//				Syphon.CreateClient(serverConfirmKey, serverConfirmValue);
+//				showServerConfirmState = false;
+//			}
+//			else if(GUILayout.Button("NO")){
+//				showServerConfirmState = false;				
+//			}
+//
+//			GUILayout.EndHorizontal();
+//		}
 	}
 	
 	//this is a nifty way to trigger inspector updates- only triggered by Syphon.cs as needed.
