@@ -200,8 +200,8 @@ extern "C" {
     void cacheGraphicsContext(){
         if(cachedContext != CGLGetCurrentContext()){
 			cachedContext = CGLGetCurrentContext();
-            if(syphonFBO){				
-                //NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
+            if(syphonFBO){
+//				NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
 				glDeleteFramebuffersEXT(1, &syphonFBO);
                 glGenFramebuffersEXT(1, &syphonFBO);
 			}
@@ -213,7 +213,7 @@ extern "C" {
                 //don't destroy/create if it's not initialized yet!
                 if((*list_iter)->initialized){
                     syphonServerDestroyResources( (*list_iter)->syphonServer);
-                    // NSLog(@"destroying resources.");
+					// NSLog(@"destroying resources.");
                     (*list_iter)->syphonServer = nil;
                     syphonServerCreate((*list_iter));
                 }
@@ -232,7 +232,7 @@ extern "C" {
             
             if(ptr->pluginType != PLUGIN_SYPHON)
                 return;
-            
+			
             //if it's a server
             if(ptr != nil && ptr->isAServer && ptr->initialized && ptr->serverName != nil){
 				//serialize destruction to same thread as drawing

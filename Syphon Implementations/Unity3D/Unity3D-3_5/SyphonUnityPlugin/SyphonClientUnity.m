@@ -143,7 +143,10 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
             //perform callback to unity here because the w/h changed
             ptr->textureWidth = (int)surfaceSize.width;
             ptr->textureHeight = (int)surfaceSize.height;
-            NSLog(@"w/h: %i, %i", ptr->textureWidth, ptr->textureHeight);
+			GLint texcount = 0;
+			glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &texcount);
+
+            NSLog(@"w/h: %i, %i, count: %i", ptr->textureWidth, ptr->textureHeight, texcount);
 //            ptr->updateTextureSizeFlag = true;
 			handleTextureSizeChanged(ptr);
 			
@@ -151,7 +154,15 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 			
 				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, 0);
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);
-
+				
+				//POP MATRIX STATE CODE
+				glMatrixMode(GL_MODELVIEW);
+				glPopMatrix();
+				glMatrixMode(GL_PROJECTION);
+				glPopMatrix();
+				glMatrixMode(GL_TEXTURE);
+				glPopMatrix();
+				
 				glPopClientAttrib();
 				glPopAttrib();
 				
@@ -159,6 +170,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 				glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
 				glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);
 				
+				if(image)
 				[image release];
 				return;
 			}

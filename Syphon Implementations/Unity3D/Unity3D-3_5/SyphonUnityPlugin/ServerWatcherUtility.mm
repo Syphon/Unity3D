@@ -208,6 +208,8 @@ extern "C" {
     void handleTextureSizeChanged(SyphonCacheData* ptr){
 //        void *args[] = { &ptr, &(ptr->textureWidth), &(ptr->textureHeight) };
 //        mono_runtime_invoke(textureSizeChanged, NULL, args, NULL);
+		//
+		NSLog(@"changing texture size: %i/%i",ptr->textureWidth, ptr->textureHeight);
 		OnTextureSizeChangedDelegate((int)ptr, ptr->textureWidth, ptr->textureHeight);
     }
 	
