@@ -59,11 +59,11 @@ void syphonClientDestroyResources(SyphonClient* client)
 
 void syphonClientPublishTexture(SyphonCacheData* ptr){
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-//	NSLog(@"PUBLISHIN SOMETHIN AT %i/ %@", (int)ptr, ptr->syphonClient);
 
     if(ptr != NULL && ptr->syphonClient != nil && [ptr->syphonClient isValid]){
         //        //should probably check if CGLGetCurrentContext() is == cachedContext
-        
+//		NSLog(@"PUBLISHIN SOMETHIN AT %i/ %@", (int)ptr, ptr->syphonClient);
+
         //lock
         //CGLLockContext(cachedContext);
         
@@ -232,14 +232,39 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glMatrixMode(GL_TEXTURE);
         glPopMatrix();	
         
-        glPopClientAttrib();
-        glPopAttrib();	
-        				
-        glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);	
+//		GLint texcount = 0;
+//		glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &texcount);
+//		GLint modelcount = 0;
+//		glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &modelcount);
+//		GLint projcount = 0;
+//		glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &projcount);
+//
+//		NSLog(@"w/h: %i, %i, counts: %i/%i/%i", ptr->textureWidth, ptr->textureHeight , texcount, modelcount, projcount);
+
+		
+        glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
         glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
-        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);        
+        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);
+
+        glPopClientAttrib();
+        glPopAttrib();
         
+		if(syphonFBO){
+//			NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
+			glDeleteFramebuffersEXT(1, &syphonFBO);
+			glGenFramebuffersEXT(1, &syphonFBO);
+			syphonFBO = nil;
+		}
+
+		
         [image release];
+		
+//		glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &texcount);
+//		glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &modelcount);
+//		glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &projcount);
+//		
+//		NSLog(@"again counts: %i/%i/%i",  texcount, modelcount, projcount);
+
         
         //  CGLUnlockContext(cachedContext);
     }

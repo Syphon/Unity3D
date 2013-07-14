@@ -126,6 +126,8 @@ static ServerWatcherUtility* watcherUtility;
 
 - (void)handleServerUpdate:(NSNotification *)notification
 {
+	dispatch_async(dispatch_get_main_queue(), ^(){
+
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	const char* param2 = [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
 	const char* param1 = [[[notification object] objectForKey:SyphonServerDescriptionAppNameKey] UTF8String];
@@ -151,6 +153,7 @@ static ServerWatcherUtility* watcherUtility;
 	OnUpdateServerDelegate(param1, param2, param3, serverPtr);
 	
 	[pool drain];
+	});
 
 }
 

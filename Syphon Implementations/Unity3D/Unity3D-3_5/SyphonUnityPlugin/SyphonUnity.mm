@@ -31,7 +31,6 @@
 #include <string>
 #ifdef __cplusplus
 extern "C" {
-#endif
     
     static std::list<SyphonCacheData*> syphonServers;
     static std::list<SyphonCacheData*> syphonClients;
@@ -233,8 +232,7 @@ extern "C" {
                     syphonServerCreate((*list_iter));
                 }
             }
-		}
-        
+		}        
     }
     
     
@@ -286,6 +284,5 @@ extern "C" {
         }        
     }
     
-#ifdef __cplusplus
 }
 #endif
