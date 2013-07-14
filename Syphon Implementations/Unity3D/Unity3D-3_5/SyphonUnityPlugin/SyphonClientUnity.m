@@ -117,7 +117,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         SyphonImage* image = [ptr->syphonClient newFrameImageForContext:cachedContext];
         
         if(!image){
-			NSLog(@"nil image.");
+//			NSLog(@"nil image.");
             glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);
             glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
             glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
@@ -158,7 +158,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 //			GLint texcount = 0;
 //			glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &texcount);
 
-            NSLog(@"w/h: %i, %i", ptr->textureWidth, ptr->textureHeight /*, texcount*/ );
+//            NSLog(@"w/h: %i, %i", ptr->textureWidth, ptr->textureHeight /*, texcount*/ );
 //            ptr->updateTextureSizeFlag = true;
 			handleTextureSizeChanged(ptr);
 			
@@ -249,12 +249,12 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glPopClientAttrib();
         glPopAttrib();
         
-		if(syphonFBO){
-//			NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
-			glDeleteFramebuffersEXT(1, &syphonFBO);
-			glGenFramebuffersEXT(1, &syphonFBO);
-			syphonFBO = nil;
-		}
+//		if(syphonFBO){
+////			NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
+//			glDeleteFramebuffersEXT(1, &syphonFBO);
+//			glGenFramebuffersEXT(1, &syphonFBO);
+//			syphonFBO = nil;
+//		}
 
 		
         [image release];

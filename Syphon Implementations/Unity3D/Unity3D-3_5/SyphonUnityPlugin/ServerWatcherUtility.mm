@@ -165,7 +165,7 @@ static ServerWatcherUtility* watcherUtility;
 	const char* param2 =  [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
 	const char* param1 = [[[notification object] objectForKey:SyphonServerDescriptionAppNameKey] UTF8String];
 	const char* param3 = [[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] UTF8String];
-  NSLog(@"announceing server! %s %s %s", param2, param1, param3);
+  //NSLog(@"announceing server! %s %s %s", param2, param1, param3);
   
    int serverPtr = 0;
     NSArray* serversArray = [[SyphonServerDirectory sharedDirectory] servers];
