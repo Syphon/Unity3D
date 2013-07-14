@@ -100,6 +100,7 @@ static ServerWatcherUtility* watcherUtility;
 
 - (void)handleServerRetire:(NSNotification *)notification
 {
+	dispatch_async(dispatch_get_main_queue(), ^(){
 
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
@@ -119,6 +120,7 @@ static ServerWatcherUtility* watcherUtility;
 	OnRetireServerDelegate(param1, param2, param3);
 	
 	[pool drain];
+	});
 
 }
 
@@ -152,14 +154,15 @@ static ServerWatcherUtility* watcherUtility;
 
 }
 
-
 - (void)handleServerAnnounce:(NSNotification *)notification
-{
+{	
+	dispatch_async(dispatch_get_main_queue(), ^(){
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
 	const char* param2 =  [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
 	const char* param1 = [[[notification object] objectForKey:SyphonServerDescriptionAppNameKey] UTF8String];
 	const char* param3 = [[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] UTF8String];
-    //  NSLog(@"announceing server! %s %s %s", param2, param1, param3);
+  NSLog(@"announceing server! %s %s %s", param2, param1, param3);
   
    int serverPtr = 0;
     NSArray* serversArray = [[SyphonServerDirectory sharedDirectory] servers];
@@ -177,9 +180,10 @@ static ServerWatcherUtility* watcherUtility;
 //	param1 = NULL;
 //	param2 = NULL;
 //	param3 = NULL;
-	OnAnnounceServerDelegate(param1, param2, param3, serverPtr);
 
+	OnAnnounceServerDelegate(param1, param2, param3, serverPtr);
 	[pool drain];
+	});
 }
 
 
@@ -196,8 +200,7 @@ extern "C" {
 							   void (*announceServer)(const char*,const char*,const char*,int),
 							   void (*retireServer)(const char*,const char*,const char*),
 							   void (*updateServer)(const char*,const char*,const char*,int)
-							   ){
-		
+							   ){		
 		OnTextureSizeChangedDelegate = *texSize;
 		OnAnnounceServerDelegate = *announceServer;
 		OnRetireServerDelegate = *retireServer;
@@ -208,9 +211,10 @@ extern "C" {
     void handleTextureSizeChanged(SyphonCacheData* ptr){
 //        void *args[] = { &ptr, &(ptr->textureWidth), &(ptr->textureHeight) };
 //        mono_runtime_invoke(textureSizeChanged, NULL, args, NULL);
-		//
-		NSLog(@"changing texture size: %i/%i",ptr->textureWidth, ptr->textureHeight);
-		OnTextureSizeChangedDelegate((int)ptr, ptr->textureWidth, ptr->textureHeight);
+		dispatch_async(dispatch_get_main_queue(), ^(){
+			int intptr = (int)ptr;
+			OnTextureSizeChangedDelegate(intptr, ptr->textureWidth, ptr->textureHeight);
+		});
     }
 	
 //	void monoMethods(){

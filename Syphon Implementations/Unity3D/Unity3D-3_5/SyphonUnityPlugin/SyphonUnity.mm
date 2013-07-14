@@ -78,7 +78,7 @@ extern "C" {
             {
                 // NSLog(@"shutdown graphics device");
                 //if you are quitting the app, kill all callbacks. 
-                unregisterCallbacks();
+                unregisterCallbacks();				
                 break;
             }
             default:
@@ -196,14 +196,29 @@ extern "C" {
             }
         }   
     }
-    
+
+//	void resetContext(){
+//		NSLog(@"YO WTF! RESETTING");
+//        if(cachedContext != CGLGetCurrentContext()){
+//		NSLog(@"for real YO WTF! RESETTING");
+//			cachedContext = CGLGetCurrentContext();
+//            if(syphonFBO){
+//				NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
+//				glDeleteFramebuffersEXT(1, &syphonFBO);
+//                glGenFramebuffersEXT(1, &syphonFBO);
+//				syphonFBO = nil;
+//			}
+//		}
+//	}
+
     void cacheGraphicsContext(){
         if(cachedContext != CGLGetCurrentContext()){
 			cachedContext = CGLGetCurrentContext();
             if(syphonFBO){
-//				NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
+				NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
 				glDeleteFramebuffersEXT(1, &syphonFBO);
                 glGenFramebuffersEXT(1, &syphonFBO);
+				syphonFBO = nil;
 			}
             
             for(std::list<SyphonCacheData*>::iterator list_iter =syphonServers.begin(); 
@@ -226,10 +241,12 @@ extern "C" {
     void UnityRenderEvent(SyphonCacheData* ptr)
 	{
         if((int)ptr == 1){
+//			NSLog(@"WE GOOD?!");
             cacheGraphicsContext();
         }
 		else if(ptr != nil){
             
+//			NSLog(@"this shouldnt even be happening.");
             if(ptr->pluginType != PLUGIN_SYPHON)
                 return;
 			

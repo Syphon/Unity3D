@@ -101,10 +101,9 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
             // CGLUnlockContext(cachedContext);
             [pool drain];
             return;
-        }   
+        }
         
-        
-        //setup state to how it 'should' be?
+		//setup state to how it 'should' be?
         glDisable (GL_CULL_FACE);
         glDisable (GL_LIGHTING);
         glDisable (GL_BLEND);
@@ -112,12 +111,25 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glDepthFunc (GL_LEQUAL);
         glEnable (GL_DEPTH_TEST);
         glDepthMask (GL_FALSE);
+
         
         //get image!
         SyphonImage* image = [ptr->syphonClient newFrameImageForContext:cachedContext];
         
+        if(!image){
+			NSLog(@"nil image.");
+            glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);
+            glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
+            glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
+            glPopClientAttrib();
+            glPopAttrib();
+            // CGLUnlockContext(cachedContext);
+            [pool drain];
+            return;
+		}
         
-        
+
+		
         //SAVE MATRIX STATE CODE
         glActiveTexture(GL_TEXTURE0);
         glMatrixMode(GL_TEXTURE);
@@ -143,10 +155,10 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
             //perform callback to unity here because the w/h changed
             ptr->textureWidth = (int)surfaceSize.width;
             ptr->textureHeight = (int)surfaceSize.height;
-			GLint texcount = 0;
-			glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &texcount);
+//			GLint texcount = 0;
+//			glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &texcount);
 
-            NSLog(@"w/h: %i, %i, count: %i", ptr->textureWidth, ptr->textureHeight, texcount);
+            NSLog(@"w/h: %i, %i", ptr->textureWidth, ptr->textureHeight /*, texcount*/ );
 //            ptr->updateTextureSizeFlag = true;
 			handleTextureSizeChanged(ptr);
 			
@@ -163,19 +175,21 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 				glMatrixMode(GL_TEXTURE);
 				glPopMatrix();
 				
-				glPopClientAttrib();
-				glPopAttrib();
-				
 				glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
 				glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
 				glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);
 				
+				glPopClientAttrib();
+				glPopAttrib();
+				
 				if(image)
 				[image release];
+				
 				return;
 			}
 
         }
+//		NSLog(@"DRAWING THE SHIT");
         
         //okay, draw the shit
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);

@@ -249,7 +249,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\n#rm -r -f \"/Users/bc/syphon-implementations-proper/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\n#cp -r -f \"$TARGET_BUILD_DIR/$PRODUCT_NAME.bundle\" \"/Users/bc/syphon-implementations-proper/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\n";
+			shellScript = "\nrm -r -f \"/Users/bc/syphon-implementations-proper/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\ncp -r -f \"$TARGET_BUILD_DIR/$PRODUCT_NAME.bundle\" \"/Users/bc/syphon-implementations-proper/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\n";
 		};
 		BD48069C1239AFCA00DFB19E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
