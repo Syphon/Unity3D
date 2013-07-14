@@ -86,7 +86,7 @@ public class SyphonClientObject : ScriptableObject {
 			boundName = server.SyphonServerDescriptionName;		
 		//initialize the texture
 		if(attachedTexture == null){
-			attachedTexture = new RenderTexture(128, 128, 0, RenderTextureFormat.ARGB32);
+			attachedTexture = new RenderTexture(16, 16, 0, RenderTextureFormat.ARGB32);
 			attachedTexture.filterMode = FilterMode.Bilinear;
 			attachedTexture.wrapMode = TextureWrapMode.Clamp;
 		}
@@ -124,8 +124,9 @@ public class SyphonClientObject : ScriptableObject {
 			attachedTexture.Release();
 			attachedTexture.width = width;
 			attachedTexture.height = height;
-			Graphics.Blit( Syphon.NullTexture,attachedTexture);
-			
+			RenderTexture.active = attachedTexture;
+//			Graphics.Blit( Syphon.NullTexture,attachedTexture);
+			GL.Clear(false, true, new Color(0, 0, 0, 0));
 			
 			//every GameObject that is using this syphon server might want to know that the size changed.
 			if(UpdateClientTextureSize != null){
@@ -143,7 +144,8 @@ public class SyphonClientObject : ScriptableObject {
 			attachedTexture.Create();
 			Syphon.SafeMaterial.SetPass(0);
 			RenderTexture.active = attachedTexture;
-			Graphics.Blit( Syphon.NullTexture,attachedTexture);
+			GL.Clear(false, true, new Color(0, 0, 0, 0));
+//			Graphics.Blit( Syphon.NullTexture,attachedTexture);
 			RenderTexture.active = null;
 			
 			//this does not allocate GL resources- it simply creates a SyphonCacheData object on the heap
@@ -214,13 +216,14 @@ public class SyphonClientObject : ScriptableObject {
 		else return false;
 	}
 	
+
 	public void Render(){
 		if(syphonClientPointer != 0 && initialized){		
 			//you need to render once per frame for each texture.
-			Syphon.SafeMaterial.SetPass(0);
+			Syphon.SafeMaterial.SetPass(0);	
 			RenderTexture.active = attachedTexture;
 			GL.IssuePluginEvent(syphonClientPointer);
-			 RenderTexture.active = null;
+			RenderTexture.active = null;
 		}
 	}
 	

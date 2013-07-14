@@ -111,13 +111,40 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glDepthFunc (GL_LEQUAL);
         glEnable (GL_DEPTH_TEST);
         glDepthMask (GL_FALSE);
-
         
         //get image!
         SyphonImage* image = [ptr->syphonClient newFrameImageForContext:cachedContext];
         
         if(!image){
 //			NSLog(@"nil image.");
+			//SAVE MATRIX STATE CODE
+//			glActiveTexture(GL_TEXTURE0);
+
+			glMatrixMode(GL_TEXTURE);
+			glPushMatrix();
+			glLoadIdentity();
+			// Setup OpenGL coordinate system
+			glViewport(0, 0, ptr->textureWidth,  ptr->textureHeight);
+			glMatrixMode(GL_PROJECTION);
+			glPushMatrix();
+			glLoadIdentity();
+			glOrtho(0, ptr->textureWidth, 0, ptr->textureHeight, -1, 1);
+			glMatrixMode(GL_MODELVIEW);
+			glPushMatrix();
+			glLoadIdentity();
+			glColor4f(0, 0, 0, 0);
+			glClearColor(0, 0, 0, 0);
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			
+			//POP MATRIX STATE CODE
+			glMatrixMode(GL_MODELVIEW);
+			glPopMatrix();
+			glMatrixMode(GL_PROJECTION);
+			glPopMatrix();
+			glMatrixMode(GL_TEXTURE);
+			glPopMatrix();
+			
             glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);
             glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
             glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
@@ -129,6 +156,9 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 		}
         
 
+
+
+		
 		
         //SAVE MATRIX STATE CODE
         glActiveTexture(GL_TEXTURE0);
@@ -162,8 +192,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 //            ptr->updateTextureSizeFlag = true;
 			handleTextureSizeChanged(ptr);
 			
-			if(ptr->textureWidth == 0 || ptr->textureHeight == 0){
-			
+			if(ptr->textureWidth == 0 || ptr->textureHeight == 0){			
 				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, 0);
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);
 				

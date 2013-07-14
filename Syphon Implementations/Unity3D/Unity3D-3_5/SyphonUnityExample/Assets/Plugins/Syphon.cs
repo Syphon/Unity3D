@@ -543,7 +543,7 @@ public static void DestroyClient(SyphonClientObject destroyObj){
 	
 public void OnPreRender(){
 		//call 1 to cache context.
-		GL.IssuePluginEvent(updateContext);
+		GL.IssuePluginEvent(updateContext);		
 }
 
 }
