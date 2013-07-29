@@ -81,22 +81,22 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         //make sure FBO is valid
         if(!syphonFBO)
         {	
-            glGenFramebuffers(1, &syphonFBO);
+            glGenFramebuffersEXT(1, &syphonFBO);
         }
         
         //bind FBO
-        glBindFramebuffer(GL_FRAMEBUFFER, syphonFBO);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ptr->textureID, 0);
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, syphonFBO);
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, ptr->textureID, 0);
         
         GLenum status;
-        status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
         
-        if(status != GL_FRAMEBUFFER_COMPLETE)
+        if(status != GL_FRAMEBUFFER_COMPLETE_EXT)
         {
             NSLog(@"ERROR: UNITY PLUGIN CANNOT MAKE VALID FBO ATTACHMENT FROM UNITY TEXTURE ID. tex id is %i, error is %i", ptr->textureID, status);
-            glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);        
-            glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
-            glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
+            glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, previousDrawFBO);
+            glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, previousReadFBO);
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, previousFBO);
             glPopClientAttrib();
             glPopAttrib();
             [pool drain];
@@ -114,7 +114,8 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glDepthFunc (GL_LEQUAL);
         glEnable (GL_DEPTH_TEST);
         glDepthMask (GL_FALSE);
-        
+//		glDisable(GL_FRAMEBUFFER_SRGB_EXT);
+
         //get image!
         SyphonImage* image = [ptr->syphonClient newFrameImageForContext:cachedContext];
         
@@ -148,9 +149,9 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 			glMatrixMode(GL_TEXTURE);
 			glPopMatrix();
 			
-            glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);
-            glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
-            glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
+            glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, previousDrawFBO);
+            glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, previousReadFBO);
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, previousFBO);
             glPopClientAttrib();
             glPopAttrib();
             // CGLUnlockContext(cachedContext);
@@ -166,6 +167,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 		
         //SAVE MATRIX STATE CODE
         glActiveTexture(GL_TEXTURE0);
+		glClientActiveTexture(GL_TEXTURE0);
         glMatrixMode(GL_TEXTURE);
         glPushMatrix();
         glLoadIdentity();				
@@ -203,9 +205,9 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 				glMatrixMode(GL_TEXTURE);
 				glPopMatrix();
 				
-				glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
-				glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
-				glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);
+				glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, previousFBO);
+				glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, previousReadFBO);
+				glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, previousDrawFBO);
 				
 				glPopClientAttrib();
 				glPopAttrib();
@@ -263,19 +265,19 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 //		NSLog(@"w/h: %i, %i, counts: %i/%i/%i", ptr->textureWidth, ptr->textureHeight , texcount, modelcount, projcount);
 
 		
-        glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
-        glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
-        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, previousFBO);
+        glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, previousReadFBO);
+        glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, previousDrawFBO);
 
         glPopClientAttrib();
         glPopAttrib();
         
-		if(syphonFBO){
-//			NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
-			glDeleteFramebuffersEXT(1, &syphonFBO);
-			glGenFramebuffersEXT(1, &syphonFBO);
-			syphonFBO = nil;
-		}
+//		if(syphonFBO){
+////		NSLog(@"DELETING FBO at RESOURCE ID: %i", syphonFBO);
+//			glDeleteFramebuffersEXT(1, &syphonFBO);
+//			glGenFramebuffersEXT(1, &syphonFBO);
+//			syphonFBO = 0;
+//		}
 
 		
         [image release];

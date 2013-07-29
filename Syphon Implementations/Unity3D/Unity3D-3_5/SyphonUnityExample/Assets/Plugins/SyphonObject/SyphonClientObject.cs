@@ -131,7 +131,7 @@ public class SyphonClientObject : ScriptableObject {
 			RenderTexture.active = attachedTexture;			
 			GL.Clear(false, true, new Color(0, 0, 0, 0));
 			RenderTexture.active = null;
-			UnityEngine.Debug.Log ("POST fuck this, changing tex id to " + (int)attachedTexture.GetNativeTexturePtr() + " width: " + width + " height: " + height);
+			UnityEngine.Debug.Log ("UpdateTextureSize: changing tex id to " + (int)attachedTexture.GetNativeTexturePtr() + " width: " + width + " height: " + height);
 			Syphon.CacheClientTextureValues((int)attachedTexture.GetNativeTexturePtr(), attachedTexture.width, attachedTexture.height, syphonClientPointer);
 		
 			
