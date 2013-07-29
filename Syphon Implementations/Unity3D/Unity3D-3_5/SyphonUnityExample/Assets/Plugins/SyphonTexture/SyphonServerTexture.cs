@@ -43,7 +43,7 @@ public class SyphonServerTexture : MonoBehaviour {
 	// From Inspector
 	public bool renderGUI = false;
 	
-	private int syphonServerTextureInstance = 0;			// The Syphon plugin cache pointer, returned from CreateServerTexture()
+	private IntPtr syphonServerTextureInstance = IntPtr.Zero;			// The Syphon plugin cache pointer, returned from CreateServerTexture()
 	private bool syphonServerTextureValuesCached = false;	// Do the server knows our camera size and id?
 	private int cachedTexID = 0;				// current camera gl texture id
 	private int cachedWidth = 0;				// current camera texture width
@@ -57,11 +57,11 @@ public class SyphonServerTexture : MonoBehaviour {
 	}
 	
 	public void OnDestroy() {
-		if(syphonServerTextureInstance != 0){
+		if(syphonServerTextureInstance != IntPtr.Zero){
 			Syphon.QueueToKillTexture(syphonServerTextureInstance);
-			GL.IssuePluginEvent(syphonServerTextureInstance);
+			GL.IssuePluginEvent((int)syphonServerTextureInstance);
 		}
-		syphonServerTextureInstance = 0;
+		syphonServerTextureInstance = IntPtr.Zero;
 		syphonServerTextureValuesCached = false;
 		srcTex = null;
 		cachedTexID = 0;
@@ -70,9 +70,9 @@ public class SyphonServerTexture : MonoBehaviour {
 	//
 	// Cache the current texture data to server
 	public void cacheTextureValues( RenderTexture rt ) {
-		if (rt.GetNativeTextureID() != 0 && rt.width != 0 && rt.height != 0) {
-			Syphon.CacheServerTextureValues(rt.GetNativeTextureID(), rt.width, rt.height, syphonServerTextureInstance);
-			cachedTexID = rt.GetNativeTextureID();
+		if (rt.GetNativeTexturePtr() != IntPtr.Zero && rt.width != 0 && rt.height != 0) {
+			Syphon.CacheServerTextureValues((int)rt.GetNativeTexturePtr(), rt.width, rt.height, syphonServerTextureInstance);			
+			cachedTexID = (int)rt.GetNativeTexturePtr();
 			cachedWidth = rt.width;
 			cachedHeight = rt.height;
 			syphonServerTextureValuesCached = true;
@@ -90,7 +90,7 @@ public class SyphonServerTexture : MonoBehaviour {
 	// http://docs.unity3d.com/Documentation/ScriptReference/Camera.OnRenderImage.html
 	public void OnRenderImage(RenderTexture src, RenderTexture dst){
 		// Update texture data on Syphon server
-		if (!syphonServerTextureValuesCached || cachedTexID != src.GetNativeTextureID() || src.width != cachedWidth || src.height != cachedHeight)
+		if (!syphonServerTextureValuesCached || cachedTexID != (int)src.GetNativeTexturePtr() || src.width != cachedWidth || src.height != cachedHeight)
 			cacheTextureValues( src );
 
 		// WITHOUT GUI: just blit to the screen and publish to syphon.
@@ -99,7 +99,7 @@ public class SyphonServerTexture : MonoBehaviour {
 			Syphon.SafeMaterial.SetPass(0);
 			Graphics.Blit(src, dst);
 			// Publish texture to Syphon Server
-			if (syphonServerTextureInstance != 0)
+			if (syphonServerTextureInstance != IntPtr.Zero)
 				GL.IssuePluginEvent((int)syphonServerTextureInstance);
 		}
 		// WITH GUI: save reference to render textures
@@ -121,7 +121,7 @@ public class SyphonServerTexture : MonoBehaviour {
 			Syphon.SafeMaterial.SetPass(0);
 			Graphics.Blit(srcTex, dstTex);
 			// Publish texture to Syphon Server
-			if (syphonServerTextureInstance != 0)
+			if (syphonServerTextureInstance != IntPtr.Zero)
 				GL.IssuePluginEvent((int)syphonServerTextureInstance);
 		}
 		else {

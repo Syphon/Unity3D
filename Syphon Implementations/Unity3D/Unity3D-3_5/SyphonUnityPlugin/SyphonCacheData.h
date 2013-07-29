@@ -42,7 +42,7 @@ class SyphonCacheData
         //init a client with a syphon server pointer
         SyphonCacheData(NSDictionary* ptr);
 		virtual ~SyphonCacheData();
-		void cacheTextureValues(int mytextureID, int width, int height, bool imaServer);
+		void cacheTextureValues(int mytextureID, int width, int height, BOOL imaServer);
         int textureID;
 		int textureWidth;
 		int textureHeight; 
@@ -51,11 +51,11 @@ class SyphonCacheData
         CGLContextObj cachedContext;
         SyphonServer* syphonServer;
         //initialized once data is cached
-        bool initialized;
+        BOOL initialized;
         //if(!isAServer), then is a client
-        bool isAServer;
+        BOOL isAServer;
         //client related
         SyphonClient* syphonClient;
-        bool updateTextureSizeFlag;
-		bool destroyMe;
+        BOOL updateTextureSizeFlag;
+		BOOL destroyMe;
 };

@@ -37,8 +37,8 @@ static GLuint syphonFBO = 0;
 //
 void syphonClientDestroyResources(SyphonClient* client)
 {
-//    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    //
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
 	
 	if(syphonFBO){
 		glDeleteFramebuffersEXT(1, &syphonFBO);
@@ -53,20 +53,21 @@ void syphonClientDestroyResources(SyphonClient* client)
         
 //		NSLog(@"destroyed Syphon Client");
     }
-//    [pool drain];
+    [pool drain];
 }
 
 
 void syphonClientPublishTexture(SyphonCacheData* ptr){
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-    if(ptr != NULL && ptr->syphonClient != nil && [ptr->syphonClient isValid]){
-        //        //should probably check if CGLGetCurrentContext() is == cachedContext
+    if(ptr != NULL && ptr->syphonClient != nil && [ptr->syphonClient isValid] && ptr->textureID != 0){
 //		NSLog(@"PUBLISHIN SOMETHIN AT %i/ %@", (int)ptr, ptr->syphonClient);
-
-        //lock
-        //CGLLockContext(cachedContext);
         
+		if(!glIsTexture(ptr->textureID)){
+			NSLog(@"GO FUCK YOURSELF! %i is not a texture! cannot publish client texture.", ptr->textureID);
+			return;
+		}
+		
         //cache previous bits
         GLint previousFBO, previousReadFBO, previousDrawFBO, previousMatrixMode;
         glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFBO);
@@ -80,28 +81,30 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         //make sure FBO is valid
         if(!syphonFBO)
         {	
-            glGenFramebuffersEXT(1, &syphonFBO);
+            glGenFramebuffers(1, &syphonFBO);
         }
         
         //bind FBO
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, syphonFBO);
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, ptr->textureID, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, syphonFBO);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ptr->textureID, 0);
         
         GLenum status;
-        status = glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
+        status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         
-        if(status != GL_FRAMEBUFFER_COMPLETE_EXT)
+        if(status != GL_FRAMEBUFFER_COMPLETE)
         {
-            NSLog(@"ERROR: UNITY PLUGIN CANNOT MAKE VALID FBO ATTACHMENT FROM UNITY TEXTURE ID");
+            NSLog(@"ERROR: UNITY PLUGIN CANNOT MAKE VALID FBO ATTACHMENT FROM UNITY TEXTURE ID. tex id is %i, error is %i", ptr->textureID, status);
             glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, previousDrawFBO);        
             glBindFramebufferEXT(GL_READ_FRAMEBUFFER, previousReadFBO);
             glBindFramebufferEXT(GL_FRAMEBUFFER, previousFBO);
             glPopClientAttrib();
             glPopAttrib();
-            // CGLUnlockContext(cachedContext);
             [pool drain];
             return;
         }
+//		else{
+//			NSLog(@"drawing. tex id is %i, status is %i", ptr->textureID, status);
+//		}
         
 		//setup state to how it 'should' be?
         glDisable (GL_CULL_FACE);
@@ -113,7 +116,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glDepthMask (GL_FALSE);
         
         //get image!
-        SyphonImage* image = [ptr->syphonClient newFrameImageForContext:cachedContext];
+        SyphonImage* image = [ptr->syphonClient newFrameImageForContext:CGLGetCurrentContext()];
         
         if(!image){
 //			NSLog(@"nil image.");
@@ -156,6 +159,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 		}
         
 
+		NSLog(@"drawing. tex id is %i, status is %i", ptr->textureID, status);
 
 
 		
@@ -181,16 +185,11 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glBindTexture(GL_TEXTURE_RECTANGLE_EXT, [image textureName]);
         NSSize surfaceSize = [image textureSize];
         
-        if(ptr->textureWidth != surfaceSize.width || ptr->textureHeight != surfaceSize.height){
-            //perform callback to unity here because the w/h changed
+        if((int)ptr->textureWidth != (int)surfaceSize.width || (int)ptr->textureHeight != (int)surfaceSize.height){
             ptr->textureWidth = (int)surfaceSize.width;
             ptr->textureHeight = (int)surfaceSize.height;
-//			GLint texcount = 0;
-//			glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &texcount);
 
-//            NSLog(@"w/h: %i, %i", ptr->textureWidth, ptr->textureHeight /*, texcount*/ );
-//            ptr->updateTextureSizeFlag = true;
-			handleTextureSizeChanged(ptr);
+			
 			
 			if(ptr->textureWidth == 0 || ptr->textureHeight == 0){			
 				glBindTexture(GL_TEXTURE_RECTANGLE_EXT, 0);
@@ -217,6 +216,11 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 				return;
 			}
 
+			//perform callback to unity here because the w/h changed
+			handleTextureSizeChanged(ptr);
+//            NSLog(@"w/h: %i, %i", ptr->textureWidth, ptr->textureHeight /*, texcount*/ );
+
+
         }
 //		NSLog(@"DRAWING THE SHIT");
         
@@ -225,19 +229,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
         glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
         glTexParameterf( GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );		
-        //        glBegin(GL_QUADS);					
-        //        glTexCoord2f(0, surfaceSize.height);
-        //        glVertex2f(0, 0);
-        //        
-        //        glTexCoord2f(0, 0);
-        //        glVertex2f(0, surfaceSize.height);					
-        //        
-        //        glTexCoord2f(surfaceSize.width, 0);
-        //        glVertex2f(surfaceSize.width, surfaceSize.height);					
-        //        
-        //        glTexCoord2f(surfaceSize.width,surfaceSize.height);
-        //        glVertex2f(surfaceSize.width, 0);					
-        //        glEnd();
+
         
         glBegin(GL_QUADS);					
         glTexCoord2f(0, 0);
@@ -278,12 +270,12 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glPopClientAttrib();
         glPopAttrib();
         
-//		if(syphonFBO){
-////			NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
-//			glDeleteFramebuffersEXT(1, &syphonFBO);
-//			glGenFramebuffersEXT(1, &syphonFBO);
-//			syphonFBO = nil;
-//		}
+		if(syphonFBO){
+//			NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
+			glDeleteFramebuffersEXT(1, &syphonFBO);
+			glGenFramebuffersEXT(1, &syphonFBO);
+			syphonFBO = nil;
+		}
 
 		
         [image release];

@@ -41,9 +41,9 @@ public class SyphonServerObject {
 	[SerializeField]
 	private string m_SyphonServerDescriptionUUID;
 	[SerializeField]
-	private int syphonServerPointer = 0;
+	private IntPtr syphonServerPointer = IntPtr.Zero;
 	[SerializeField]
-	public int SyphonServerPointer{
+	public IntPtr SyphonServerPointer{
 		get{ return syphonServerPointer;}
 	}
 	[SerializeField]
@@ -75,7 +75,7 @@ public class SyphonServerObject {
 	}
 	
 	//null constructor
-	public SyphonServerObject(string a, string n, string uuid, int ptr){
+	public SyphonServerObject(string a, string n, string uuid, IntPtr ptr){
 		SyphonServerDescriptionAppName = a;
 		SyphonServerDescriptionName = n;
 		SyphonServerDescriptionUUID = uuid;
@@ -90,7 +90,7 @@ public class SyphonServerObject {
 	}
 	
 	
-	public void CreateSyphonServer(string a, string n, string uuid, int ptr){
+	public void CreateSyphonServer(string a, string n, string uuid, IntPtr ptr){
 		SyphonServerDescriptionAppName = a;
 		SyphonServerDescriptionName = n;
 		SyphonServerDescriptionUUID = uuid;

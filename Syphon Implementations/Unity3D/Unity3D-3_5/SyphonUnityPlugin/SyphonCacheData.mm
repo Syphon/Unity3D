@@ -33,42 +33,47 @@ SyphonCacheData::SyphonCacheData()
 	//used for initializing servers
     syphonServer = nil;
     serverName = nil;
-    initialized = false;
-    updateTextureSizeFlag = false;
+    initialized = NO;
+    updateTextureSizeFlag = NO;
+	destroyMe = NO;
     pluginType = PLUGIN_SYPHON;
-	destroyMe = false;
 }
 
 SyphonCacheData::SyphonCacheData(NSDictionary* ptr)
 {
     //deep copy constructor. used for initializing clients with a server description.
-	destroyMe = false;
     syphonServer = nil;
     serverName = nil;
-    initialized = false;
-    isAServer = false;
+
+    initialized = NO;
+    isAServer = NO;
     updateTextureSizeFlag = false;
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    syphonClient = [[SyphonClient alloc] initWithServerDescription:ptr options:nil newFrameHandler:nil];
+	destroyMe = NO;
     pluginType = PLUGIN_SYPHON;
+	syphonClient = [[SyphonClient alloc] initWithServerDescription:ptr options:nil newFrameHandler:nil];
     [pool drain];
 }
 
-void SyphonCacheData::cacheTextureValues(int mytextureID, int width, int height, bool imaServer){
+void SyphonCacheData::cacheTextureValues(int mytextureID, int width, int height, BOOL imaServer){
 	textureID = mytextureID;
 	textureWidth = width;
 	textureHeight = height;
     isAServer = imaServer;
-    initialized = true;
+    initialized = YES;
 }
 
 
 SyphonCacheData::~SyphonCacheData()
 {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
     if(serverName != nil){
     [serverName release];
     serverName = nil;
     }
+	[pool drain];
+
 }
 
 

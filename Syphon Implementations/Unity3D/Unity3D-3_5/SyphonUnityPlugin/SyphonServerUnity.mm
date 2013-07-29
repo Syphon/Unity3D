@@ -69,7 +69,7 @@ void* SyServerAtIndex(int myIndex, char* myAppName, char* myName, char* myUuId){
     
 void syphonServerDestroyResources(SyphonServer* server)
 {
-//    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     // lets create our client if we dont have it. 
     if(server != nil)
@@ -81,7 +81,7 @@ void syphonServerDestroyResources(SyphonServer* server)
     }
 
     
-//    [pool drain];
+    [pool drain];
 }
 
 //    
@@ -103,9 +103,15 @@ void syphonServerPublishTexture(SyphonCacheData* ptr){
     }
     
     if(ptr->syphonServer)
-    {        
-    //    NSLog(@"texture id: %i, x: %i, y: %i, syphon server pointer value: %i", ptr->textureID, ptr->textureWidth, ptr->textureHeight, (int)ptr->syphonServer);
-        //NSLog(@"publishing Syphon Server : %@ with thread ID %@", ptr->serverName,  [NSThread currentThread]); 
+    {
+		
+		if(!glIsTexture(ptr->textureID)){
+			NSLog(@"GO FUCK YOURSELF! %i is not a texture! cannot publish server texture.", ptr->textureID);
+			return;
+		}
+		
+//		NSLog(@"texture id: %li, x: %i, y: %i, syphon server pointer value: %li", (unsigned long)ptr->textureID, ptr->textureWidth, ptr->textureHeight, (unsigned long)ptr->syphonServer);
+        //NSLog(@"publishing Syphon Server : %@ with thread ID %@", ptr->serverName,  [NSThread currentThread]);
         NSRect rect = NSMakeRect(0, 0, ptr->textureWidth, ptr->textureHeight);
         [ptr->syphonServer publishFrameTexture:ptr->textureID textureTarget:GL_TEXTURE_2D imageRegion:rect textureDimensions:rect.size flipped:NO];
     }

@@ -81,6 +81,7 @@ public class SyphonClientTexture : MonoBehaviour {
 	
 	public void handleUpdateClientTextureSize(SyphonClientObject client){
 		if(client == clientObject){
+//			ApplyTexture();
 			//texture resize here- resize your plane, or whatever you want to do. use client.Width and client.Height
 			gameObject.SendMessage("UpdateAspectRatio",new Vector2(client.Width, client.Height), SendMessageOptions.DontRequireReceiver);
 		}

@@ -53,6 +53,8 @@ extern "C" {
             {
                 //                NSLog(@"init graphics device");
                 cachedContext = CGLGetCurrentContext();
+				NSLog(@"CACHING CONTEXT very first time!");
+
 //                NSString* bundlePath = [[[NSBundle mainBundle] bundlePath]
 //                                        stringByAppendingPathComponent:@"Contents/Data/Managed/Assembly-CSharp-firstpass.dll"];
 //                if( [ [NSFileManager defaultManager] fileExistsAtPath:bundlePath isDirectory:NO]){
@@ -91,11 +93,11 @@ extern "C" {
     }
     
     
-    SyphonCacheData* CreateClientTexture(NSDictionary* serverPtr){
+    void* CreateClientTexture(NSDictionary* serverPtr){
 		SyphonCacheData* clientPtr = new SyphonCacheData(serverPtr);
         //add it to a list
         syphonClients.push_back(clientPtr);
-        NSLog(@"CREATED CLIENT TEXTURE AT %i, and added it to the list. count is now %i", (int)clientPtr, (int)syphonClients.size());
+//        NSLog(@"CREATED CLIENT TEXTURE AT %li, and added it to the list. count is now %i", (unsigned long)clientPtr, (int)syphonClients.size());
 //		int idx = 0;
 //		
 //		for(std::list<SyphonCacheData*>::iterator list_iter =syphonClients.begin();
@@ -103,19 +105,19 @@ extern "C" {
 //			NSLog(@"%i, list iter: %@", idx, [(*list_iter)->syphonClient serverDescription]);
 //			idx++;
 //		}
-		
 		return clientPtr;
 	}
 	
-	void QueueToKillTexture(SyphonCacheData* killMe){
-        if(killMe != NULL && (int)killMe != 0){
-			killMe->destroyMe = true;
+	void QueueToKillTexture(long killed){
+		SyphonCacheData* killMe = (SyphonCacheData*)killed;		
+        if(killMe != NULL && killed != 0){
+			killMe->destroyMe = YES;
 		}
 	}
 	
     void KillClientTexture(SyphonCacheData* killMe){
 		
-        if(killMe != NULL && (int)killMe != 0){
+        if(killMe != NULL && (NSUInteger)killMe != 0){
             //            //if the cache data says it's not a server, then it's a client.
             if(!killMe->isAServer && killMe->syphonClient != nil){
                 syphonClientDestroyResources(killMe->syphonClient);
@@ -131,10 +133,10 @@ extern "C" {
 //                NSLog(@"removed one, count is now %i", (int)syphonClients.size());
             }
             //delete the cache data associated with it
-			NSLog(@"DESTROYED A CLIENT TEXTURE AT %i, count is now %i", (int)killMe, (int)syphonClients.size());
+			NSLog(@"DESTROYED A CLIENT TEXTURE AT %li, count is now %i", (unsigned long)killMe, (int)syphonClients.size());
 
             delete killMe;
-			killMe->destroyMe = false;
+			killMe->destroyMe = NO;
 			killMe = NULL;
         }
 		
@@ -148,14 +150,15 @@ extern "C" {
     }
     
     
-    SyphonCacheData* CreateServerTexture(const char* serverName){
+    void* CreateServerTexture(const char* serverName){
 		SyphonCacheData* ptr = new SyphonCacheData();
         ptr->serverName = [[NSString alloc] initWithUTF8String:serverName];
         
+		NSLog(@"CREATIN SERVER TEXTURE AT: %li", (unsigned long)ptr);
         //add it to a list
         syphonServers.push_back(ptr);
 		return ptr;
-	}	
+	}
     
     void KillServerTexture(SyphonCacheData* killMe){
         if(killMe != NULL){
@@ -210,6 +213,29 @@ extern "C" {
 //		}
 //	}
 
+//	void forceCacheGraphicsContext(){
+//			cachedContext = CGLGetCurrentContext();
+//            if(syphonFBO){
+//				NSLog(@"EYYYO WTF: %i", syphonFBO);
+//				glDeleteFramebuffersEXT(1, &syphonFBO);
+//                glGenFramebuffersEXT(1, &syphonFBO);
+//				syphonFBO = nil;
+//			}
+//
+//            for(std::list<SyphonCacheData*>::iterator list_iter =syphonServers.begin();
+//                list_iter != syphonServers.end(); list_iter++){
+//                //         NSLog(@"Syphon.Unity.cacheGraphicsContext:: Context changed. destroying/recreating: %@",(*list_iter)->serverName);
+//                
+//                //don't destroy/create if it's not initialized yet!
+//                if((*list_iter)->initialized){
+//                    syphonServerDestroyResources( (*list_iter)->syphonServer);
+//					// NSLog(@"destroying resources.");
+//                    (*list_iter)->syphonServer = nil;
+//                    syphonServerCreate((*list_iter));
+//                }
+//            }
+//	}
+	
     void cacheGraphicsContext(){
         if(cachedContext != CGLGetCurrentContext()){
 			cachedContext = CGLGetCurrentContext();
@@ -232,18 +258,46 @@ extern "C" {
                     syphonServerCreate((*list_iter));
                 }
             }
-		}        
+		}    
     }
     
     
-    void UnityRenderEvent(SyphonCacheData* ptr)
+    void UnityRenderEvent(int instanceID)
 	{
-        if((int)ptr == 1){
+		SyphonCacheData* ptr = (SyphonCacheData*)instanceID;
+        if((NSUInteger)ptr == 1){
 //			NSLog(@"WE GOOD?!");
             cacheGraphicsContext();
+		
         }
-		else if(ptr != nil){
-            
+		else if((NSUInteger)ptr != 0){
+
+			//if we're 64 bit, get the pointer a little differently.
+            if(sizeof(int*) == 8){
+				bool foundOne = false;
+				for(std::list<SyphonCacheData*>::iterator list_iter =syphonServers.begin();
+					list_iter != syphonServers.end(); list_iter++){
+					NSUInteger smaller = (NSUInteger)(*list_iter);
+					if((int)(smaller) == instanceID){
+						ptr = *list_iter;
+						foundOne = true;
+					}
+				}
+				
+				for(std::list<SyphonCacheData*>::iterator list_iter = syphonClients.begin();
+				list_iter != syphonClients.end(); list_iter++){
+					NSUInteger smaller = (NSUInteger)(*list_iter);
+					if((int)(smaller) == instanceID){
+						ptr = *list_iter;
+						foundOne = true;
+					}
+				}
+				//if you didnt find a match, you're probably trying to access this from the wrong plugin, so just get out.
+				if(!foundOne)
+					return;
+			}
+			
+			
 //			NSLog(@"this shouldnt even be happening.");
             if(ptr->pluginType != PLUGIN_SYPHON)
                 return;
@@ -269,18 +323,19 @@ extern "C" {
     }
     
 
-    void CacheServerTextureValues(int mytextureID, int width, int height, SyphonCacheData* ptr){
+    void CacheServerTextureValues(int mytextureID, int width, int height, long data){
+		SyphonCacheData* ptr = (SyphonCacheData*)data;
         if(ptr){
-            //int* data = reinterpret_cast<int*>(mytextureID);
-            //NSLog(@"mytextureid: %i", *data);
-            ptr->cacheTextureValues(mytextureID, width, height, true);
+            ptr->cacheTextureValues(mytextureID, width, height, YES);
         }
         
     }
     
-    void CacheClientTextureValues(int mytextureID, int width, int height, SyphonCacheData* ptr){
+    void CacheClientTextureValues(int mytextureID, int width, int height, long data){
+		SyphonCacheData* ptr = (SyphonCacheData*)data;
         if(ptr){
-            ptr->cacheTextureValues(mytextureID, width, height, false);
+//			NSLog(@"TEX ID CACHED: %i, %i/%i", mytextureID, width, height);
+            ptr->cacheTextureValues(mytextureID, width, height, NO);
         }        
     }
     

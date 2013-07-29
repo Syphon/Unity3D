@@ -46,27 +46,28 @@ using System.Diagnostics;
 	//PLUGIN EXPORTS:
 	//server related
 	[DllImport ("SyphonUnityPlugin")]
-		public static extern int CreateServerTexture(string serverName);
+		public static extern IntPtr CreateServerTexture(string serverName);
 	[DllImport ("SyphonUnityPlugin")]
-		public static extern bool CacheServerTextureValues(int textureId, int width, int height, int syphonServerTextureInstance);
+		public static extern bool CacheServerTextureValues(int textureId, int width, int height, IntPtr syphonServerTextureInstance);
 	
 	//client related
 	[DllImport ("SyphonUnityPlugin")]
-		public static extern int CreateClientTexture(int serverPtr);
+		public static extern IntPtr CreateClientTexture(IntPtr serverPtr);
 	[DllImport ("SyphonUnityPlugin")]
-		public static extern bool CacheClientTextureValues(int textureId, int width, int height, int syphonClientTextureInstance);
+		public static extern bool CacheClientTextureValues(int textureId, int width, int height, IntPtr syphonClientTextureInstance);
 	[DllImport ("SyphonUnityPlugin")]
-		public static extern void QueueToKillTexture(int killMe);
+		public static extern void QueueToKillTexture(IntPtr killMe);
 	[DllImport ("SyphonUnityPlugin")]
 		public static extern void UpdateTextureSizes();
 
 
 	[DllImport ("SyphonUnityPlugin")]
 		private static extern int cacheGraphicsContext();
+	
 	[DllImport ("SyphonUnityPlugin")]
 		private static extern int SyServerCount();
 	[DllImport ("SyphonUnityPlugin")]
-		private static extern int SyServerAtIndex(int counter, StringBuilder myAppName, StringBuilder myName, StringBuilder myUuId);
+		private static extern IntPtr SyServerAtIndex(int counter, StringBuilder myAppName, StringBuilder myName, StringBuilder myUuId);
 	
 	
 	[SerializeField]
@@ -129,6 +130,7 @@ using System.Diagnostics;
 		return safeMaterial;
 		}
 	}
+
 	
 	[NonSerialized]
 	private bool initialized = false;
@@ -183,9 +185,9 @@ using System.Diagnostics;
 	}
 	
 	private delegate void OnTextureSizeChangedDelegate(int ptr, int width, int height);
-	private delegate void OnAnnounceServerDelegate(string appName, string name, string uuid, int serverPtr);
+	private delegate void OnAnnounceServerDelegate(string appName, string name, string uuid, IntPtr serverPtr);
 	private delegate void OnRetireServerDelegate(string appName, string name,  string uuid);
-	private delegate void OnUpdateServerDelegate(string appName, string name, string uuid, int serverPtr);
+	private delegate void OnUpdateServerDelegate(string appName, string name, string uuid, IntPtr serverPtr);
 
 
 
@@ -252,7 +254,7 @@ using System.Diagnostics;
 			myName = new StringBuilder(256); //must be 256 since the plugin says this too
 			myAppName = new StringBuilder(256);
 			myUuId = new StringBuilder(256);
-			int serverPtr = SyServerAtIndex(i, myAppName, myName, myUuId);
+			IntPtr serverPtr = SyServerAtIndex(i, myAppName, myName, myUuId);
 			OnAnnounceServer(myAppName.ToString(), myName.ToString(), myUuId.ToString(), serverPtr);
 		}
 		 System.GC.Collect();
@@ -288,6 +290,8 @@ using System.Diagnostics;
 			cacheAssembly();
 		}
 		
+		
+
 		for(int i = 0; i < SyphonClients.Count; i++)
 			SyphonClients[i].Render();
 	}
@@ -299,17 +303,7 @@ using System.Diagnostics;
 //			UpdateClientTextures();
 //		}
 //				
-		//execute any queued texture update requests here
-		if(textureUpdateRequests.Count != 0){
-			for(int i = 0; i < textureUpdateRequests.Count; i++){
-				foreach(SyphonClientObject obj in Syphon.SyphonClients){
-					if(obj.SyphonClientPointer == textureUpdateRequests[i][0]){
-						obj.UpdateTextureSize(textureUpdateRequests[i][1], textureUpdateRequests[i][2]);
-					}
-				}
-			}		
-			textureUpdateRequests.Clear();			
-		}
+
 	}
 	
 
@@ -342,7 +336,7 @@ using System.Diagnostics;
 	
 	[MonoPInvokeCallback (typeof (OnTextureSizeChangedDelegate))]
 	public static void OnTextureSizeChanged(int ptr, int width, int height){
-		if(width == 0 || height == 0){
+		if((int)width == 0 || (int)height == 0){
 //			UnityEngine.Debug.Log ("h or w is zero! exiting.");
 			return;
 		}
@@ -353,7 +347,7 @@ using System.Diagnostics;
 	}
 
 	[MonoPInvokeCallback (typeof (OnAnnounceServerDelegate))]
-	public static void OnAnnounceServer(string appName, string name, string uuid, int serverPtr){
+	public static void OnAnnounceServer(string appName, string name, string uuid, IntPtr serverPtr){
 //		 UnityEngine.Debug.Log("Announcing the server with the appName: "
 //		 + appName + ", name: " + name + ", uuid: " + uuid + " server Pointer: "+ (int)serverPtr);
 		
@@ -383,7 +377,7 @@ using System.Diagnostics;
 	}
 	
 	[MonoPInvokeCallback (typeof (OnUpdateServerDelegate))]
-	public static void OnUpdateServer(string appName, string name, string uuid, int serverPtr){
+	public static void OnUpdateServer(string appName, string name, string uuid, IntPtr serverPtr){
 	//		UnityEngine.Debug.Log("Updating the server with the appName: " + appName + ", name: " + name + ", uuid: " + uuid);
 
 		// 	for(int i = 0; i < myself.myClientObjects.Count; i++){
@@ -543,7 +537,19 @@ public static void DestroyClient(SyphonClientObject destroyObj){
 	
 public void OnPreRender(){
 		//call 1 to cache context.
-		GL.IssuePluginEvent(updateContext);		
+		GL.IssuePluginEvent(updateContext);
+		
+						//execute any queued texture update requests here
+		if(textureUpdateRequests.Count != 0){
+			for(int i = 0; i < textureUpdateRequests.Count; i++){
+				foreach(SyphonClientObject obj in Syphon.SyphonClients){
+					if((int)obj.SyphonClientPointer == textureUpdateRequests[i][0]){
+						obj.UpdateTextureSize((int)textureUpdateRequests[i][1], (int)textureUpdateRequests[i][2]);
+					}
+				}
+			}		
+			textureUpdateRequests.Clear();			
+		}
 }
 
 }

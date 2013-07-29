@@ -1,0 +1,353 @@
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/!svn/ver/209/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders
+END
+Alpha-Diffuse02.shader
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-Diffuse02.shader
+END
+Particle AddMultiply.shader
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20AddMultiply.shader
+END
+SyphonNormal-VertexLit.shader
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/SyphonNormal-VertexLit.shader
+END
+Particle Alpha Blend.shader
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/svn/!svn/ver/209/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Alpha%20Blend.shader
+END
+Particle Alpha Shadow.shader
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Alpha%20Shadow.shader
+END
+SyphonSkybox.shader
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/SyphonSkybox.shader
+END
+Alpha-BumpSpec01.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-BumpSpec01.shader.meta
+END
+AlphaTest-BumpSpec01.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/AlphaTest-BumpSpec01.shader.meta
+END
+Particle Alpha BlendFront.shader
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Alpha%20BlendFront.shader
+END
+Particle AddSmooth.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20AddSmooth.shader.meta
+END
+Alpha-VertexLit01.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-VertexLit01.shader.meta
+END
+Particle Add.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Add.shader.meta
+END
+AlphaTest-BumpSpec01.shader
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/AlphaTest-BumpSpec01.shader
+END
+Alpha-BumpSpec01.shader
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-BumpSpec01.shader
+END
+SyphonNormal-VertexLit.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/SyphonNormal-VertexLit.shader.meta
+END
+Alpha-ParallaxSpec01.shader
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-ParallaxSpec01.shader
+END
+Particle Multiply.shader
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Multiply.shader
+END
+Particle Alpha Shadow.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Alpha%20Shadow.shader.meta
+END
+Particle AddSmooth.shader
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20AddSmooth.shader
+END
+AlphaTest-VertexLit.shader
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/AlphaTest-VertexLit.shader
+END
+Alpha-Diffuse01.shader
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-Diffuse01.shader
+END
+AlphaTest-Diffuse01.shader
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/AlphaTest-Diffuse01.shader
+END
+Alpha-VertexLit01.shader
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-VertexLit01.shader
+END
+Particle AddBehind.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20AddBehind.shader.meta
+END
+Particle Alpha BlendFront.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Alpha%20BlendFront.shader.meta
+END
+Particle Add.shader
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Add.shader
+END
+Alpha-Parallax01.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-Parallax01.shader.meta
+END
+Particle VertexLit Blended.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 161
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20VertexLit%20Blended.shader.meta
+END
+Particle Premultiply Blend.shader
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Premultiply%20Blend.shader
+END
+Particle Alpha BlendDepthtestOff.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 167
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Alpha%20BlendDepthtestOff.shader.meta
+END
+Particle MultiplyDouble.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20MultiplyDouble.shader.meta
+END
+Alpha-Bumped01.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-Bumped01.shader.meta
+END
+AlphaTest-Bumped01.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/AlphaTest-Bumped01.shader.meta
+END
+Particle AddBehind.shader
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20AddBehind.shader
+END
+Alpha-ParallaxSpec01.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-ParallaxSpec01.shader.meta
+END
+Particle VertexLit Blended.shader
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20VertexLit%20Blended.shader
+END
+Alpha-Parallax01.shader
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-Parallax01.shader
+END
+Particle Multiply.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Multiply.shader.meta
+END
+Alpha-Glossy01.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-Glossy01.shader.meta
+END
+AlphaTest-Glossy01.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/AlphaTest-Glossy01.shader.meta
+END
+Particle Alpha BlendBumpUseless.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 166
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Alpha%20BlendBumpUseless.shader.meta
+END
+Particle Blend.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Blend.shader.meta
+END
+Particle MultiplyDouble.shader
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20MultiplyDouble.shader
+END
+AlphaTest-VertexLit.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/AlphaTest-VertexLit.shader.meta
+END
+AlphaTest-Diffuse01.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/AlphaTest-Diffuse01.shader.meta
+END
+Alpha-Diffuse01.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-Diffuse01.shader.meta
+END
+Particle Alpha BlendDepthtestOff.shader
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Alpha%20BlendDepthtestOff.shader
+END
+Alpha-Diffuse02.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-Diffuse02.shader.meta
+END
+AlphaTest-Bumped01.shader
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/AlphaTest-Bumped01.shader
+END
+Alpha-Bumped01.shader
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-Bumped01.shader
+END
+Particle AddMultiply.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20AddMultiply.shader.meta
+END
+Particle Alpha Blend.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Alpha%20Blend.shader.meta
+END
+Alpha-Glossy01.shader
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Alpha-Glossy01.shader
+END
+AlphaTest-Glossy01.shader
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/AlphaTest-Glossy01.shader
+END
+Particle Premultiply Blend.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 161
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Premultiply%20Blend.shader.meta
+END
+SyphonSkybox.shader.meta
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/!svn/ver/164/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/SyphonSkybox.shader.meta
+END
+Particle Alpha BlendBumpUseless.shader
+K 25
+svn:wc:ra_dav:version-url
+V 161
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Alpha%20BlendBumpUseless.shader
+END
+Particle Blend.shader
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/!svn/ver/160/trunk/Syphon%20Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Resources/SyphonShaders/Particle%20Blend.shader
+END

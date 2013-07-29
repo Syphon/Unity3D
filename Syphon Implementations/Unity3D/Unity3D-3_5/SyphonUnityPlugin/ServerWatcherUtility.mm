@@ -88,8 +88,8 @@
 @end
 
 static void (*OnTextureSizeChangedDelegate)(int, int, int);
-static void (*OnAnnounceServerDelegate)(const char*,const char*,const char*,int);
-static void (*OnUpdateServerDelegate)(const char*,const char*,const char*,int);
+static void (*OnAnnounceServerDelegate)(const char*,const char*,const char*,long);
+static void (*OnUpdateServerDelegate)(const char*,const char*,const char*,long);
 static void (*OnRetireServerDelegate)(const char*,const char*,const char*);
 
 static NSString* pathToBundle = nil;
@@ -100,7 +100,7 @@ static ServerWatcherUtility* watcherUtility;
 
 - (void)handleServerRetire:(NSNotification *)notification
 {
-	dispatch_async(dispatch_get_main_queue(), ^(){
+//	dispatch_async(dispatch_get_main_queue(), ^(){
 
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
@@ -120,13 +120,13 @@ static ServerWatcherUtility* watcherUtility;
 	OnRetireServerDelegate(param1, param2, param3);
 	
 	[pool drain];
-	});
+//	});
 
 }
 
 - (void)handleServerUpdate:(NSNotification *)notification
 {
-	dispatch_async(dispatch_get_main_queue(), ^(){
+//	dispatch_async(dispatch_get_main_queue(), ^(){
 
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	const char* param2 = [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
@@ -134,11 +134,11 @@ static ServerWatcherUtility* watcherUtility;
 	const char* param3 = [[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] UTF8String];
 
     
-    int serverPtr = 0;
+    NSUInteger serverPtr = 0;
     NSArray* serversArray = [[SyphonServerDirectory sharedDirectory] servers];
     for(NSDictionary* dict in serversArray){
         if([[notification object] objectForKey:SyphonServerDescriptionUUIDKey] == [dict objectForKey:SyphonServerDescriptionUUIDKey]){
-            serverPtr = (int)dict;            
+            serverPtr = (NSUInteger)dict;            
         }
     }
     
@@ -150,16 +150,16 @@ static ServerWatcherUtility* watcherUtility;
 //	param1 = NULL;
 //	param2 = NULL;
 //	param3 = NULL;
-	OnUpdateServerDelegate(param1, param2, param3, serverPtr);
+	OnUpdateServerDelegate(param1, param2, param3, (long)serverPtr);
 	
 	[pool drain];
-	});
+//	});
 
 }
 
 - (void)handleServerAnnounce:(NSNotification *)notification
 {	
-	dispatch_async(dispatch_get_main_queue(), ^(){
+//	dispatch_async(dispatch_get_main_queue(), ^(){
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
 	const char* param2 =  [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
@@ -167,11 +167,11 @@ static ServerWatcherUtility* watcherUtility;
 	const char* param3 = [[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] UTF8String];
   //NSLog(@"announceing server! %s %s %s", param2, param1, param3);
   
-   int serverPtr = 0;
+   NSUInteger serverPtr = 0;
     NSArray* serversArray = [[SyphonServerDirectory sharedDirectory] servers];
     for(NSDictionary* dict in serversArray){
         if([[notification object] objectForKey:SyphonServerDescriptionUUIDKey] == [dict objectForKey:SyphonServerDescriptionUUIDKey]){
-            serverPtr = (int)dict;            
+            serverPtr = (NSUInteger)dict;
         }
     }
     
@@ -184,9 +184,9 @@ static ServerWatcherUtility* watcherUtility;
 //	param2 = NULL;
 //	param3 = NULL;
 
-	OnAnnounceServerDelegate(param1, param2, param3, serverPtr);
+	OnAnnounceServerDelegate(param1, param2, param3, (long)serverPtr);
 	[pool drain];
-	});
+//	});
 }
 
 
@@ -200,9 +200,9 @@ static ServerWatcherUtility* watcherUtility;
 extern "C" {
 	
 	void InitDelegateCallbacks(void (*texSize)(int, int, int),
-							   void (*announceServer)(const char*,const char*,const char*,int),
+							   void (*announceServer)(const char*,const char*,const char*,long),
 							   void (*retireServer)(const char*,const char*,const char*),
-							   void (*updateServer)(const char*,const char*,const char*,int)
+							   void (*updateServer)(const char*,const char*,const char*,long)
 							   ){		
 		OnTextureSizeChangedDelegate = *texSize;
 		OnAnnounceServerDelegate = *announceServer;
@@ -214,10 +214,11 @@ extern "C" {
     void handleTextureSizeChanged(SyphonCacheData* ptr){
 //        void *args[] = { &ptr, &(ptr->textureWidth), &(ptr->textureHeight) };
 //        mono_runtime_invoke(textureSizeChanged, NULL, args, NULL);
-		dispatch_async(dispatch_get_main_queue(), ^(){
-			int intptr = (int)ptr;
-			OnTextureSizeChangedDelegate(intptr, ptr->textureWidth, ptr->textureHeight);
-		});
+//		dispatch_async(dispatch_get_main_queue(), ^(){
+		
+		NSUInteger newPtr = (NSUInteger)ptr;
+			OnTextureSizeChangedDelegate((int)newPtr, (int)ptr->textureWidth, (int)ptr->textureHeight);
+//		});
     }
 	
 //	void monoMethods(){
