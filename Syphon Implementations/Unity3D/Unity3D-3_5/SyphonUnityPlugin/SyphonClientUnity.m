@@ -116,7 +116,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         glDepthMask (GL_FALSE);
         
         //get image!
-        SyphonImage* image = [ptr->syphonClient newFrameImageForContext:CGLGetCurrentContext()];
+        SyphonImage* image = [ptr->syphonClient newFrameImageForContext:cachedContext];
         
         if(!image){
 //			NSLog(@"nil image.");
@@ -159,7 +159,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 		}
         
 
-		NSLog(@"drawing. tex id is %i, status is %i", ptr->textureID, status);
+//		NSLog(@"drawing. tex id is %i, status is %i", ptr->textureID, status);
 
 
 		
@@ -279,6 +279,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 
 		
         [image release];
+		
 		
 //		glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &texcount);
 //		glGetIntegerv(GL_TEXTURE_STACK_DEPTH, &modelcount);
