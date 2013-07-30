@@ -37,6 +37,7 @@ SyphonCacheData::SyphonCacheData()
     updateTextureSizeFlag = NO;
 	destroyMe = NO;
     pluginType = PLUGIN_SYPHON;
+	cannotDrawUntilTextureResize = NO;
 }
 
 SyphonCacheData::SyphonCacheData(NSDictionary* ptr)
@@ -44,7 +45,7 @@ SyphonCacheData::SyphonCacheData(NSDictionary* ptr)
     //deep copy constructor. used for initializing clients with a server description.
     syphonServer = nil;
     serverName = nil;
-
+	cannotDrawUntilTextureResize = NO;
     initialized = NO;
     isAServer = NO;
     updateTextureSizeFlag = false;
@@ -61,6 +62,7 @@ void SyphonCacheData::cacheTextureValues(int mytextureID, int width, int height,
 	textureHeight = height;
     isAServer = imaServer;
     initialized = YES;
+	cannotDrawUntilTextureResize = NO;
 }
 
 

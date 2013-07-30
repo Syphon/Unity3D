@@ -34,6 +34,8 @@ using System.Diagnostics;
 
 public class SyphonClientObject : ScriptableObject {
 		
+	private int cachedTexID;
+
 	[SerializeField]
 	private RenderTexture attachedTexture;
 	public RenderTexture AttachedTexture{ get { return attachedTexture;}} 
@@ -88,10 +90,14 @@ public class SyphonClientObject : ScriptableObject {
 			attachedTexture = new RenderTexture(16, 16, 0, RenderTextureFormat.ARGB32);
 			attachedTexture.filterMode = FilterMode.Bilinear;
 			attachedTexture.wrapMode = TextureWrapMode.Clamp;
+			attachedTexture.Create();
+			Syphon.SafeMaterial.SetPass(0);
+			RenderTexture.active = attachedTexture;
+			GL.Clear(false, true, new Color(0, 0, 0, 0));
+			RenderTexture.active = null;
 		}
-//				Debug.Log("created syphon client: " + boundName + " " +boundAppName);
 		
-		//TODO: create the syphon client in plugin
+		InitSyphonClient();
 	}
 	
 //	public void DefineSyphonClient(SyphonClientObject client){
@@ -122,18 +128,14 @@ public class SyphonClientObject : ScriptableObject {
 
 			RenderTexture.active = null;
 			attachedTexture.Release();
-			// Destroy (attachedTexture);
-			// attachedTexture = new RenderTexture(w, h, 0, RenderTextureFormat.ARGB32);
-			// attachedTexture.filterMode = FilterMode.Bilinear;
-			// attachedTexture.wrapMode = TextureWrapMode.Clamp;
 			attachedTexture.width = width;
 			attachedTexture.height = height;
 			RenderTexture.active = attachedTexture;			
 			GL.Clear(false, true, new Color(0, 0, 0, 0));
 			RenderTexture.active = null;
-			UnityEngine.Debug.Log ("UpdateTextureSize: changing tex id to " + (int)attachedTexture.GetNativeTexturePtr() + " width: " + width + " height: " + height);
-			Syphon.CacheClientTextureValues((int)attachedTexture.GetNativeTexturePtr(), attachedTexture.width, attachedTexture.height, syphonClientPointer);
-		
+			cachedTexID = -1;
+//			UnityEngine.Debug.Log ("UpdateTextureSize: changing tex id to " + attachedTexture.GetNativeTextureID() + " width: " + width + " height: " + height);
+//			Syphon.CacheClientTextureValues((int)attachedTexture.GetNativeTextureID(), attachedTexture.width, attachedTexture.height, syphonClientPointer);		
 			
 			//every GameObject that is using this syphon server might want to know that the size changed.
 			if(UpdateClientTextureSize != null){
@@ -141,31 +143,20 @@ public class SyphonClientObject : ScriptableObject {
 			}
 		}		
 	}
-
-	public void InitSyphonClient(){
-		//call Syphon initialize method here.		
-		//if we have a valid syphon server attached, and not initialized yet, 
+	//
+	private void InitSyphonClient(){
 		if(Application.isPlaying && attachedServer.SyphonServerPointer != IntPtr.Zero && !initialized){
-			// Debug.Log("EXECUTING syphon client: " + boundAppName + " " + boundName);
-			attachedTexture.Create();
-			Syphon.SafeMaterial.SetPass(0);
-			RenderTexture.active = attachedTexture;
-			GL.Clear(false, true, new Color(0, 0, 0, 0));
-//			Graphics.Blit( Syphon.NullTexture,attachedTexture);
-			RenderTexture.active = null;
-
-
-			//this does not allocate GL resources- it simply creates a SyphonCacheData object on the heap
-			//and saves the pointer in Unity here
+			//does not allocate GL resources: creates SyphonCacheData object on heap, saves ptr to Unity
 		 	syphonClientPointer = Syphon.CreateClientTexture(attachedServer.SyphonServerPointer);
-			int texID =  (int)attachedTexture.GetNativeTexturePtr();
-			Syphon.CacheClientTextureValues(texID, attachedTexture.width, attachedTexture.height, syphonClientPointer);
-			initialized = true;
-
 			
+//			int texID =  (int)attachedTexture.GetNativeTexturePtr();
+//			Syphon.CacheClientTextureValues(texID, attachedTexture.width, attachedTexture.height, syphonClientPointer);
 			if(AnnounceClient != null)
 				AnnounceClient(this);
-						
+			
+			//do not mark as 'initialized yet- wait til we get a 'valid' texture ID.
+			//this is because Unity (as of 4.2) no longer immediately returns a texture with a valid color backing on RT creation.
+			//gets marked as initialized in the Render() method further below.
 		}
 	}
 	
@@ -193,7 +184,7 @@ public class SyphonClientObject : ScriptableObject {
 	}
 
 	public void DestroySyphonClient(){
-		UnityEngine.Debug.Log("destroying syphon client" + syphonClientPointer + " " + BoundAppName + " " + boundName);
+//		UnityEngine.Debug.Log("destroying syphon client" + syphonClientPointer + " " + BoundAppName + " " + boundName);
 		if(attachedTexture != null){
 			RenderTexture.active = null;
 			attachedTexture.Release();
@@ -228,7 +219,14 @@ public class SyphonClientObject : ScriptableObject {
 
 	public void Render(){
 				
-		if(syphonClientPointer != IntPtr.Zero && initialized){		
+		if(attachedTexture.GetNativeTextureID() != cachedTexID){
+			cachedTexID = attachedTexture.GetNativeTextureID();
+			Syphon.CacheClientTextureValues(attachedTexture.GetNativeTextureID(), attachedTexture.width, attachedTexture.height, syphonClientPointer);
+			initialized = true;
+		}
+		
+		if(syphonClientPointer != IntPtr.Zero && initialized){	
+
 			//you need to render once per frame for each texture.
 			Syphon.SafeMaterial.SetPass(0);	
 			RenderTexture.active = attachedTexture;
@@ -236,13 +234,6 @@ public class SyphonClientObject : ScriptableObject {
 			RenderTexture.active = null;
 		}
 	}
-	
-//	public void Update(){
-//		if(retireSyphonClientQueue){
-//			DestroySyphonClient();
-//			retireSyphonClientQueue = false;
-//		}
-//	}
 	
 	public void OnDestroy(){
 		//when you destroy the client object, destroy the client.

@@ -303,6 +303,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "\"$(CONFIGURATION_BUILD_DIR)\"";
@@ -319,6 +320,8 @@
 					"\"$(SYSTEM_APPS_DIR)/Unity/Unity.app/Contents/Frameworks/MonoEmbedRuntime/osx\"",
 				);
 				PRODUCT_NAME = SyphonUnityPlugin;
+				SDKROOT = macosx;
+				VALID_ARCHS = "i386 x86_64";
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -327,6 +330,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = "\"$(CONFIGURATION_BUILD_DIR)\"";
@@ -341,6 +345,8 @@
 					"\"$(SYSTEM_APPS_DIR)/Unity/Unity.app/Contents/Frameworks/MonoEmbedRuntime/osx\"",
 				);
 				PRODUCT_NAME = SyphonUnityPlugin;
+				SDKROOT = macosx;
+				VALID_ARCHS = "i386 x86_64";
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
@@ -348,27 +354,27 @@
 		1DEB913F08733D840010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
-				VALID_ARCHS = i386;
+				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
 		};
 		1DEB914008733D840010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
-				VALID_ARCHS = i386;
+				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;
 		};

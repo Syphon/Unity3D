@@ -284,27 +284,33 @@ using System.Diagnostics;
 	public static bool assemblyIsUpdated(){
 		return updatedAssembly;
 	}
-
+	
+	
 	public void Update(){
 		if(!updatedAssembly){
 			cacheAssembly();
 		}
 		
-		
+		//execute any queued texture update requests here
+		if(textureUpdateRequests.Count != 0){
+			for(int i = 0; i < textureUpdateRequests.Count; i++){
+				foreach(SyphonClientObject obj in Syphon.SyphonClients){
+					if((int)obj.SyphonClientPointer == textureUpdateRequests[i][0]){
+						obj.UpdateTextureSize((int)textureUpdateRequests[i][1], (int)textureUpdateRequests[i][2]);
+					}
+				}
+			}	
+			textureUpdateRequests.Clear();			
+		}
 
+		
 		for(int i = 0; i < SyphonClients.Count; i++)
+		{
 			SyphonClients[i].Render();
+		}
 	}
 
-	public void LateUpdate(){
-		
-//		Syphon.UpdateTextureSizes();
-//		if(UpdateClientTextures != null){
-//			UpdateClientTextures();
-//		}
-//				
 
-	}
 	
 
 	public void Awake() {
@@ -500,7 +506,6 @@ using System.Diagnostics;
 			//if it was null when trying to add a new client, just add a new one and init.
 			result = ScriptableObject.CreateInstance<SyphonClientObject>();
 			result.DefineSyphonClient(server);
-			result.InitSyphonClient();
 			Syphon.SyphonClients.Add(result);
 		}
 		else{
@@ -538,18 +543,7 @@ public static void DestroyClient(SyphonClientObject destroyObj){
 public void OnPreRender(){
 		//call 1 to cache context.
 		GL.IssuePluginEvent(updateContext);
-		
-						//execute any queued texture update requests here
-		if(textureUpdateRequests.Count != 0){
-			for(int i = 0; i < textureUpdateRequests.Count; i++){
-				foreach(SyphonClientObject obj in Syphon.SyphonClients){
-					if((int)obj.SyphonClientPointer == textureUpdateRequests[i][0]){
-						obj.UpdateTextureSize((int)textureUpdateRequests[i][1], (int)textureUpdateRequests[i][2]);
-					}
-				}
-			}		
-			textureUpdateRequests.Clear();			
-		}
+	
 }
 
 }

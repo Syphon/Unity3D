@@ -215,7 +215,9 @@ extern "C" {
 //        void *args[] = { &ptr, &(ptr->textureWidth), &(ptr->textureHeight) };
 //        mono_runtime_invoke(textureSizeChanged, NULL, args, NULL);
 //		dispatch_async(dispatch_get_main_queue(), ^(){
-		
+//		NSLog(@"CALLING BACK TO UNITY w/h: %i, %i", ptr->textureWidth, ptr->textureHeight /*, texcount*/ );
+
+		ptr->cannotDrawUntilTextureResize = YES;
 		NSUInteger newPtr = (NSUInteger)ptr;
 			OnTextureSizeChangedDelegate((int)newPtr, (int)ptr->textureWidth, (int)ptr->textureHeight);
 //		});

@@ -59,20 +59,19 @@ void syphonClientDestroyResources(SyphonClient* client)
 
 void syphonClientPublishTexture(SyphonCacheData* ptr){
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-    if(ptr != NULL && ptr->syphonClient != nil && [ptr->syphonClient isValid] && ptr->textureID != 0){
+    if(ptr != NULL && ptr->syphonClient != nil && [ptr->syphonClient isValid] && [ptr->syphonClient hasNewFrame] && ptr->textureID != 0 && !ptr->cannotDrawUntilTextureResize){
 //		NSLog(@"PUBLISHIN SOMETHIN AT %i/ %@", (int)ptr, ptr->syphonClient);
         
 		if(!glIsTexture(ptr->textureID)){
-			NSLog(@"GO FUCK YOURSELF! %i is not a texture! cannot publish client texture.", ptr->textureID);
+			NSLog(@"%i is not a texture! cannot publish client texture.", ptr->textureID);
 			return;
 		}
 		
         //cache previous bits
         GLint previousFBO, previousReadFBO, previousDrawFBO, previousMatrixMode;
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFBO);
-        glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &previousReadFBO);
-        glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &previousDrawFBO);
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, &previousFBO);
+        glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING_EXT, &previousReadFBO);
+        glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &previousDrawFBO);
         glGetIntegerv(GL_MATRIX_MODE, &previousMatrixMode);
         glPushAttrib(GL_ALL_ATTRIB_BITS);
         glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -119,6 +118,7 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
         //get image!
         SyphonImage* image = [ptr->syphonClient newFrameImageForContext:cachedContext];
         
+//		NSLog(@"size: %f/%f", [image textureSize].width, [image textureSize].height);
         if(!image){
 //			NSLog(@"nil image.");
 			//SAVE MATRIX STATE CODE
@@ -275,7 +275,6 @@ void syphonClientPublishTexture(SyphonCacheData* ptr){
 //		if(syphonFBO){
 ////		NSLog(@"DELETING FBO at RESOURCE ID: %i", syphonFBO);
 //			glDeleteFramebuffersEXT(1, &syphonFBO);
-//			glGenFramebuffersEXT(1, &syphonFBO);
 //			syphonFBO = 0;
 //		}
 

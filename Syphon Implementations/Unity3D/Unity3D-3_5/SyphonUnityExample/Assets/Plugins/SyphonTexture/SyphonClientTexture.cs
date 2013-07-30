@@ -50,8 +50,6 @@ public class SyphonClientTexture : MonoBehaviour {
 		clientObject = Syphon.CreateClient (clientAppName, clientName);
 //		if the client object exists
 		if(clientObject != null){
-			//and if the texture has been initialized, apply its texture to something.
-			ApplyTexture();
 			//only registers it if it doesn't already exist.
 			Syphon.RegisterClientInstance(this, clientObject);
 		}		
@@ -80,14 +78,14 @@ public class SyphonClientTexture : MonoBehaviour {
 	}
 	
 	public void handleUpdateClientTextureSize(SyphonClientObject client){
-		if(client == clientObject){
-//			ApplyTexture();
+		if(client == clientObject){			
+			//the client has a valid texture size, which means the texture is valid, so apply it to the object.
+			ApplyTexture();
 			//texture resize here- resize your plane, or whatever you want to do. use client.Width and client.Height
 			gameObject.SendMessage("UpdateAspectRatio",new Vector2(client.Width, client.Height), SendMessageOptions.DontRequireReceiver);
 		}
 	}
 	
-
 	public void OnDisable(){
 		DisableCallbacks();
 	}
@@ -98,14 +96,12 @@ public class SyphonClientTexture : MonoBehaviour {
 	
 	private void EnableCallbacks(){
 		Syphon.AnnounceServer += new Syphon.AnnounceServerHandler(AnnounceServer);
-
 		SyphonClientObject.RetireClient += new SyphonClientObject.RetireClientHandler(handleRetireClient);
 		SyphonClientObject.UpdateClientTextureSize += new SyphonClientObject.UpdateClientTextureSizeHandler(handleUpdateClientTextureSize);
 	}
 	
 	private void DisableCallbacks(){
 		Syphon.AnnounceServer -= new Syphon.AnnounceServerHandler(AnnounceServer);
-
 		SyphonClientObject.RetireClient -= new SyphonClientObject.RetireClientHandler(handleRetireClient);
 		SyphonClientObject.UpdateClientTextureSize -= new SyphonClientObject.UpdateClientTextureSizeHandler(handleUpdateClientTextureSize);
 	}

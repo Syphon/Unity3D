@@ -106,7 +106,7 @@ void syphonServerPublishTexture(SyphonCacheData* ptr){
     {
 		
 		if(!glIsTexture(ptr->textureID)){
-			NSLog(@"GO FUCK YOURSELF! %i is not a texture! cannot publish server texture.", ptr->textureID);
+			NSLog(@" %i is not a texture! cannot publish server texture.", ptr->textureID);
 			return;
 		}
 		

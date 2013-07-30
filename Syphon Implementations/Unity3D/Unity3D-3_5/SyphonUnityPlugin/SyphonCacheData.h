@@ -50,6 +50,7 @@ class SyphonCacheData
         NSString* serverName;
         CGLContextObj cachedContext;
         SyphonServer* syphonServer;
+		BOOL cannotDrawUntilTextureResize;
         //initialized once data is cached
         BOOL initialized;
         //if(!isAServer), then is a client

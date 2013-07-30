@@ -98,13 +98,6 @@ extern "C" {
         //add it to a list
         syphonClients.push_back(clientPtr);
 //        NSLog(@"CREATED CLIENT TEXTURE AT %li, and added it to the list. count is now %i", (unsigned long)clientPtr, (int)syphonClients.size());
-//		int idx = 0;
-//		
-//		for(std::list<SyphonCacheData*>::iterator list_iter =syphonClients.begin();
-//            list_iter != syphonClients.end(); list_iter++){
-//			NSLog(@"%i, list iter: %@", idx, [(*list_iter)->syphonClient serverDescription]);
-//			idx++;
-//		}
 		return clientPtr;
 	}
 	
@@ -138,15 +131,8 @@ extern "C" {
             delete killMe;
 			killMe->destroyMe = NO;
 			killMe = NULL;
-        }
-		
-//		int idx = 0;
-		
-//		for(std::list<SyphonCacheData*>::iterator list_iter =syphonClients.begin();
-//            list_iter != syphonClients.end(); list_iter++){
-//			NSLog(@"remaining: %i, list iter: %@", idx, [(*list_iter)->syphonClient serverDescription]);
-//			idx++;
-//		}
+        }		
+
     }
     
     
@@ -179,13 +165,7 @@ extern "C" {
 			killMe = NULL;
         }
     }
-    
-    //    void FlagServerToBeKilled(SyphonCacheData* ptr){
-    //        if(ptr){
-    //            ptr->destroyMe = true;
-    //        }
-    //    }
-    
+
     
     void UpdateTextureSizes(){
         for(std::list<SyphonCacheData*>::iterator list_iter =syphonClients.begin(); 
@@ -199,43 +179,7 @@ extern "C" {
         }   
     }
 
-//	void resetContext(){
-//		NSLog(@"YO WTF! RESETTING");
-//        if(cachedContext != CGLGetCurrentContext()){
-//		NSLog(@"for real YO WTF! RESETTING");
-//			cachedContext = CGLGetCurrentContext();
-//            if(syphonFBO){
-//				NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
-//				glDeleteFramebuffersEXT(1, &syphonFBO);
-//                glGenFramebuffersEXT(1, &syphonFBO);
-//				syphonFBO = nil;
-//			}
-//		}
-//	}
 
-//	void forceCacheGraphicsContext(){
-//			cachedContext = CGLGetCurrentContext();
-//            if(syphonFBO){
-//				NSLog(@"EYYYO WTF: %i", syphonFBO);
-//				glDeleteFramebuffersEXT(1, &syphonFBO);
-//                glGenFramebuffersEXT(1, &syphonFBO);
-//				syphonFBO = nil;
-//			}
-//
-//            for(std::list<SyphonCacheData*>::iterator list_iter =syphonServers.begin();
-//                list_iter != syphonServers.end(); list_iter++){
-//                //         NSLog(@"Syphon.Unity.cacheGraphicsContext:: Context changed. destroying/recreating: %@",(*list_iter)->serverName);
-//                
-//                //don't destroy/create if it's not initialized yet!
-//                if((*list_iter)->initialized){
-//                    syphonServerDestroyResources( (*list_iter)->syphonServer);
-//					// NSLog(@"destroying resources.");
-//                    (*list_iter)->syphonServer = nil;
-//                    syphonServerCreate((*list_iter));
-//                }
-//            }
-//	}
-	
     void cacheGraphicsContext(){
         if(cachedContext != CGLGetCurrentContext()){
 			cachedContext = CGLGetCurrentContext();
@@ -258,12 +202,28 @@ extern "C" {
                     syphonServerCreate((*list_iter));
                 }
             }
-		}    
+			
+			
+			for(std::list<SyphonCacheData*>::iterator list_iter =syphonClients.begin();
+                list_iter != syphonClients.end(); list_iter++){
+                //don't destroy/create if it's not initialized yet!
+                if((*list_iter)->initialized){
+					
+					NSDictionary* ptr = [(SyphonClient*)((*list_iter)->syphonClient) serverDescription];
+                    syphonClientDestroyResources( (*list_iter)->syphonClient);
+//					 NSLog(@"destroying client resources...");
+                    (*list_iter)->syphonClient = nil;
+					(*list_iter)->syphonClient = [[SyphonClient alloc] initWithServerDescription:ptr options:nil newFrameHandler:nil];
+                }
+            }
+		}
     }
     
     
     void UnityRenderEvent(int instanceID)
 	{
+		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
 		SyphonCacheData* ptr = (SyphonCacheData*)instanceID;
         if((NSUInteger)ptr == 1){
 //			NSLog(@"WE GOOD?!");
@@ -293,15 +253,18 @@ extern "C" {
 					}
 				}
 				//if you didnt find a match, you're probably trying to access this from the wrong plugin, so just get out.
-				if(!foundOne)
+				if(!foundOne){
+					[pool drain];
 					return;
+				}
 			}
 			
 			
 //			NSLog(@"this shouldnt even be happening.");
-            if(ptr->pluginType != PLUGIN_SYPHON)
+            if(ptr->pluginType != PLUGIN_SYPHON){
+				[pool drain];
                 return;
-			
+			}
             //if it's a server
             if(ptr != nil && ptr->isAServer && ptr->initialized && ptr->serverName != nil){
 				//serialize destruction to same thread as drawing
@@ -320,6 +283,7 @@ extern "C" {
             }
             
         }
+		[pool drain];
     }
     
 
