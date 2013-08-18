@@ -94,10 +94,11 @@ extern "C" {
     
     
     void* CreateClientTexture(NSDictionary* serverPtr){
+//        NSLog(@"CREATED CLIENT TEXTURE AT %li, and added it to the list. count is now xx", ( long)serverPtr );
 		SyphonCacheData* clientPtr = new SyphonCacheData(serverPtr);
         //add it to a list
         syphonClients.push_back(clientPtr);
-//        NSLog(@"CREATED CLIENT TEXTURE AT %li, and added it to the list. count is now %i", (unsigned long)clientPtr, (int)syphonClients.size());
+
 		return clientPtr;
 	}
 	
@@ -126,7 +127,7 @@ extern "C" {
 //                NSLog(@"removed one, count is now %i", (int)syphonClients.size());
             }
             //delete the cache data associated with it
-			NSLog(@"DESTROYED A CLIENT TEXTURE AT %li, count is now %i", (unsigned long)killMe, (int)syphonClients.size());
+//			NSLog(@"DESTROYED A CLIENT TEXTURE AT %li, count is now %i", (unsigned long)killMe, (int)syphonClients.size());
 
             delete killMe;
 			killMe->destroyMe = NO;
@@ -140,7 +141,7 @@ extern "C" {
 		SyphonCacheData* ptr = new SyphonCacheData();
         ptr->serverName = [[NSString alloc] initWithUTF8String:serverName];
         
-		NSLog(@"CREATIN SERVER TEXTURE AT: %li", (unsigned long)ptr);
+//		NSLog(@"CREATIN SERVER TEXTURE AT: %li", (unsigned long)ptr);
         //add it to a list
         syphonServers.push_back(ptr);
 		return ptr;
@@ -172,7 +173,7 @@ extern "C" {
             list_iter != syphonClients.end(); list_iter++){
             
             if((*list_iter)->updateTextureSizeFlag){
-                NSLog(@"SOMETHING CHANGED");
+//                NSLog(@"SOMETHING CHANGED");
                 handleTextureSizeChanged(*list_iter);
                 (*list_iter)->updateTextureSizeFlag = false; 
             }

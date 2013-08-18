@@ -356,8 +356,7 @@ using System.Diagnostics;
 	public static void OnAnnounceServer(string appName, string name, string uuid, IntPtr serverPtr){
 //		 UnityEngine.Debug.Log("Announcing the server with the appName: "
 //		 + appName + ", name: " + name + ", uuid: " + uuid + " server Pointer: "+ (int)serverPtr);
-		
-		
+				
 		//if we don't yet have a key for that app, create a new dictionary entry.
 		if(!Syphon.Servers.ContainsKey(appName)){
 			Syphon.Servers.Add(appName, new Dictionary<string, SyphonServerObject>());
@@ -372,8 +371,7 @@ using System.Diagnostics;
 		//if it's not empty, just create a normal entry and SyphonServerObject.
 		else if(!Syphon.Servers[appName].ContainsKey(name)){			
 				Syphon.Servers[appName].Add(name, new SyphonServerObject(appName, name, uuid, serverPtr));			
-		}
-		
+		}		
 		//TODO: this is dumb, remove this.
 		Instance.UpdateServerNames();
 		
@@ -401,38 +399,43 @@ using System.Diagnostics;
 
 	[MonoPInvokeCallback (typeof (OnRetireServerDelegate))]
 	public static void OnRetireServer(string appName, string name,  string uuid){
-//		UnityEngine.Debug.Log(appName + " "+ name + " " + uuid + " are leaving now.");
+		string realAppName = "";
+		string realName = "";
 
 		//if there are any ACTIVE client singleton objects in use, 
 		//destroy them immediately.
 		//destroy their texture and destroy the pointer to them, and remove them from the SyphonClients list.
-		SyphonClientObject result = Syphon.GetSyphonClient(appName, name);
+		SyphonClientObject result = Syphon.GetSyphonClient(uuid);
 		if(result){
+			//because the Syphon callback may not have a valid appName and name key in the OnServerRetire Syphon callback, 
+			//we need to ensure we get the extract those cached names from the uuid/instance.
+			realAppName = result.BoundAppName;	
+			realName = result.BoundName;	
+
 			DestroyClient (result);
-		}
-		//-----------------------------
-				
-		//now remove the server name
-		//if it doesn't contain the appName key, you shouldn't have to do anything.
-		if(Syphon.Servers.ContainsKey(appName)){
-			if(name == ""){
+		}			
+		
+//		//now remove the server name
+//		//if it doesn't contain the appName key, you shouldn't have to do anything.
+		if(Syphon.Servers.ContainsKey(realAppName)){
+			if(realName == ""){
 				//if the name is UNNAMED_STRING and it contains the unnamed string, remove the server from the list.
-				if(Syphon.Servers[appName].ContainsKey(Syphon.UNNAMED_STRING)){
-					Syphon.Servers[appName].Remove(Syphon.UNNAMED_STRING);					
+				if(Syphon.Servers[realAppName].ContainsKey(Syphon.UNNAMED_STRING)){
+					Syphon.Servers[realAppName].Remove(Syphon.UNNAMED_STRING);					
 				
 					//if there are no more objects in the dictionary list for that app, remove the associated appName entry
-					if(Syphon.Servers[appName].Count == 0){
-						Syphon.Servers.Remove(appName);
+					if(Syphon.Servers[realAppName].Count == 0){
+						Syphon.Servers.Remove(realAppName);
 					}
 				}
 			}
 			//if the name is valid and the server's app dictionary contains the name string, remove the server from the list.
-			else if(Syphon.Servers[appName].ContainsKey(name)){
-					Syphon.Servers[appName].Remove(name);
+			else if(Syphon.Servers[realAppName].ContainsKey(realName)){
+					Syphon.Servers[realAppName].Remove(realName);
 			
 				//if there are no more entries in the dictionary list for that app, remove the associated appName entry
-				if(Syphon.Servers[appName].Count == 0){
-					Syphon.Servers.Remove(appName);
+				if(Syphon.Servers[realAppName].Count == 0){
+					Syphon.Servers.Remove(realAppName);
 				}
 			}
 		
@@ -441,9 +444,9 @@ using System.Diagnostics;
 		}
 		
 		if(RetireServer != null)
-			RetireServer(appName, name);	
+			RetireServer(realAppName, realName);	
+		
 
-	
 	}
 	
 	public void UpdateServerNames(){
@@ -478,7 +481,12 @@ using System.Diagnostics;
 		return Syphon.SyphonClients.Find( delegate (SyphonClientObject obj) {			
 			return obj.MatchesDescription(appName, name);
 			});
-		
+	}
+
+	public static SyphonClientObject GetSyphonClient(string uuid){
+		return Syphon.SyphonClients.Find( delegate (SyphonClientObject obj) {			
+			return obj.MatchesDescription(uuid);
+			});
 	}
 	
 	public static SyphonServerObject GetSyphonServer(string appName, string name){
@@ -499,8 +507,6 @@ using System.Diagnostics;
 	public static SyphonClientObject AddClientToSyphonClientsList(string appName, string name, SyphonServerObject server){		
 		SyphonClientObject result = GetSyphonClient(appName, name);
 		// Debug.Log(result.BoundAppName + " " + result.BoundName + " was the result");
-		//if it doesn't exist, create an instance of a SyphonClientObject, and init it.
-		//when we init it, we tell all our other syphonclienttextures that have registered to 
 		if(result == null){
 //			UnityEngine.Debug.Log("DIDNT EXIST: " + appName + "/" +name);
 			//if it was null when trying to add a new client, just add a new one and init.
@@ -508,13 +514,10 @@ using System.Diagnostics;
 			result.DefineSyphonClient(server);
 			Syphon.SyphonClients.Add(result);
 		}
-		else{
-			
+		else{			
 //			UnityEngine.Debug.Log("EXISTED: " + appName + "/" +name + ". doing nothing.");
-//			result.DestroySyphonClient();
-//			result.DefineSyphonClient(server);
-//			result.InitSyphonClient();
 		}
+		
 		return result;
 	}
 

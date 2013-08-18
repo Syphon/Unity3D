@@ -175,6 +175,12 @@ public class SyphonClientObject : ScriptableObject {
 			return false;
 		}
 
+	public bool MatchesDescription(string uuid){
+			 if(uuid == attachedServer.SyphonServerDescriptionUUID){
+				return true;
+			}
+			return false;
+	}
 	
 	public void UpdateServer(string appName, string name){
 		if(MatchesDescription(appName, name)){

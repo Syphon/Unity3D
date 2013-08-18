@@ -100,27 +100,26 @@ static ServerWatcherUtility* watcherUtility;
 
 - (void)handleServerRetire:(NSNotification *)notification
 {
-//	dispatch_async(dispatch_get_main_queue(), ^(){
 
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-	const char* param2 = [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
 	const char* param1 = [[[notification object] objectForKey:SyphonServerDescriptionAppNameKey] UTF8String];
-	const char* param3 = [[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] UTF8String];
-        
-//	MonoString* myString = mono_string_new(domain, param1);
-//	MonoString* myString2 = mono_string_new(domain, param2);
-//	MonoString* myString3 = mono_string_new(domain, param3);
-//	void *args[] = { myString, myString2, myString3 };
-//	mono_runtime_invoke(retireServer, NULL, args, NULL);
-//	param1 = NULL;
-//	param2 = NULL;
-//	param3 = NULL;
+	const char* param2 = [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
+	const char* param3 = [[[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] copy]UTF8String];
+
+//	NSLog(@"retiring: %s, %s, %s", param1, param2, param3);
+	if([[notification object] objectForKey:SyphonServerDescriptionNameKey] == nil){
+		//just ensure we don't send invalid strings...
+		param2 = param3;
+	}
+	if([[notification object] objectForKey:SyphonServerDescriptionAppNameKey] == nil){
+		//just ensure we don't send invalid strings...
+		param1 = param3;
+	}
 	
 	OnRetireServerDelegate(param1, param2, param3);
 	
 	[pool drain];
-//	});
 
 }
 
@@ -134,11 +133,11 @@ static ServerWatcherUtility* watcherUtility;
 	const char* param3 = [[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] UTF8String];
 
     
-    NSUInteger serverPtr = 0;
+    void* serverPtr = 0;
     NSArray* serversArray = [[SyphonServerDirectory sharedDirectory] servers];
     for(NSDictionary* dict in serversArray){
         if([[notification object] objectForKey:SyphonServerDescriptionUUIDKey] == [dict objectForKey:SyphonServerDescriptionUUIDKey]){
-            serverPtr = (NSUInteger)dict;            
+            serverPtr = dict;
         }
     }
     
@@ -167,15 +166,17 @@ static ServerWatcherUtility* watcherUtility;
 	const char* param3 = [[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] UTF8String];
   //NSLog(@"announceing server! %s %s %s", param2, param1, param3);
   
-   NSUInteger serverPtr = 0;
+   void* serverPtr = 0;
     NSArray* serversArray = [[SyphonServerDirectory sharedDirectory] servers];
     for(NSDictionary* dict in serversArray){
         if([[notification object] objectForKey:SyphonServerDescriptionUUIDKey] == [dict objectForKey:SyphonServerDescriptionUUIDKey]){
-            serverPtr = (NSUInteger)dict;
+            serverPtr = dict;
         }
     }
-    
-//	MonoString* myString = mono_string_new(domain, param1);
+
+
+//	NSLog(@"announcing uuid %s, ptr is %li", param3, (unsigned long)serverPtr);
+	//	MonoString* myString = mono_string_new(domain, param1);
 //	MonoString* myString2 = mono_string_new(domain, param2);
 //	MonoString* myString3 = mono_string_new(domain, param3);
 //	void *args[] = { myString, myString2, myString3, &serverPtr };
