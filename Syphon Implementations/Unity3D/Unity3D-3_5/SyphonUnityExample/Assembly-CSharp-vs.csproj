@@ -5,11 +5,11 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{B30B13C1-75C0-ED69-8845-77B43C45BBE6}</ProjectGuid>
+	<ProjectGuid>{2561C0E7-48DF-F225-92BB-25F8382C13DC}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
-	<AssemblyName>Assembly-UnityScript-firstpass</AssemblyName>
+	<AssemblyName>Assembly-CSharp</AssemblyName>
 	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
 	<FileAlignment>512</FileAlignment>
 	<BaseDirectory>Assets</BaseDirectory>
@@ -46,7 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Plugins\MouseOrbit.js" />
+     <Compile Include="Assets\NewBehaviourScript.cs" />
      <None Include="Assets\Resources\SyphonShaders\Particle AddSmooth.shader" />
      <None Include="Assets\Resources\SyphonShaders\AlphaTest-BumpSpec01.shader" />
      <None Include="Assets\Resources\SyphonShaders\Particle AddBehind.shader" />
@@ -76,6 +76,13 @@
      <None Include="Assets\Resources\SyphonShaders\Particle Alpha Shadow.shader" />
      <None Include="Assets\Resources\SyphonShaders\Alpha-Glossy01.shader" />
      <None Include="Assets\Resources\SyphonShaders\AlphaTest-VertexLit.shader" />
+ <Reference Include="Library\ScriptAssemblies\Assembly-UnityScript-firstpass">
+ <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
+      <Project>{07E29774-1106-A413-B191-A84496C1A826}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

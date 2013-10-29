@@ -39,20 +39,16 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 public class SyphonServerTexture : MonoBehaviour {
-
-	// From Inspector
-	public bool renderGUI = false;
 	
-	private IntPtr syphonServerTextureInstance = IntPtr.Zero;			// The Syphon plugin cache pointer, returned from CreateServerTexture()
-	private bool syphonServerTextureValuesCached = false;	// Do the server knows our camera size and id?
-	private int cachedTexID = 0;				// current camera gl texture id
-	private int cachedWidth = 0;				// current camera texture width
-	private int cachedHeight = 0;				// current camera texture height
-	private RenderTexture srcTex = null;		// reference to the camera render source (when GUI in ON)
-	private RenderTexture dstTex = null;		// reference to the camera render destination (when GUI in ON)
+	protected IntPtr syphonServerTextureInstance = IntPtr.Zero;			// The Syphon plugin cache pointer, returned from CreateServerTexture()
+	protected bool syphonServerTextureValuesCached = false;	// Do the server knows our camera size and id?
+	protected int cachedTexID = 0;				// current camera gl texture id
+	protected int cachedWidth = 0;				// current camera texture width
+	protected int cachedHeight = 0;				// current camera texture height
 
-	void Start() {
-		//Syphon instance = Syphon.Instance;
+	public virtual void Start() {
+		//this next line creates a syphon instance if it doesn't already exist
+		Syphon instance = Syphon.Instance;
 		syphonServerTextureInstance = Syphon.CreateServerTexture(gameObject.name);
 	}
 	
@@ -63,7 +59,6 @@ public class SyphonServerTexture : MonoBehaviour {
 		}
 		syphonServerTextureInstance = IntPtr.Zero;
 		syphonServerTextureValuesCached = false;
-		srcTex = null;
 		cachedTexID = 0;
 	}
 
@@ -88,45 +83,18 @@ public class SyphonServerTexture : MonoBehaviour {
 	//
 	// OnRenderImage() is called after all rendering is complete to render image, but the GUI is not rendered yet
 	// http://docs.unity3d.com/Documentation/ScriptReference/Camera.OnRenderImage.html
-	public void OnRenderImage(RenderTexture src, RenderTexture dst){
+	public virtual void OnRenderImage(RenderTexture src, RenderTexture dst){
 		// Update texture data on Syphon server
 		if (!syphonServerTextureValuesCached || cachedTexID != (int)src.GetNativeTexturePtr() || src.width != cachedWidth || src.height != cachedHeight)
 			cacheTextureValues( src );
 
-		// WITHOUT GUI: just blit to the screen and publish to syphon.
-		if (!renderGUI) {
 			// Copy src to dst
 			Syphon.SafeMaterial.SetPass(0);
 			Graphics.Blit(src, dst);
 			// Publish texture to Syphon Server
-			if (syphonServerTextureInstance != IntPtr.Zero)
+			if (syphonServerTextureInstance != IntPtr.Zero && cachedTexID != -1)
 				GL.IssuePluginEvent((int)syphonServerTextureInstance);
-		}
-		// WITH GUI: save reference to render textures
-		else {
-			srcTex = src;
-			dstTex = dst;
-		}
-	}
 
-	//
-	// OnPostRender() is called after a camera has finished rendering the scene
-	// WaitForEndOfFrame() will make it be executed after GUI is rendered
-	public IEnumerator OnPostRender(){
-		// WITH GUI: wait Unity to render GUI, then blit to screen
-		if (renderGUI && srcTex != null) {
-			// Waits until the end of the frame after all cameras and GUI is rendered, just before displaying the frame on screen
-			yield return new WaitForEndOfFrame();
-			// Copy sr to dst
-			Syphon.SafeMaterial.SetPass(0);
-			Graphics.Blit(srcTex, dstTex);
-			// Publish texture to Syphon Server
-			if (syphonServerTextureInstance != IntPtr.Zero)
-				GL.IssuePluginEvent((int)syphonServerTextureInstance);
-		}
-		else {
-			yield return null;
-		}
 	}
 }
 

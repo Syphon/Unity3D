@@ -402,6 +402,10 @@ using System.Diagnostics;
 		string realAppName = "";
 		string realName = "";
 
+		if(Syphon.Instance == null)
+			return;
+
+
 		//if there are any ACTIVE client singleton objects in use, 
 		//destroy them immediately.
 		//destroy their texture and destroy the pointer to them, and remove them from the SyphonClients list.
@@ -478,12 +482,18 @@ using System.Diagnostics;
 
 	
 	public static SyphonClientObject GetSyphonClient(string appName, string name){
+		if(Syphon.Instance == null)
+			return null;
+
 		return Syphon.SyphonClients.Find( delegate (SyphonClientObject obj) {			
 			return obj.MatchesDescription(appName, name);
 			});
 	}
 
 	public static SyphonClientObject GetSyphonClient(string uuid){
+		if(Syphon.Instance == null)
+			return null;
+
 		return Syphon.SyphonClients.Find( delegate (SyphonClientObject obj) {			
 			return obj.MatchesDescription(uuid);
 			});

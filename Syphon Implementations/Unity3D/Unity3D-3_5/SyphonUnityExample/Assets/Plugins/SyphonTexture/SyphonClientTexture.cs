@@ -36,6 +36,8 @@ public class SyphonClientTexture : MonoBehaviour {
 	public string clientName = "";
 	private SyphonClientObject clientObject;
 	void Start () {
+		//this next line creates a syphon instance if it doesn't already exist
+		Syphon instance = Syphon.Instance;
 		setupTexture();
 	}
 	
