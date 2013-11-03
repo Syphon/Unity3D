@@ -24,7 +24,6 @@
    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if UNITY_STANDALONE_OSX
 
 //This script should be applied to any camera in the scene, and lets you host a syphon server. 
 //you may optionally use public variable renderGUI to show the GUI rendered by the camera. 
@@ -108,4 +107,3 @@ public class SyphonServerTexture : MonoBehaviour {
 	}
 }
 
-#endif	// UNITY_STANDALONE_OSX
