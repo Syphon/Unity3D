@@ -46,6 +46,16 @@ public class SyphonServerTexture : MonoBehaviour {
 	protected int cachedWidth = 0;				// current camera texture width
 	protected int cachedHeight = 0;				// current camera texture height
 
+
+#if UNITY_EDITOR
+	public SyphonServerTexture(){
+		Syphon.syphonScriptCount++;
+	}
+	~SyphonServerTexture(){
+		Syphon.syphonScriptCount--;
+	}
+#endif
+
 	public virtual void Start() {
 		//this next line creates a syphon instance if it doesn't already exist
 		Syphon instance = Syphon.Instance;

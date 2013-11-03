@@ -44,6 +44,15 @@ public class SyphonClientTexture : MonoBehaviour {
 	void OnDestroy(){
 		Syphon.UnregisterClientInstance(this);
 	}
+	
+#if UNITY_EDITOR
+	public SyphonClientTexture(){
+		Syphon.syphonScriptCount++;
+	}
+	~SyphonClientTexture(){
+		Syphon.syphonScriptCount--;
+	}
+#endif
 
 	void setupTexture(){
 		//when you initialize the client texture, you should TRY to create the syphon client object. 

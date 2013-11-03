@@ -8,7 +8,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
-
 public class SyphonServerTextureCustomResolution : SyphonServerTexture {
 	public int renderWidth = 1920;
 	public int renderHeight = 1080;

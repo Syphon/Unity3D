@@ -30,8 +30,12 @@ Open the .unitypackage to import to an existing project, or simply create a new 
 \
 Add a Syphon.cs to your main camera. this will act as your Syphon manager.\
 \
-Syphon Server:\
-Add a SyphonServerTexture to any camera in your scene. \
+Syphon Server: \
+You have two options.\
+1) if you want to simply output the existing Unity scene camera as a syphon server, add a SyphonServerTexture to any camera in your scene.  For basic setups, use this.\
+\
+2) (*For advanced users*) if you want to output a custom resolution video texture (i.e., 3072x768 for a triplehead, etc)  add a SyphonServerTextureCustomResolution to the main camera in your scene. If you want a quick way to use Unity as a control surface, where its GUI is only visible inside the Unity app itself, additionally take a look at the code in ControlSurfaceExample.  See the unity scene SyphonServerCustomResolution.unity for a demo.\
+\
 \
 Syphon Client: \
 Add a SyphonClientTexture to any object in your scene.\
@@ -52,6 +56,7 @@ Syphon for Unity3D - Brian Chasalow (Unity 3D integration and scripting), Tom Bu
 
 \b \cf0 Release Notes:
 \b0 \
+a11: added a custom resolution syphon example, and fixed a rare threading issue on syphon exit or creation. \
 a10: fixed a bug with OnRetireServer crashing with OpenFrameworks servers exiting.\
 a9: fixed some Unity 4.2 texture creation and 64 bit issues. uses custom Syphon framework with multithreading changes.\
 }

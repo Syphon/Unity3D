@@ -28,18 +28,19 @@ using UnityEditor;
 
 [InitializeOnLoad]
 public class AutorunSyphon
-{
+{//
     static AutorunSyphon()
     { 
-	//only cache the assembly/update the instance/etc if the syphon instance already exists in the scene
-	if(UnityEngine.Object.FindObjectOfType(typeof(Syphon)) != null){
+//only cache the assembly/update the instance/etc if the syphon instance already exists in the scene
+//but, using registered syphon clients/server scripts instead of 'finding' them in the scene. this is faster.
+//	if(UnityEngine.Object.FindObjectOfType(typeof(SyphonServerTexture)) != null ||
+//	   UnityEngine.Object.FindObjectOfType(typeof(SyphonClientTexture)) != null){
+		if(Syphon.syphonScriptCount > 0){
+			if(!Syphon.assemblyIsUpdated())
+			Syphon.cacheAssembly();
 		
-		if(!Syphon.assemblyIsUpdated())
-		Syphon.cacheAssembly();
-	
-		EditorApplication.update += myUpdate;
-	}
-	
+			EditorApplication.update += myUpdate;
+		}
     }
 
 	public static void myUpdate(){
@@ -48,5 +49,4 @@ public class AutorunSyphon
 		 	EditorApplication.update -=myUpdate;
 		 }
 	}
-
 }

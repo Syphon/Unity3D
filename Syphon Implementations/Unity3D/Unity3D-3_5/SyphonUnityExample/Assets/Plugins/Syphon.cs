@@ -37,8 +37,6 @@ using System.Runtime.InteropServices;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
-using System.Diagnostics;
-
 
 //	[ExecuteInEditMode]
 	public class Syphon : MonoBehaviour
@@ -106,7 +104,6 @@ using System.Diagnostics;
 	//if you don't have a name, name its dictionary hash unnamed.
 	private const string unnamed = "unnamed";
 	public static string UNNAMED_STRING{ get{ return unnamed; }}
-	
 	private StringBuilder myName, myAppName, myUuId;
 	private static Material safeMaterial;
 	public static Material SafeMaterial
@@ -137,6 +134,7 @@ using System.Diagnostics;
 	public bool Initialized { get{return initialized;}}
 	[SerializeField]
 	private static Syphon instance = null;
+	public static int syphonScriptCount = 0;
 
 	[SerializeField]
 	private Texture2D nullTexture;
@@ -159,14 +157,14 @@ using System.Diagnostics;
 	public static Syphon Instance		
 	{
 		get
-		{			
+		{		
 			if (instance == null)
 			{
 				//this is only necessary to satisfy remote callbacks in the odd timing after build where the instance might be null
 				//a null singleton is a royal pain in the ass.
 				instance =  (Syphon)UnityEngine.Object.FindObjectOfType (typeof(Syphon));
 				if(!instance){
-					UnityEngine.Debug.LogError("you need a Syphon instance somewhere! adding one now.");
+					UnityEngine.Debug.LogError("You have a SyphonClientTexture or SyphonServerTexture in the scene, so you need a Syphon instance somewhere! adding one now.");
 					instance = Camera.main.gameObject.AddComponent<Syphon>();					
 				}
 			 }
@@ -340,6 +338,7 @@ using System.Diagnostics;
 		initialized = true;
 	}
 	
+
 	[MonoPInvokeCallback (typeof (OnTextureSizeChangedDelegate))]
 	public static void OnTextureSizeChanged(int ptr, int width, int height){
 		if((int)width == 0 || (int)height == 0){
@@ -378,6 +377,7 @@ using System.Diagnostics;
 		//callback to the client textures to let them know a new server came online
 		if(AnnounceServer != null)
 			AnnounceServer(appName, name);
+
 	}
 	
 	[MonoPInvokeCallback (typeof (OnUpdateServerDelegate))]
@@ -402,14 +402,19 @@ using System.Diagnostics;
 		string realAppName = "";
 		string realName = "";
 
-		if(Syphon.Instance == null)
+//		UnityEngine.Debug.Log("retiring the server with the appName: " + appName + ", name: " + name + ", uuid: " + uuid);
+
+		if(instance == null){
+			Instance.UpdateServerNames();
+			Instance.OnRepaintServerListGUI();
+//			UnityEngine.Debug.Log("no instance of Syphon in Editor. this can happen because of OnRetireServer callback threading. returning early, unsure if this really matters");
 			return;
-
-
+		}
 		//if there are any ACTIVE client singleton objects in use, 
 		//destroy them immediately.
 		//destroy their texture and destroy the pointer to them, and remove them from the SyphonClients list.
 		SyphonClientObject result = Syphon.GetSyphonClient(uuid);
+
 		if(result){
 			//because the Syphon callback may not have a valid appName and name key in the OnServerRetire Syphon callback, 
 			//we need to ensure we get the extract those cached names from the uuid/instance.
@@ -449,7 +454,11 @@ using System.Diagnostics;
 		
 		if(RetireServer != null)
 			RetireServer(realAppName, realName);	
-		
+
+		Instance.OnRepaintServerListGUI();
+
+
+
 
 	}
 	
@@ -465,18 +474,19 @@ using System.Diagnostics;
 					serverAppNames[kvp.Key][i] = Syphon.UNNAMED_STRING;
 				}
 				else{
-				serverAppNames[kvp.Key][i] = nameAndObject.Key;
+					serverAppNames[kvp.Key][i] = nameAndObject.Key;
 				}
 				i++;
 			}
 		}
-		
+	
 		Instance.OnRepaintServerListGUI();
 	}
 	
 	public void OnRepaintServerListGUI(){
-		if(RepaintServerListGUI != null)
+		if(RepaintServerListGUI != null){
 			RepaintServerListGUI();
+		}
 	}
 	
 
@@ -550,7 +560,7 @@ public static void DestroyClient(SyphonClientObject destroyObj){
 		Syphon.SyphonClients.Remove(destroyObj);
 		DestroyImmediate(destroyObj);
 		destroyObj = null;
-	}		
+	}
 }
 	
 public void OnPreRender(){

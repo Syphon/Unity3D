@@ -82,13 +82,15 @@ public class SyphonEditor : Editor {
 		
 	public void Update(){
 		if(repaintGUI){
-			this.Repaint();	
+			this.Repaint();
 			repaintGUI = false;
 		}
-		
 	}
 	
 	public override void OnInspectorGUI(){
+
+
+
 		if(!addedSyphonDelegates){
 			addSyphonDelegates();	
 		}
@@ -102,20 +104,20 @@ public class SyphonEditor : Editor {
 
 		GUILayout.Space(5);
 
-		GUILayout.Label(CLIENTS_LABEL);
+//		GUILayout.Label(CLIENTS_LABEL);
 //		if(SyphonTarget.clientAppNames.Count == 0)
 //			GUILayout.Label(CLIENTS_LABEL_NONE);
 		
 //		drawGUIClientEditor();	
 		
 
-		if(GUILayout.Button("clear clients list")){
-			foreach(SyphonClientObject obj in Syphon.SyphonClients){
-				DestroyImmediate(obj);
-			}
-			Syphon.SyphonClients.Clear();
-//			SyphonTarget.UpdateClientNames();
-		}
+//		if(GUILayout.Button("clear clients list")){
+//			foreach(SyphonClientObject obj in Syphon.SyphonClients){
+//				DestroyImmediate(obj);
+//			}
+//			Syphon.SyphonClients.Clear();
+////			SyphonTarget.UpdateClientNames();
+//		}
 		
 		
 	//	DrawDefaultInspector();
@@ -213,7 +215,8 @@ public class SyphonEditor : Editor {
 	public void RepaintGUI(){
 		repaintGUI = true;
 	}
-	
+
+
 	
 	
 	
