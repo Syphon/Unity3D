@@ -36,6 +36,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+#pragma warning disable 0219
 
 public class SyphonServerTexture : MonoBehaviour {
 	
@@ -47,12 +48,13 @@ public class SyphonServerTexture : MonoBehaviour {
 
 
 #if UNITY_EDITOR
-	public SyphonServerTexture(){
-		Syphon.syphonScriptCount++;
-	}
-	~SyphonServerTexture(){
-		Syphon.syphonScriptCount--;
-	}
+//i don't trust that this doesn't crash unity. need more testing.
+//	public SyphonServerTexture(){
+//		Syphon.syphonScriptCount++;
+//	}
+//	~SyphonServerTexture(){
+//		Syphon.syphonScriptCount--;
+//	}
 #endif
 
 	public virtual void Start() {

@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 6ed776afc471146b7b3198cd0188fb7e
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - projectorMaterial: {fileID: 2100000, guid: 52a1cf6eec0cc4f64bd6dfc9a3e8fe14, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

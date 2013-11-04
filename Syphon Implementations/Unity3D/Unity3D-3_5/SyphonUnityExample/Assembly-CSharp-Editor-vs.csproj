@@ -56,6 +56,7 @@
      <None Include="Assets\Resources\SyphonShaders\AlphaTest-Glossy01.shader" />
      <None Include="Assets\Resources\SyphonShaders\Particle MultiplyDouble.shader" />
      <None Include="Assets\Resources\SyphonShaders\Particle AddMultiply.shader" />
+     <None Include="Assets\Resources\SyphonShaders\SyphonProjector.shader" />
      <None Include="Assets\Resources\SyphonShaders\Particle Alpha BlendDepthtestOff.shader" />
      <None Include="Assets\Resources\SyphonShaders\SyphonSkybox.shader" />
      <None Include="Assets\Resources\SyphonShaders\Particle Alpha BlendFront.shader" />

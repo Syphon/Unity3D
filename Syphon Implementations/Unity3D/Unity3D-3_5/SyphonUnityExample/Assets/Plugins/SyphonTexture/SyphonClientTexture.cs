@@ -29,12 +29,13 @@
 //You may modify the ApplyTexture() method as necessary, to handle projectors, bump maps, etc.
 using UnityEngine;
 using System.Collections;
+#pragma warning disable 0219
 
 public class SyphonClientTexture : MonoBehaviour {
 	// Use this for initialization
 	public string clientAppName = "Test Server";
 	public string clientName = "";
-	private SyphonClientObject clientObject;
+	protected SyphonClientObject clientObject;
 	void Start () {
 		//this next line creates a syphon instance if it doesn't already exist
 		Syphon instance = Syphon.Instance;
@@ -46,12 +47,13 @@ public class SyphonClientTexture : MonoBehaviour {
 	}
 	
 #if UNITY_EDITOR
-	public SyphonClientTexture(){
-		Syphon.syphonScriptCount++;
-	}
-	~SyphonClientTexture(){
-		Syphon.syphonScriptCount--;
-	}
+//i don't trust that this doesn't crash unity. need more testing.
+//	public SyphonClientTexture(){
+//		Syphon.syphonScriptCount++;
+//	}
+//	~SyphonClientTexture(){
+//		Syphon.syphonScriptCount--;
+//	}
 #endif
 
 	void setupTexture(){
@@ -74,9 +76,12 @@ public class SyphonClientTexture : MonoBehaviour {
 	}
 		
 	//handle applying the client texture to your object whichever way you please.
-	public void ApplyTexture(){
+	public virtual void ApplyTexture(){
 		if(clientObject != null && clientObject.Initialized){
-			renderer.sharedMaterial.mainTexture = clientObject.AttachedTexture;		
+			Material[] matArray = renderer.sharedMaterials;			
+			for(int i = 0; i < matArray.Length; i++){
+				matArray[i].mainTexture = clientObject.AttachedTexture;	
+			}
 			renderer.sharedMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
 		}
 	}

@@ -23,30 +23,28 @@
    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+
+//This script should be applied to any object in the scene, and lets you attach a syphon client texture to any Unity object.
+//You may modify the ApplyTexture() method as necessary, to handle projectors, bump maps, etc.
 using UnityEngine;
-using UnityEditor;
+using System.Collections;
 
-[InitializeOnLoad]
-public class AutorunSyphon
-{//
-    static AutorunSyphon()
-    { 
-//only cache the assembly/update the instance/etc if the syphon instance already exists in the scene
-//but, using registered syphon clients/server scripts instead of 'finding' them in the scene. this is faster.
-	if(UnityEngine.Object.FindObjectOfType(typeof(SyphonServerTexture)) != null ||
-	   UnityEngine.Object.FindObjectOfType(typeof(SyphonClientTexture)) != null){
-//		if(Syphon.syphonScriptCount > 0){
-			if(!Syphon.assemblyIsUpdated())
-			Syphon.cacheAssembly();
-		
-			EditorApplication.update += myUpdate;
+public class SyphonClientTextureProjector : SyphonClientTexture {
+	// Use this for initialization
+		[SerializeField]
+		private Material projectorMaterial;
+	
+		public override void ApplyTexture(){
+		if(clientObject != null && clientObject.Initialized){
+			Projector proj = GetComponent<Projector>();
+			if(proj != null && projectorMaterial != null){
+				proj.material = projectorMaterial;
+				proj.material.SetTexture ("_ShadowTex", clientObject.AttachedTexture);
+				clientObject.AttachedTexture.wrapMode = TextureWrapMode.Clamp;
+			}
+
 		}
-    }
-
-	public static void myUpdate(){
-		 if(!Application.isPlaying && !Syphon.Instance.Initialized){
-		 	Syphon.Instance.Awake();			
-		 	EditorApplication.update -=myUpdate;
-		 }
 	}
+
 }

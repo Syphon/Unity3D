@@ -7,7 +7,7 @@
 \f0\fs36 \cf0 Syphon for Unity Pro 4.0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\fs20 \cf0 1.0 Public Beta 2 a11
+\fs20 \cf0 1.0 Public Beta 2 a12
 \fs36 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
@@ -30,19 +30,41 @@ Open the .unitypackage to import to an existing project, or simply create a new 
 \
 Add a Syphon.cs to your main camera. this will act as your Syphon manager.\
 \
-Syphon Server: \
-You have two options.\
+
+\b (*For new users*) \
+----------------------
+\b0 \
+
+\b Syphon Server: 
+\b0 \
 1) if you want to simply output the existing Unity scene camera as a syphon server, add a SyphonServerTexture to any camera in your scene.  For basic setups, use this.\
 \
-2) (*For advanced users*) if you want to output a custom resolution video texture (i.e., 3072x768 for a triplehead, etc)  add a SyphonServerTextureCustomResolution to the main camera in your scene. If you want a quick way to use Unity as a control surface, where its GUI is only visible inside the Unity app itself, additionally take a look at the code in ControlSurfaceExample.  See the unity scene SyphonServerCustomResolution.unity for a demo.\
-\
-\
-Syphon Client: \
+
+\b Syphon Client: 
+\b0 \
 Add a SyphonClientTexture to any object in your scene.\
 On the SyphonClientTexture, in the public inspector fields, add the name and appName of the client you just added.\
+
+\b ----------------------\
+
+\b0 \
 \
+
+\b (*For advanced users*)\
+----------------------\
+Syphon Server: 
+\b0 \
+if you want to output a custom resolution video texture (i.e., 3072x768 for a triplehead, etc)  add a SyphonServerTextureCustomResolution to the main camera in your scene. If you want a quick way to use Unity as a control surface, where its GUI is only visible inside the Unity app itself, additionally take a look at the code in ControlSurfaceExample.  See the unity scene SyphonServerCustomResolution.unity for a demo.\
+\
+
+\b SyphonClient:
+\b0 \
+if you want to use a Projector as a Syphon client, add the SyphonClientTextureProjector script to a gameObject that has a Projector on it, and then in its public inspector fields, add the name and appName of the client.\
+
+\b ----------------------\
+
+\b0 \
 Take a look at the code in SyphonClientTexture.cs's ApplyTexture() method to see how to add additional functionality- adding the texture to projectors, bump maps, etc.\
-\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ri-2496\pardirnatural\qj
 \cf0 Syphon for Unity is published under a BSD license. See the included License.txt file.\
@@ -54,8 +76,10 @@ Syphon for Unity3D - Brian Chasalow (Unity 3D integration and scripting), Tom Bu
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ri-2496\pardirnatural\qj
 
-\b \cf0 Release Notes:
-\b0 \
+\b \cf0 Release Notes:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ri-2496\pardirnatural\qj
+
+\b0 \cf0 a12: added SyphonClientTextureProjector script, and made it so that SyphonClientTexture adds the mainTexture on all materials on a gameObject, not just the first\
 a11: added a custom resolution syphon example, and fixed a rare threading issue on syphon exit or creation. \
 a10: fixed a bug with OnRetireServer crashing with OpenFrameworks servers exiting.\
 a9: fixed some Unity 4.2 texture creation and 64 bit issues. uses custom Syphon framework with multithreading changes.\

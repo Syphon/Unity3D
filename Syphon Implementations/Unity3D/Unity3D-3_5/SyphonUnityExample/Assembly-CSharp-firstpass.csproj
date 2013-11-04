@@ -49,6 +49,7 @@
      <Compile Include="Assets\Plugins\SyphonObject\SyphonClientObject.cs" />
      <Compile Include="Assets\Plugins\SyphonObject\SyphonServerObject.cs" />
      <Compile Include="Assets\Plugins\SyphonTexture-AdvancedUsers\ControlSurfaceExample.cs" />
+     <Compile Include="Assets\Plugins\SyphonTexture-AdvancedUsers\SyphonClientTextureProjector.cs" />
      <Compile Include="Assets\Plugins\SyphonTexture-AdvancedUsers\SyphonServerTextureCustomResolution.cs" />
      <Compile Include="Assets\Plugins\SyphonTexture\SyphonClientTexture.cs" />
      <Compile Include="Assets\Plugins\SyphonTexture\SyphonServerTexture.cs" />
@@ -62,6 +63,7 @@
      <None Include="Assets\Resources\SyphonShaders\AlphaTest-Glossy01.shader" />
      <None Include="Assets\Resources\SyphonShaders\Particle MultiplyDouble.shader" />
      <None Include="Assets\Resources\SyphonShaders\Particle AddMultiply.shader" />
+     <None Include="Assets\Resources\SyphonShaders\SyphonProjector.shader" />
      <None Include="Assets\Resources\SyphonShaders\Particle Alpha BlendDepthtestOff.shader" />
      <None Include="Assets\Resources\SyphonShaders\SyphonSkybox.shader" />
      <None Include="Assets\Resources\SyphonShaders\Particle Alpha BlendFront.shader" />
