@@ -1,9 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Plugins/SyphonTexture/SyphonClientTexture.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Plugins/SyphonObject/SyphonClientObject.cs">
     <Files>
-      <File FileName="Assets/Plugins/SyphonTexture-AdvancedUsers/SyphonClientTextureProjector.cs" Line="38" Column="1" />
-      <File FileName="Assets/Plugins/SyphonTexture/SyphonClientTexture.cs" Line="41" Column="20" />
+      <File FileName="Assets/Plugins/SyphonTexture-AdvancedUsers/SyphonClientTextureProjector.cs" Line="1" Column="1" />
+      <File FileName="Assets/Plugins/SyphonTexture/SyphonClientTexture.cs" Line="50" Column="66" />
+      <File FileName="Assets/Editor/SyphonEditor.cs" Line="1" Column="1" />
+      <File FileName="Assets/Editor/SyphonHelper.cs" Line="38" Column="16" />
+      <File FileName="Assets/Plugins/SyphonObject/SyphonClientObject.cs" Line="98" Column="21" />
+      <File FileName="Assets/Plugins/SyphonTexture/SyphonServerTexture.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

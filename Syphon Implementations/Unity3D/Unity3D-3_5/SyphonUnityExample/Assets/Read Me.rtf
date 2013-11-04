@@ -7,7 +7,7 @@
 \f0\fs36 \cf0 Syphon for Unity Pro 4.0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\fs20 \cf0 1.0 Public Beta 2 a12
+\fs20 \cf0 1.0 Public Beta 2 a13
 \fs36 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
@@ -79,7 +79,10 @@ Syphon for Unity3D - Brian Chasalow (Unity 3D integration and scripting), Tom Bu
 \b \cf0 Release Notes:\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ri-2496\pardirnatural\qj
 
-\b0 \cf0 a12: added SyphonClientTextureProjector script, and made it so that SyphonClientTexture adds the mainTexture on all materials on a gameObject, not just the first\
+\b0 \cf0 a13: fix SyphonClientObject issue with not rendering under rare instances due to cachedTexID == 0
+\b \
+
+\b0 a12: added SyphonClientTextureProjector script, and made it so that SyphonClientTexture adds the mainTexture on all materials on a gameObject, not just the first\
 a11: added a custom resolution syphon example, and fixed a rare threading issue on syphon exit or creation. \
 a10: fixed a bug with OnRetireServer crashing with OpenFrameworks servers exiting.\
 a9: fixed some Unity 4.2 texture creation and 64 bit issues. uses custom Syphon framework with multithreading changes.\

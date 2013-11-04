@@ -95,6 +95,7 @@ public class SyphonClientObject : ScriptableObject {
 			RenderTexture.active = attachedTexture;
 			GL.Clear(false, true, new Color(0, 0, 0, 0));
 			RenderTexture.active = null;
+			cachedTexID = -1;
 		}
 		
 		InitSyphonClient();
