@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: b8a30237ba81d49b691c092d951a1230
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - alphaOneMat: {fileID: 2100000, guid: fe1d24430150e4b91acf91e61e93a083, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
