@@ -33,7 +33,8 @@ extern "C"{
 #endif
 #import <Cocoa/Cocoa.h>
 #import <OpenGL/OpenGL.h>
-
+    static void cacheGraphicsContext();
+    
 //#import <OpenGL/CGLMacro.h>
 static int serversCount = 0;
     static CGLContextObj cachedContext;
@@ -74,10 +75,11 @@ void syphonServerDestroyResources(SyphonServer* server)
     // lets create our client if we dont have it. 
     if(server != nil)
     {
+//        NSLog(@"destroying Syphon Server : %@ with thread ID %@", server,  [NSThread currentThread]);
+
         [server stop];
         [server release];
         server = nil;
-         //   NSLog(@"destroying Syphon Server : %@ with thread ID %@", server,  [NSThread currentThread]); 
     }
 
     
@@ -88,8 +90,17 @@ void syphonServerDestroyResources(SyphonServer* server)
     void syphonServerCreate(SyphonCacheData* ptr)
     {
         NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-        ptr->syphonServer = [[SyphonServer alloc] initWithName:ptr->serverName context:cachedContext options:nil];
-       //     NSLog(@"creating Syphon Server : %@ with thread ID %@", ptr->serverName,  [NSThread currentThread]); 
+        
+        if(cachedContext != nil && CGLGetContextRetainCount(cachedContext) != 0){
+            ptr->syphonServer = [[SyphonServer alloc] initWithName:ptr->serverName context:cachedContext options:nil];
+    //     NSLog(@"creating Syphon Server : %@ with thread ID %@", ptr->serverName,  [NSThread currentThread]);
+        }
+        else
+        { //force a context refresh.
+            cacheGraphicsContext();
+//            NSLog(@"context is nil?! HOW! %i", CGLGetContextRetainCount(cachedContext));
+        }
+
         [pool drain];
     }
 
@@ -113,7 +124,15 @@ void syphonServerPublishTexture(SyphonCacheData* ptr){
 //		NSLog(@"texture id: %li, x: %i, y: %i, syphon server pointer value: %li", (unsigned long)ptr->textureID, ptr->textureWidth, ptr->textureHeight, (unsigned long)ptr->syphonServer);
         //NSLog(@"publishing Syphon Server : %@ with thread ID %@", ptr->serverName,  [NSThread currentThread]);
         NSRect rect = NSMakeRect(0, 0, ptr->textureWidth, ptr->textureHeight);
+        if(cachedContext != nil && CGLGetContextRetainCount(cachedContext) != 0){
         [ptr->syphonServer publishFrameTexture:ptr->textureID textureTarget:GL_TEXTURE_2D imageRegion:rect textureDimensions:rect.size flipped:NO];
+        }
+        else
+        { //force a context refresh.
+            cacheGraphicsContext();
+            //            NSLog(@"context is 2 nil?! HOW! %i", CGLGetContextRetainCount(cachedContext));
+        }
+
     }
 
     [pool drain];
