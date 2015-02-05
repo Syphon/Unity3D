@@ -10,29 +10,29 @@
 	<string>SyphonUnityPlugin</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>001D8375-61AE-44D7-AAE8-2E42EC6C0BD6</key>
+		<key>0F2AA51BEA719AA2B941F33D3559F2DBD654EAEF</key>
 		<string>https://github.com/Syphon/Unity3D.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityPlugin/SyphonUnityPlugin.xcodeproj/project.xcworkspace</string>
+	<string>Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityPlugin/SyphonUnityPlugin.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>001D8375-61AE-44D7-AAE8-2E42EC6C0BD6</key>
+		<key>0F2AA51BEA719AA2B941F33D3559F2DBD654EAEF</key>
 		<string>../../../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/Syphon/Unity3D.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>001D8375-61AE-44D7-AAE8-2E42EC6C0BD6</string>
+	<string>0F2AA51BEA719AA2B941F33D3559F2DBD654EAEF</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>001D8375-61AE-44D7-AAE8-2E42EC6C0BD6</string>
+			<string>0F2AA51BEA719AA2B941F33D3559F2DBD654EAEF</string>
 			<key>IDESourceControlWCCName</key>
 			<string>SyphonUnity3D</string>
 		</dict>
