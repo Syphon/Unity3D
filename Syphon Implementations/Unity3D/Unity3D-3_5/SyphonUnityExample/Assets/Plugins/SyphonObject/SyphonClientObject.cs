@@ -237,6 +237,7 @@ public class SyphonClientObject : ScriptableObject {
 			//you need to render once per frame for each texture.
 			Syphon.SafeMaterial.SetPass(0);	
 			RenderTexture.active = attachedTexture;
+//			UnityEngine.Debug.Log ("ISSUING EVENT?" + (int)syphonClientPointer) ;
 			GL.IssuePluginEvent((int)syphonClientPointer);
 			RenderTexture.active = null;
 		}

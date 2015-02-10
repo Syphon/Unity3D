@@ -223,14 +223,17 @@ extern "C" {
     
 	static uint32_t EVENT_TYPE_MASK = 0x3E000000;
 	static int EVENT_TYPE_SHIFT = 25;
-	
+	static uint32_t IS_DATA_FLAG = 0x80000000;
 	int DecodeData(int eventData)
 	{
-		//		bool hasData   = (((UInt32)eventData & IS_DATA_FLAG) != 0);
+		bool hasData   = (((UInt32)eventData & IS_DATA_FLAG) != 0);
 		//		uint32_t pos     = (((UInt32)eventData & DATA_POS_MASK) >> DATA_POS_SHIFT);
 		uint32_t eventId = (((uint32_t)eventData & EVENT_TYPE_MASK) >> EVENT_TYPE_SHIFT);
 		//		uint32_t payload = (((UInt32)eventData & PAYLOAD_MASK) << (PAYLOAD_SHIFT * (int)pos));
-		return (int)eventId;
+		if(hasData)
+			return (int)eventId;
+		else
+			return 100;
 	}
 	
 	
@@ -240,21 +243,27 @@ extern "C" {
 		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
 		SyphonCacheData* ptr = (SyphonCacheData*)instanceID;
+		if((NSUInteger)ptr == 200){
+			//			NSLog(@"WE GOOD?!");
+			cacheGraphicsContext();
+			[pool drain];
+			return;
+		}
 		
-		if(ptr == nil || (NSUInteger)ptr < 5){
+		if(ptr == nil || instanceID < 5){
+//			NSLog(@"early out DATA!: %i " , instanceID);
+
 			[pool drain];
 			return;
 		}
 		int decodedData = DecodeData(instanceID);
 		if(decodedData < 5){
+//			NSLog(@"DECODED DATA!: %i and originally %i" , decodedData, instanceID);
 			[pool drain];
 			return;
 		}
-		if((NSUInteger)ptr == 200){
-			//			NSLog(@"WE GOOD?!");
-			cacheGraphicsContext();
-		}
-		else if((NSUInteger)ptr != 0){
+
+		if((NSUInteger)ptr != 0){
 
 			//if we're 64 bit, get the pointer a little differently.
             if(sizeof(int*) == 8){
