@@ -117,8 +117,6 @@ public class SyphonServerTextureCustomResolution : SyphonServerTexture {
 		}
 
 		if(Event.current.type.Equals(EventType.Repaint)){	
-			//clear with a black background (GL.Clear adds weird artifacts if called here...dunno why, unity bug?)
-			GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Syphon.NullTexture,  ScaleMode.ScaleAndCrop, false, 0); 
 			//draw the scene rendertexture, but fit it to the window.
 			if(drawScene)
 			GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), customRenderTexture,  ScaleMode.ScaleToFit, false, 0); 
