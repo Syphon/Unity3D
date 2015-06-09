@@ -188,7 +188,6 @@ extern "C" {
 //				NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
 				glDeleteFramebuffersEXT(1, &syphonFBO);
                 glGenFramebuffersEXT(1, &syphonFBO);
-				syphonFBO = nil;
 			}
             
             for(std::list<SyphonCacheData*>::iterator list_iter =syphonServers.begin(); 

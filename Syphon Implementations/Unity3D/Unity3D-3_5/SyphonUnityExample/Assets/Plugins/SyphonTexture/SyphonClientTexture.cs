@@ -78,11 +78,11 @@ public class SyphonClientTexture : MonoBehaviour {
 	//handle applying the client texture to your object whichever way you please.
 	public virtual void ApplyTexture(){
 		if(clientObject != null && clientObject.Initialized){
-			Material[] matArray = renderer.sharedMaterials;			
+			Material[] matArray = GetComponent<Renderer>().sharedMaterials;			
 			for(int i = 0; i < matArray.Length; i++){
 				matArray[i].mainTexture = clientObject.AttachedTexture;	
 			}
-			renderer.sharedMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
+			GetComponent<Renderer>().sharedMaterial.mainTexture.wrapMode = TextureWrapMode.Repeat;
 		}
 	}
 
