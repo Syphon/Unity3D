@@ -41,18 +41,22 @@ using System.IO;
 //	[ExecuteInEditMode]
 	public class Syphon : MonoBehaviour
 {
+
+	[DllImport("SyphonUnityPlugin")]
+	public static extern IntPtr SyphonGetRenderEventFunc();
+
 	//PLUGIN EXPORTS:
 	//server related
 	[DllImport ("SyphonUnityPlugin")]
 		public static extern IntPtr CreateServerTexture(string serverName);
 	[DllImport ("SyphonUnityPlugin")]
-		public static extern bool CacheServerTextureValues(int textureId, int width, int height, IntPtr syphonServerTextureInstance);
+		public static extern bool CacheServerTextureValues(IntPtr textureId, int width, int height, IntPtr syphonServerTextureInstance);
 	
 	//client related
 	[DllImport ("SyphonUnityPlugin")]
 		public static extern IntPtr CreateClientTexture(IntPtr serverPtr);
 	[DllImport ("SyphonUnityPlugin")]
-		public static extern bool CacheClientTextureValues(int textureId, int width, int height, IntPtr syphonClientTextureInstance);
+		public static extern bool CacheClientTextureValues(IntPtr textureId, int width, int height, IntPtr syphonClientTextureInstance);
 	[DllImport ("SyphonUnityPlugin")]
 		public static extern void QueueToKillTexture(IntPtr killMe);
 	[DllImport ("SyphonUnityPlugin")]
@@ -110,21 +114,28 @@ using System.IO;
 	{
 		get{
 			
-		if(!safeMaterial){
-		safeMaterial = new Material (
-		"Shader \"Hidden/Invert\" {" +
-		"SubShader {" +
-		" Pass {" +
-		" ZTest Always Cull Off ZWrite Off" +
-		" SetTexture [_RenderTex] { combine texture }" +
-		" }" +
-		"}" +
-		"}"
-		);
-		safeMaterial.hideFlags = HideFlags.HideAndDontSave;
-		safeMaterial.shader.hideFlags = HideFlags.HideAndDontSave;		
-		}
-		return safeMaterial;
+			if(!safeMaterial){
+				safeMaterial = new Material (
+					Shader.Find("Unlit/Safe"));
+				//				safeMaterial.hideFlags = HideFlags.HideAndDontSave;
+				//				safeMaterial.shader.hideFlags = HideFlags.HideAndDontSave;		
+			}
+			
+			//			if(!safeMaterial){
+			//				safeMaterial = new Material (
+			//					"Shader \"Hidden/Invert\" {" +
+			//					"SubShader {" +
+			//					" Pass {" +
+			//					" ZTest Always Cull Off ZWrite Off" +
+			//					" SetTexture [_RenderTex] { combine texture }" +
+			//					" }" +
+			//					"}" +
+			//					"}"
+			//					);
+			//				safeMaterial.hideFlags = HideFlags.HideAndDontSave;
+			//				safeMaterial.shader.hideFlags = HideFlags.HideAndDontSave;		
+			//			}
+			return safeMaterial;
 		}
 	}
 
@@ -563,10 +574,10 @@ public static void DestroyClient(SyphonClientObject destroyObj){
 	}
 }
 	
-public void OnPreRender(){
-		//call 1 to cache context.
-		GL.IssuePluginEvent(updateContext);
-	
-}
+//public void OnPreRender(){
+//		//call 1 to cache context.
+//		GL.IssuePluginEvent(updateContext);
+//	
+//}
 
 }

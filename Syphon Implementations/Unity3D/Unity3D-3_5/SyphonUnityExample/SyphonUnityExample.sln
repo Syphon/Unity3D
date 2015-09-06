@@ -5,8 +5,6 @@ Project("{E048D02B-AC97-D609-34C0-1A4F22E8C4AD}") = "SyphonUnityExample", "Assem
 EndProject
 Project("{E048D02B-AC97-D609-34C0-1A4F22E8C4AD}") = "SyphonUnityExample", "Assembly-CSharp-Editor.csproj", "{13F3D434-769C-DB94-599C-44DB4FEAE458}"
 EndProject
-Project("{E048D02B-AC97-D609-34C0-1A4F22E8C4AD}") = "SyphonUnityExample", "Assembly-UnityScript-firstpass.unityproj", "{B30B13C1-75C0-ED69-8845-77B43C45BBE6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,15 +19,11 @@ Global
 		{13F3D434-769C-DB94-599C-44DB4FEAE458}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13F3D434-769C-DB94-599C-44DB4FEAE458}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13F3D434-769C-DB94-599C-44DB4FEAE458}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B30B13C1-75C0-ED69-8845-77B43C45BBE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B30B13C1-75C0-ED69-8845-77B43C45BBE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B30B13C1-75C0-ED69-8845-77B43C45BBE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B30B13C1-75C0-ED69-8845-77B43C45BBE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																																																																																																																																																																																																																																																																																GlobalSection(MonoDevelopProperties) = preSolution
+																																																																																																																																																																																																																																																																																											GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1

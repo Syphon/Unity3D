@@ -41,101 +41,93 @@ static int serversCount = 0;
 
 //get the count of servers
 int SyServerCount(){
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool{
     serversCount = [[[SyphonServerDirectory sharedDirectory] servers] count];
-	[pool drain];
 	return serversCount;
+    }
 }
 
 
 //get the clients! each object returned
 void* SyServerAtIndex(int myIndex, char* myAppName, char* myName, char* myUuId){
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    void* syPtr = [[[SyphonServerDirectory sharedDirectory] servers] objectAtIndex:myIndex];
+    @autoreleasepool{
 
-    if(serversCount > 0){
-	NSDictionary* serverDict = [[[SyphonServerDirectory sharedDirectory] servers] objectAtIndex:myIndex];
-	NSString* appName = [serverDict objectForKey:SyphonServerDescriptionAppNameKey];
-	NSString* name = [serverDict objectForKey:SyphonServerDescriptionNameKey];
-	NSString *uuid = [serverDict objectForKey:SyphonServerDescriptionUUIDKey];	
-	strncpy(myAppName, [appName UTF8String],256);
-	strncpy(myName, [name UTF8String], 256);
-	strncpy(myUuId, [uuid UTF8String], 256);
-    }
-	[pool drain];
+        void* syPtr = (__bridge void*)[[[SyphonServerDirectory sharedDirectory] servers] objectAtIndex:myIndex];
+
+        if(serversCount > 0){
+            NSDictionary* serverDict = [[[SyphonServerDirectory sharedDirectory] servers] objectAtIndex:myIndex];
+            NSString* appName = [serverDict objectForKey:SyphonServerDescriptionAppNameKey];
+            NSString* name = [serverDict objectForKey:SyphonServerDescriptionNameKey];
+            NSString *uuid = [serverDict objectForKey:SyphonServerDescriptionUUIDKey];	
+            strncpy(myAppName, [appName UTF8String],256);
+            strncpy(myName, [name UTF8String], 256);
+            strncpy(myUuId, [uuid UTF8String], 256);
+        }
+   
     return syPtr;
-
+    }
 }
 
     
 void syphonServerDestroyResources(SyphonServer* server)
 {
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    
-    // lets create our client if we dont have it. 
-    if(server != nil)
-    {
-//        NSLog(@"destroying Syphon Server : %@ with thread ID %@", server,  [NSThread currentThread]);
-
-        [server stop];
-        [server release];
-        server = nil;
+    @autoreleasepool {
+        if(server != nil)
+        {
+    //        NSLog(@"destroying Syphon Server : %@ with thread ID %@", server,  [NSThread currentThread]);
+            [server stop];
+            server = nil;
+        }
     }
-
-    
-    [pool drain];
 }
 
 //    
     void syphonServerCreate(SyphonCacheData* ptr)
     {
-        NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-        
-        if(cachedContext != nil && CGLGetContextRetainCount(cachedContext) != 0){
-            ptr->syphonServer = [[SyphonServer alloc] initWithName:ptr->serverName context:cachedContext options:nil];
-    //     NSLog(@"creating Syphon Server : %@ with thread ID %@", ptr->serverName,  [NSThread currentThread]);
+        @autoreleasepool {
+            if(cachedContext != nil && CGLGetContextRetainCount(cachedContext) != 0){
+                ptr->syphonServer = [[SyphonServer alloc] initWithName:ptr->serverName context:cachedContext options:nil];
+        //     NSLog(@"creating Syphon Server : %@ with thread ID %@", ptr->serverName,  [NSThread currentThread]);
+            }
+            else
+            { //force a context refresh.
+                cacheGraphicsContext();
+    //            NSLog(@"context is nil?! HOW! %i", CGLGetContextRetainCount(cachedContext));
+            }
         }
-        else
-        { //force a context refresh.
-            cacheGraphicsContext();
-//            NSLog(@"context is nil?! HOW! %i", CGLGetContextRetainCount(cachedContext));
-        }
-
-        [pool drain];
     }
 
 
     
 
 void syphonServerPublishTexture(SyphonCacheData* ptr){    
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    if(!ptr->syphonServer){
-        syphonServerCreate(ptr);
-    }
-    
-    if(ptr->syphonServer)
-    {
-		
-		if(!glIsTexture(ptr->textureID)){
-			NSLog(@" %i is not a texture! cannot publish server texture.", ptr->textureID);
-			return;
-		}
-		
-//		NSLog(@"texture id: %li, x: %i, y: %i, syphon server pointer value: %li", (unsigned long)ptr->textureID, ptr->textureWidth, ptr->textureHeight, (unsigned long)ptr->syphonServer);
-        //NSLog(@"publishing Syphon Server : %@ with thread ID %@", ptr->serverName,  [NSThread currentThread]);
-        NSRect rect = NSMakeRect(0, 0, ptr->textureWidth, ptr->textureHeight);
-        if(cachedContext != nil && CGLGetContextRetainCount(cachedContext) != 0){
-        [ptr->syphonServer publishFrameTexture:ptr->textureID textureTarget:GL_TEXTURE_2D imageRegion:rect textureDimensions:rect.size flipped:NO];
+    @autoreleasepool{
+        if(!ptr->syphonServer){
+            syphonServerCreate(ptr);
         }
-        else
-        { //force a context refresh.
-            cacheGraphicsContext();
-            //            NSLog(@"context is 2 nil?! HOW! %i", CGLGetContextRetainCount(cachedContext));
+        
+        if(ptr->syphonServer)
+        {
+            
+            if(!glIsTexture(ptr->textureID)){
+                NSLog(@" %i is not a texture! cannot publish server texture.", ptr->textureID);
+                return;
+            }
+            
+    //		NSLog(@"texture id: %li, x: %i, y: %i, syphon server pointer value: %li", (unsigned long)ptr->textureID, ptr->textureWidth, ptr->textureHeight, (unsigned long)ptr->syphonServer);
+            //NSLog(@"publishing Syphon Server : %@ with thread ID %@", ptr->serverName,  [NSThread currentThread]);
+            NSRect rect = NSMakeRect(0, 0, ptr->textureWidth, ptr->textureHeight);
+            if(cachedContext != nil && CGLGetContextRetainCount(cachedContext) != 0){
+            [ptr->syphonServer publishFrameTexture:ptr->textureID textureTarget:GL_TEXTURE_2D imageRegion:rect textureDimensions:rect.size flipped:NO];
+            }
+            else
+            { //force a context refresh.
+                cacheGraphicsContext();
+                //            NSLog(@"context is 2 nil?! HOW! %i", CGLGetContextRetainCount(cachedContext));
+            }
+
         }
-
     }
-
-    [pool drain];
 }
     
     

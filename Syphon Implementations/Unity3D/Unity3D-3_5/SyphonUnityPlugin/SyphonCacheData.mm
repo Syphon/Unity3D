@@ -49,11 +49,13 @@ SyphonCacheData::SyphonCacheData(NSDictionary* ptr)
     initialized = NO;
     isAServer = NO;
     updateTextureSizeFlag = false;
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+   
+
 	destroyMe = NO;
     pluginType = PLUGIN_SYPHON;
-	syphonClient = [[SyphonClient alloc] initWithServerDescription:ptr options:nil newFrameHandler:nil];
-    [pool drain];
+    @autoreleasepool {
+        syphonClient = [[SyphonClient alloc] initWithServerDescription:ptr options:nil newFrameHandler:nil];
+    }
 }
 
 void SyphonCacheData::cacheTextureValues(int mytextureID, int width, int height, BOOL imaServer){
@@ -68,14 +70,9 @@ void SyphonCacheData::cacheTextureValues(int mytextureID, int width, int height,
 
 SyphonCacheData::~SyphonCacheData()
 {
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
     if(serverName != nil){
-    [serverName release];
-    serverName = nil;
+        serverName = nil;
     }
-	[pool drain];
-
 }
 
 

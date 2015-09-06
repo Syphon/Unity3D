@@ -185,7 +185,7 @@
 				8D5B49B1048680CD000E48DA /* Sources */,
 				8D5B49B3048680CD000E48DA /* Frameworks */,
 				1BE97414121E29E60024DB80 /* Copy Framework */,
-				4150643C14DB2E6A00678564 /* ShellScript */,
+				4150643C14DB2E6A00678564 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -238,18 +238,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4150643C14DB2E6A00678564 /* ShellScript */ = {
+		4150643C14DB2E6A00678564 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\nrm -r -f \"/Users/bc/SyphonUnity3D/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\ncp -r -f \"$TARGET_BUILD_DIR/$PRODUCT_NAME.bundle\" \"/Users/bc/SyphonUnity3D/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\n";
+			shellScript = "\n#rm -r -f \"/Users/bc/GIT_REPOS/Unity3D/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\n#cp -r -f \"$TARGET_BUILD_DIR/$PRODUCT_NAME.bundle\" \"/Users/bc/GIT_REPOS/Unity3D/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\n";
 		};
 		BD48069C1239AFCA00DFB19E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -263,7 +264,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$PROJECT_DIR/../../../../Syphon Framework/\"\nxcodebuild -configuration \"$CONFIGURATION\" ARCHS=\"$ARCHS\" VALID_ARCHS=\"$VALID_ARCHS\" OBJROOT=\"$OBJROOT\" SYMROOT=\"$SYMROOT\" GCC_PREPROCESSOR_DEFINITIONS=SYPHON_UNIQUE_CLASS_NAME_PREFIX=SyphonUnity";
+			shellScript = "cd \"$PROJECT_DIR/../../../../Syphon-Framework/\"\nxcodebuild -configuration \"$CONFIGURATION\" ARCHS=\"$ARCHS\" VALID_ARCHS=\"$VALID_ARCHS\" OBJROOT=\"$OBJROOT\" SYMROOT=\"$SYMROOT\" GCC_PREPROCESSOR_DEFINITIONS=SYPHON_UNIQUE_CLASS_NAME_PREFIX=SyphonUnity";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -303,7 +304,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "\"$(CONFIGURATION_BUILD_DIR)\"";
@@ -321,7 +323,7 @@
 				);
 				PRODUCT_NAME = SyphonUnityPlugin;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
@@ -330,7 +332,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = "\"$(CONFIGURATION_BUILD_DIR)\"";
@@ -346,7 +349,7 @@
 				);
 				PRODUCT_NAME = SyphonUnityPlugin;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
@@ -381,21 +384,25 @@
 		BD48069E1239AFCA00DFB19E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				PRODUCT_NAME = "Build Custom Framework";
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
 		BD48069F1239AFCA00DFB19E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				PRODUCT_NAME = "Build Custom Framework";
+				VALID_ARCHS = x86_64;
 				ZERO_LINK = NO;
 			};
 			name = Release;

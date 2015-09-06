@@ -34,63 +34,113 @@ extern "C" {
     
     static std::list<SyphonCacheData*> syphonServers;
     static std::list<SyphonCacheData*> syphonClients;
-    
-    
-    void UnitySetGraphicsDevice (void* device, int deviceType, int eventType){
-        // If we've got an OpenGL device, remember device type. There's no OpenGL
-        // "device pointer" to remember since OpenGL always operates on a currently set
-        // global context.
-        
-        NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-        
-        if (deviceType == kGfxRendererOpenGL)
-        {
-            //      NSLog(@"Set OpenGL graphics device: %i", deviceType);
-        }
-        
-        switch (eventType) {
-            case kGfxDeviceEventInitialize:
-            {
-                //                NSLog(@"init graphics device");
-                cachedContext = CGLGetCurrentContext();
-				NSLog(@"CACHING CONTEXT very first time!");
 
-//                NSString* bundlePath = [[[NSBundle mainBundle] bundlePath]
-//                                        stringByAppendingPathComponent:@"Contents/Data/Managed/Assembly-CSharp-firstpass.dll"];
-//                if( [ [NSFileManager defaultManager] fileExistsAtPath:bundlePath isDirectory:NO]){
-//                    //            NSLog(@"in the app!");
-//                    pathToBundle = bundlePath;
-//                }
-//                else{
-//                    //              NSLog(@"in the editor");
-//                    char *path=NULL;
-//                    size_t size;
-//                    path=getcwd(path,size);
-//                    NSString* myString = [NSString stringWithUTF8String: path];
-//                    NSString* finalString = [myString stringByAppendingPathComponent:@"/Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll"];
-//                    pathToBundle = finalString;
-//                }
-//                [pathToBundle retain];
-
-                registerCallbacks();
-                break;
-            }
-            case kGfxDeviceEventShutdown:
-            {
-                // NSLog(@"shutdown graphics device");
-                //if you are quitting the app, kill all callbacks. 
-                unregisterCallbacks();				
-                break;
-            }
-            default:
-                break;
-                //NSLog(@"graphics device changed. - this doesnt ever get called i dont think");
-                
-        }
+    static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType eventType);
+    
+    static IUnityInterfaces* s_UnityInterfaces = NULL;
+    static IUnityGraphics* s_Graphics = NULL;
+    static UnityGfxRenderer s_DeviceType = kUnityGfxRendererNull;
+    
+    extern "C" void	UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginLoad(IUnityInterfaces* unityInterfaces)
+    {
+        s_UnityInterfaces = unityInterfaces;
+        s_Graphics = s_UnityInterfaces->Get<IUnityGraphics>();
+        s_Graphics->RegisterDeviceEventCallback(OnGraphicsDeviceEvent);
         
-        [pool drain];
-        
+        // Run OnGraphicsDeviceEvent(initialize) manually on plugin load
+        OnGraphicsDeviceEvent(kUnityGfxDeviceEventInitialize);
+        registerCallbacks();
     }
+    
+    extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginUnload()
+    {
+        s_Graphics->UnregisterDeviceEventCallback(OnGraphicsDeviceEvent);
+        unregisterCallbacks();
+    }
+    
+    
+     static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType eventType)
+    {
+        UnityGfxRenderer currentDeviceType = s_DeviceType;
+        
+        
+        switch (eventType)
+        {
+            case kUnityGfxDeviceEventInitialize:
+            {
+                NSLog(@"Syphon Unity OnGraphicsDeviceEvent(Initialize).\n");
+                s_DeviceType = s_Graphics->GetRenderer();
+                currentDeviceType = s_DeviceType;
+                SyphonUnityRenderEvent(200);
+
+                break;
+            }
+                
+            case kUnityGfxDeviceEventShutdown:
+            {
+                NSLog(@"Syphon Unity OnGraphicsDeviceEvent(Shutdown).\n");
+                s_DeviceType = kUnityGfxRendererNull;
+                //                g_TexturePointer = NULL;
+                break;
+            }
+                
+            case kUnityGfxDeviceEventBeforeReset:
+            {
+                NSLog(@"Syphon Unity OnGraphicsDeviceEvent(BeforeReset).\n");
+                break;
+            }
+                
+            case kUnityGfxDeviceEventAfterReset:
+            {
+                NSLog(@"Syphon Unity OnGraphicsDeviceEvent(AfterReset).\n");
+                SyphonUnityRenderEvent(200);
+                break;
+            }
+        };
+}
+
+    
+    
+//    void UnitySetGraphicsDevice (void* device, int deviceType, int eventType){
+//        // If we've got an OpenGL device, remember device type. There's no OpenGL
+//        // "device pointer" to remember since OpenGL always operates on a currently set
+//        // global context.
+//        
+//        @autoreleasepool {
+//            
+//
+//            
+//            if (deviceType == kGfxRendererOpenGL)
+//            {
+//                //      NSLog(@"Set OpenGL graphics device: %i", deviceType);
+//            }
+//            
+//            switch (eventType) {
+//                case kGfxDeviceEventInitialize:
+//                {
+//                    //                NSLog(@"init graphics device");
+//                    cachedContext = CGLGetCurrentContext();
+//                    NSLog(@"CACHING CONTEXT very first time!");
+//
+//                    registerCallbacks();
+//                    break;
+//                }
+//                case kGfxDeviceEventShutdown:
+//                {
+//                    // NSLog(@"shutdown graphics device");
+//                    //if you are quitting the app, kill all callbacks. 
+//                    unregisterCallbacks();				
+//                    break;
+//                }
+//                default:
+//                    break;
+//                    //NSLog(@"graphics device changed. - this doesnt ever get called i dont think");
+//                    
+//            }
+//        
+//        }
+//        
+//    }
     
     
     void* CreateClientTexture(NSDictionary* serverPtr){
@@ -219,103 +269,87 @@ extern "C" {
 		}
     }
     
+
+	
+    // --------------------------------------------------------------------------
+    // GetRenderEventFunc, an example function we export which is used to get a rendering event callback function.
+    extern "C" UnityRenderingEvent UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API SyphonGetRenderEventFunc()
+    {
+        return SyphonUnityRenderEvent;
+    }
     
-	static uint32_t EVENT_TYPE_MASK = 0x3E000000;
-	static int EVENT_TYPE_SHIFT = 25;
-	static uint32_t IS_DATA_FLAG = 0x80000000;
-	int DecodeData(int eventData)
-	{
-		bool hasData   = (((UInt32)eventData & IS_DATA_FLAG) != 0);
-		//		uint32_t pos     = (((UInt32)eventData & DATA_POS_MASK) >> DATA_POS_SHIFT);
-		uint32_t eventId = (((uint32_t)eventData & EVENT_TYPE_MASK) >> EVENT_TYPE_SHIFT);
-		//		uint32_t payload = (((UInt32)eventData & PAYLOAD_MASK) << (PAYLOAD_SHIFT * (int)pos));
-		if(hasData)
-			return (int)eventId;
-		else
-			return 100;
-	}
-	
-	
-	void UnityRenderEvent(int instanceID)
+    
+	void SyphonUnityRenderEvent(int instanceID)
 	{
 		
-		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+        @autoreleasepool {
+            
+        
 
 		SyphonCacheData* ptr = (SyphonCacheData*)instanceID;
 		if((NSUInteger)ptr == 200){
 			//			NSLog(@"WE GOOD?!");
 			cacheGraphicsContext();
-			[pool drain];
+
 			return;
 		}
 		
-		if(ptr == nil || instanceID < 5){
+		if(ptr == nil){
 //			NSLog(@"early out DATA!: %i " , instanceID);
-
-			[pool drain];
-			return;
-		}
-		int decodedData = DecodeData(instanceID);
-		if(decodedData < 5){
-//			NSLog(@"DECODED DATA!: %i and originally %i" , decodedData, instanceID);
-			[pool drain];
 			return;
 		}
 
-		if((NSUInteger)ptr != 0){
 
-			//if we're 64 bit, get the pointer a little differently.
-            if(sizeof(int*) == 8){
-				bool foundOne = false;
-				for(std::list<SyphonCacheData*>::iterator list_iter =syphonServers.begin();
-					list_iter != syphonServers.end(); list_iter++){
-					NSUInteger smaller = (NSUInteger)(*list_iter);
-					if((int)(smaller) == instanceID){
-						ptr = *list_iter;
-						foundOne = true;
-					}
-				}
-				
-				for(std::list<SyphonCacheData*>::iterator list_iter = syphonClients.begin();
-				list_iter != syphonClients.end(); list_iter++){
-					NSUInteger smaller = (NSUInteger)(*list_iter);
-					if((int)(smaller) == instanceID){
-						ptr = *list_iter;
-						foundOne = true;
-					}
-				}
-				//if you didnt find a match, you're probably trying to access this from the wrong plugin, so just get out.
-				if(!foundOne){
-					[pool drain];
-					return;
-				}
-			}
-			
-			
-//			NSLog(@"this shouldnt even be happening.");
-            if(ptr->pluginType != PLUGIN_SYPHON){
-				[pool drain];
-                return;
-			}
-            //if it's a server
-            if(ptr != nil && ptr->isAServer && ptr->initialized && ptr->serverName != nil){
-				//serialize destruction to same thread as drawing
-				if(ptr->destroyMe)
-					KillServerTexture((SyphonCacheData*)ptr);
-				else
-                syphonServerPublishTexture((SyphonCacheData*)ptr);
+            if((NSUInteger)ptr != 0){
+
+                //if we're 64 bit, get the pointer a little differently.
+                if(sizeof(int*) == 8){
+                    bool foundOne = false;
+                    for(std::list<SyphonCacheData*>::iterator list_iter =syphonServers.begin();
+                        list_iter != syphonServers.end(); list_iter++){
+                        NSUInteger smaller = (NSUInteger)(*list_iter);
+                        if((int)(smaller) == instanceID){
+                            ptr = *list_iter;
+                            foundOne = true;
+                        }
+                    }
+                    
+                    for(std::list<SyphonCacheData*>::iterator list_iter = syphonClients.begin();
+                    list_iter != syphonClients.end(); list_iter++){
+                        NSUInteger smaller = (NSUInteger)(*list_iter);
+                        if((int)(smaller) == instanceID){
+                            ptr = *list_iter;
+                            foundOne = true;
+                        }
+                    }
+                    //if you didnt find a match, you're probably trying to access this from the wrong plugin, so just get out.
+                    if(!foundOne){
+
+                        return;
+                    }
+                }
+                
+
+                //if it's a server
+                if(ptr != nil && ptr->isAServer && ptr->initialized && ptr->serverName != nil){
+                    //serialize destruction to same thread as drawing
+                    if(ptr->destroyMe)
+                        KillServerTexture((SyphonCacheData*)ptr);
+                    else
+                    syphonServerPublishTexture((SyphonCacheData*)ptr);
+                }
+                //if it's a client
+                if(ptr != nil && !ptr->isAServer && ptr->initialized){
+                    //serialize destruction to same thread as drawing
+                    if(ptr->destroyMe)
+                        KillClientTexture((SyphonCacheData*)ptr);
+                    else
+                    syphonClientPublishTexture((SyphonCacheData*)ptr);
+                }
+                
             }
-            //if it's a client
-            if(ptr != nil && !ptr->isAServer && ptr->initialized){
-				//serialize destruction to same thread as drawing
-				if(ptr->destroyMe)
-					KillClientTexture((SyphonCacheData*)ptr);
-				else
-                syphonClientPublishTexture((SyphonCacheData*)ptr);
-            }
-            
+
         }
-		[pool drain];
     }
     
 

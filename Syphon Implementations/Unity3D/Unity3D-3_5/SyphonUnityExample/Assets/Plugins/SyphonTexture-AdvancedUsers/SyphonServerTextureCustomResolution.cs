@@ -64,6 +64,10 @@ public class SyphonServerTextureCustomResolution : SyphonServerTexture {
 		//if the render texture exists already, release it, and resize it.
 		if(customRenderTexture != null){
 				RenderTexture.active = null;
+
+				if(cameraInstance.targetTexture != null)
+					cameraInstance.targetTexture = null;
+
 				customRenderTexture.Release();
 				customRenderTexture.width = renderWidth;
 				customRenderTexture.height = renderHeight;
@@ -127,14 +131,14 @@ public class SyphonServerTextureCustomResolution : SyphonServerTexture {
 		}
 
 		// Update texture data on Syphon server
-		if (!syphonServerTextureValuesCached || cachedTexID != (int)cameraInstance.targetTexture.GetNativeTexturePtr()
+		if (!syphonServerTextureValuesCached || cachedTexID != cameraInstance.targetTexture.GetNativeTexturePtr()
 		    || cameraInstance.targetTexture.width != cachedWidth ||cameraInstance.targetTexture.height != cachedHeight)
 			cacheTextureValues(  cameraInstance.targetTexture );
 			
 			Syphon.SafeMaterial.SetPass(0);
 			// Publish texture to Syphon Server
-			if (syphonServerTextureInstance != IntPtr.Zero && cachedTexID != -1){
-				GL.IssuePluginEvent((int)syphonServerTextureInstance);
+			if (syphonServerTextureInstance != IntPtr.Zero && cachedTexID != IntPtr.Zero){
+			GL.IssuePluginEvent(Syphon.SyphonGetRenderEventFunc(), (int)syphonServerTextureInstance);
 			}
 
 

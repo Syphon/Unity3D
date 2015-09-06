@@ -34,7 +34,7 @@ using System.Diagnostics;
 
 public class SyphonClientObject : ScriptableObject {
 		
-	private int cachedTexID;
+	private IntPtr cachedTexID = IntPtr.Zero;
 
 	[SerializeField]
 	private RenderTexture attachedTexture;
@@ -95,7 +95,7 @@ public class SyphonClientObject : ScriptableObject {
 			RenderTexture.active = attachedTexture;
 			GL.Clear(false, true, new Color(0, 0, 0, 0));
 			RenderTexture.active = null;
-			cachedTexID = -1;
+			cachedTexID = IntPtr.Zero;
 		}
 		
 		InitSyphonClient();
@@ -134,7 +134,7 @@ public class SyphonClientObject : ScriptableObject {
 			RenderTexture.active = attachedTexture;			
 			GL.Clear(false, true, new Color(0, 0, 0, 0));
 			RenderTexture.active = null;
-			cachedTexID = -1;
+			cachedTexID = IntPtr.Zero;
 //			UnityEngine.Debug.Log ("UpdateTextureSize: changing tex id to " + attachedTexture.GetNativeTextureID() + " width: " + width + " height: " + height);
 //			Syphon.CacheClientTextureValues((int)attachedTexture.GetNativeTextureID(), attachedTexture.width, attachedTexture.height, syphonClientPointer);		
 			
@@ -202,7 +202,7 @@ public class SyphonClientObject : ScriptableObject {
 		
 		if(syphonClientPointer != IntPtr.Zero && initialized){
 			Syphon.QueueToKillTexture(syphonClientPointer);
-			GL.IssuePluginEvent((int)syphonClientPointer);
+			GL.IssuePluginEvent(Syphon.SyphonGetRenderEventFunc(), (int)syphonClientPointer);
 			syphonClientPointer = IntPtr.Zero; 
 			initialized = false;	
 			
@@ -226,9 +226,9 @@ public class SyphonClientObject : ScriptableObject {
 
 	public void Render(){
 				
-		if(attachedTexture.GetNativeTextureID() != cachedTexID){
-			cachedTexID = attachedTexture.GetNativeTextureID();
-			Syphon.CacheClientTextureValues(attachedTexture.GetNativeTextureID(), attachedTexture.width, attachedTexture.height, syphonClientPointer);
+		if(attachedTexture.GetNativeTexturePtr() != cachedTexID){
+			cachedTexID = attachedTexture.GetNativeTexturePtr();
+			Syphon.CacheClientTextureValues(attachedTexture.GetNativeTexturePtr(), attachedTexture.width, attachedTexture.height, syphonClientPointer);
 			initialized = true;
 		}
 		
@@ -238,7 +238,7 @@ public class SyphonClientObject : ScriptableObject {
 			Syphon.SafeMaterial.SetPass(0);	
 			RenderTexture.active = attachedTexture;
 //			UnityEngine.Debug.Log ("ISSUING EVENT?" + (int)syphonClientPointer) ;
-			GL.IssuePluginEvent((int)syphonClientPointer);
+			GL.IssuePluginEvent(Syphon.SyphonGetRenderEventFunc(),(int)syphonClientPointer);
 			RenderTexture.active = null;
 		}
 	}

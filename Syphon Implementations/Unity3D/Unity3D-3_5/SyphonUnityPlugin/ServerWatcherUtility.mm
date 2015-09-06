@@ -100,9 +100,9 @@ static ServerWatcherUtility* watcherUtility;
 
 - (void)handleServerRetire:(NSNotification *)notification
 {
-
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
+    @autoreleasepool {
+        
+    
 	const char* param1 = [[[notification object] objectForKey:SyphonServerDescriptionAppNameKey] UTF8String];
 	const char* param2 = [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
 	const char* param3 = [[[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] copy]UTF8String];
@@ -119,7 +119,7 @@ static ServerWatcherUtility* watcherUtility;
 	
 	OnRetireServerDelegate(param1, param2, param3);
 	
-	[pool drain];
+}
 
 }
 
@@ -127,7 +127,9 @@ static ServerWatcherUtility* watcherUtility;
 {
 //	dispatch_async(dispatch_get_main_queue(), ^(){
 
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
+        
+
 	const char* param2 = [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
 	const char* param1 = [[[notification object] objectForKey:SyphonServerDescriptionAppNameKey] UTF8String];
 	const char* param3 = [[[notification object] objectForKey:SyphonServerDescriptionUUIDKey] UTF8String];
@@ -137,29 +139,23 @@ static ServerWatcherUtility* watcherUtility;
     NSArray* serversArray = [[SyphonServerDirectory sharedDirectory] servers];
     for(NSDictionary* dict in serversArray){
         if([[notification object] objectForKey:SyphonServerDescriptionUUIDKey] == [dict objectForKey:SyphonServerDescriptionUUIDKey]){
-            serverPtr = dict;
+            serverPtr = (__bridge void*)dict;
         }
     }
     
-//	MonoString* myString = mono_string_new(domain, param1);
-//	MonoString* myString2 = mono_string_new(domain, param2);
-//	MonoString* myString3 = mono_string_new(domain, param3);
-//	void *args[] = { myString, myString2, myString3, &serverPtr };
-//	mono_runtime_invoke(updateServer, NULL, args, NULL);
-//	param1 = NULL;
-//	param2 = NULL;
-//	param3 = NULL;
 	OnUpdateServerDelegate(param1, param2, param3, (long)serverPtr);
 	
-	[pool drain];
-//	});
+    }
+
 
 }
 
 - (void)handleServerAnnounce:(NSNotification *)notification
 {	
 //	dispatch_async(dispatch_get_main_queue(), ^(){
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
+        
+
 
 	const char* param2 =  [[[notification object] objectForKey:SyphonServerDescriptionNameKey] UTF8String];
 	const char* param1 = [[[notification object] objectForKey:SyphonServerDescriptionAppNameKey] UTF8String];
@@ -170,24 +166,14 @@ static ServerWatcherUtility* watcherUtility;
     NSArray* serversArray = [[SyphonServerDirectory sharedDirectory] servers];
     for(NSDictionary* dict in serversArray){
         if([[notification object] objectForKey:SyphonServerDescriptionUUIDKey] == [dict objectForKey:SyphonServerDescriptionUUIDKey]){
-            serverPtr = dict;
+            serverPtr = (__bridge void*)dict;
         }
     }
 
 
-//	NSLog(@"announcing uuid %s, ptr is %li", param3, (unsigned long)serverPtr);
-	//	MonoString* myString = mono_string_new(domain, param1);
-//	MonoString* myString2 = mono_string_new(domain, param2);
-//	MonoString* myString3 = mono_string_new(domain, param3);
-//	void *args[] = { myString, myString2, myString3, &serverPtr };
-//	mono_runtime_invoke(announceServer, NULL, args, NULL);
-//	param1 = NULL;
-//	param2 = NULL;
-//	param3 = NULL;
+    OnAnnounceServerDelegate(param1, param2, param3, (long)serverPtr);
 
-	OnAnnounceServerDelegate(param1, param2, param3, (long)serverPtr);
-	[pool drain];
-//	});
+    }
 }
 
 
@@ -224,26 +210,7 @@ extern "C" {
 //		});
     }
 	
-//	void monoMethods(){
-//        announceServerDesc = mono_method_desc_new("Syphon:OnAnnounceServer", FALSE);
-//		announceServer =  mono_method_desc_search_in_image(announceServerDesc, monoImage);
-//		
-//		retireServerDesc = mono_method_desc_new("Syphon:OnRetireServer", FALSE);
-//		retireServer =  mono_method_desc_search_in_image(retireServerDesc, monoImage);
-//	
-//		updateServerDesc = mono_method_desc_new("Syphon:OnUpdateServer", FALSE);
-//		updateServer =  mono_method_desc_search_in_image(updateServerDesc, monoImage);
-//
-//        textureSizeChangedDesc = mono_method_desc_new("Syphon:OnTextureSizeChanged", FALSE);
-//		textureSizeChanged =  mono_method_desc_search_in_image(textureSizeChangedDesc, monoImage);
-//
-//        
-//		mono_method_desc_free(announceServerDesc);
-//    	mono_method_desc_free(retireServerDesc);
-//		mono_method_desc_free(updateServerDesc);	
-//		mono_method_desc_free(textureSizeChangedDesc);	
-//
-//	}
+
     
     //[[SyphonServerDirectory sharedDirectory] addObserver:watcherUtility forKeyPath:@"servers" options:0 context:nil];
     
@@ -259,52 +226,6 @@ extern "C" {
 		}
 	}
 	
-    
-//void ServerPluginInitEditor(const char* myString){
-//	assemblyPath = [NSString stringWithUTF8String: myString];
-//    //[assemblyPath retain];
-//	domain = mono_domain_get();
-//	monoAssembly = mono_domain_assembly_open(domain, assemblyPath.UTF8String);
-//    if(!monoAssembly){        
-//        NSLog(@"ERROR OPENING THE MONO ASSEMBLY. FIX.");
-//    }
-//	monoImage = mono_assembly_get_image(monoAssembly);
-//	NSLog(@"SYPHON PLUGIN INIT EDITOR: %@", assemblyPath); //check if this is the right path
-//	monoMethods();
-//}
-//
-//
-//	
-// void ServerPluginInit(){
-//	assemblyPath = [[[NSBundle mainBundle] bundlePath]
-//					stringByAppendingPathComponent:@"Contents/Data/Managed/Assembly-CSharp-firstpass.dll"];
-//	NSLog(@"SYPHON PLUGIN INIT -BUILT: %@", assemblyPath); //check if this is the right path
-//  //  [assemblyPath retain];
-//	 domain = mono_domain_get();
-//	 monoAssembly = mono_domain_assembly_open(domain, assemblyPath.UTF8String);
-//     if(!monoAssembly){        
-//         NSLog(@"ERROR OPENING THE MONO ASSEMBLY. FIX.");
-//     }
-//	 monoImage = mono_assembly_get_image(monoAssembly);
-//	 monoMethods();
-//}
-	
-
-
- 
-//void InitServerPlugin(){
-//    assemblyPath = pathToBundle;
-//  //  NSLog(@"SYPHON PLUGIN INIT -BUILT: %@", assemblyPath); //check if this is the right path
-//    //  [assemblyPath retain];
-//    domain = mono_domain_get();
-//    monoAssembly = mono_domain_assembly_open(domain, assemblyPath.UTF8String);
-//    if(!monoAssembly){
-//     NSLog(@"ERROR OPENING THE MONO ASSEMBLY. this means that there was a problem in the path to your Assembly. Probably means your Syphon plugin .bundle or Syphon.cs script is not in the .Plugins folder");
-//    }
-//    monoImage = mono_assembly_get_image(monoAssembly);
-//    monoMethods();
-//}
-
 
 
     
@@ -318,13 +239,11 @@ void unregisterCallbacks()
         [[NSNotificationCenter defaultCenter] removeObserver:watcherUtility name:SyphonServerRetireNotification object:nil];
         [[NSNotificationCenter defaultCenter] removeObserver:watcherUtility name:SyphonServerUpdateNotification object:nil];
         
-        [watcherUtility release];
         watcherUtility = nil;
         
 
     }
     if(pathToBundle != nil){
-        [pathToBundle release];
         pathToBundle = nil;
     }
 }

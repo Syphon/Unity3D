@@ -42,7 +42,7 @@ public class SyphonServerTexture : MonoBehaviour {
 	
 	protected IntPtr syphonServerTextureInstance = IntPtr.Zero;			// The Syphon plugin cache pointer, returned from CreateServerTexture()
 	protected bool syphonServerTextureValuesCached = false;	// Do the server knows our camera size and id?
-	protected int cachedTexID = 0;				// current camera gl texture id
+	protected IntPtr cachedTexID = IntPtr.Zero;				// current camera gl texture id
 	protected int cachedWidth = 0;				// current camera texture width
 	protected int cachedHeight = 0;				// current camera texture height
 
@@ -66,19 +66,19 @@ public class SyphonServerTexture : MonoBehaviour {
 	public void OnDestroy() {
 		if(syphonServerTextureInstance != IntPtr.Zero){
 			Syphon.QueueToKillTexture(syphonServerTextureInstance);
-			GL.IssuePluginEvent((int)syphonServerTextureInstance);
+			GL.IssuePluginEvent(Syphon.SyphonGetRenderEventFunc(), (int)syphonServerTextureInstance);
 		}
 		syphonServerTextureInstance = IntPtr.Zero;
 		syphonServerTextureValuesCached = false;
-		cachedTexID = 0;
+		cachedTexID = IntPtr.Zero;
 	}
 
 	//
 	// Cache the current texture data to server
 	public void cacheTextureValues( RenderTexture rt ) {
 		if (rt.GetNativeTexturePtr() != IntPtr.Zero && rt.width != 0 && rt.height != 0) {
-			Syphon.CacheServerTextureValues((int)rt.GetNativeTexturePtr(), rt.width, rt.height, syphonServerTextureInstance);			
-			cachedTexID = (int)rt.GetNativeTexturePtr();
+			Syphon.CacheServerTextureValues(rt.GetNativeTexturePtr(), rt.width, rt.height, syphonServerTextureInstance);			
+			cachedTexID = rt.GetNativeTexturePtr();
 			cachedWidth = rt.width;
 			cachedHeight = rt.height;
 			syphonServerTextureValuesCached = true;
@@ -96,15 +96,15 @@ public class SyphonServerTexture : MonoBehaviour {
 	// http://docs.unity3d.com/Documentation/ScriptReference/Camera.OnRenderImage.html
 	public virtual void OnRenderImage(RenderTexture src, RenderTexture dst){
 		// Update texture data on Syphon server
-		if (!syphonServerTextureValuesCached || cachedTexID != (int)src.GetNativeTexturePtr() || src.width != cachedWidth || src.height != cachedHeight)
+		if (!syphonServerTextureValuesCached || cachedTexID != src.GetNativeTexturePtr() || src.width != cachedWidth || src.height != cachedHeight)
 			cacheTextureValues( src );
 
 			// Copy src to dst
 			Syphon.SafeMaterial.SetPass(0);
 			Graphics.Blit(src, dst);
 			// Publish texture to Syphon Server
-			if (syphonServerTextureInstance != IntPtr.Zero && cachedTexID != -1)
-				GL.IssuePluginEvent((int)syphonServerTextureInstance);
+			if (syphonServerTextureInstance != IntPtr.Zero && cachedTexID != IntPtr.Zero)
+			GL.IssuePluginEvent(Syphon.SyphonGetRenderEventFunc(), (int)syphonServerTextureInstance);
 
 	}
 }
