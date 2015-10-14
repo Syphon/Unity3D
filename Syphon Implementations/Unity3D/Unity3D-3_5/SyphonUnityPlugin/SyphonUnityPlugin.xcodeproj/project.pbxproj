@@ -28,7 +28,6 @@
 		8D5B49B0048680CD000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		E2095B83151FA7A700253956 /* Syphon.framework in Copy Framework */ = {isa = PBXBuildFile; fileRef = 1B1AF9F21284E2D800013428 /* Syphon.framework */; };
-		E238D9EC151F761A00B1DBE2 /* libmono.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E238D9EB151F761A00B1DBE2 /* libmono.0.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,7 +81,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E238D9EC151F761A00B1DBE2 /* libmono.0.dylib in Frameworks */,
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
 				1B9CA811121ECE3400BEF37A /* OpenGL.framework in Frameworks */,
 				1B1AF9F31284E2D800013428 /* Syphon.framework in Frameworks */,
@@ -250,7 +248,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\n#rm -r -f \"/Users/bc/GIT_REPOS/Unity3D/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\n#cp -r -f \"$TARGET_BUILD_DIR/$PRODUCT_NAME.bundle\" \"/Users/bc/GIT_REPOS/Unity3D/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\n";
+			shellScript = "\n#rm -r -f \"/Users/home/SyphonUnity3D/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\n#cp -r -f \"$TARGET_BUILD_DIR/$PRODUCT_NAME.bundle\" \"/Users/home/SyphonUnity3D/Syphon Implementations/Unity3D/Unity3D-3_5/SyphonUnityExample/Assets/Plugins/$PRODUCT_NAME.bundle\"\n";
 		};
 		BD48069C1239AFCA00DFB19E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -264,7 +262,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$PROJECT_DIR/../../../../Syphon-Framework/\"\nxcodebuild -configuration \"$CONFIGURATION\" ARCHS=\"$ARCHS\" VALID_ARCHS=\"$VALID_ARCHS\" OBJROOT=\"$OBJROOT\" SYMROOT=\"$SYMROOT\" GCC_PREPROCESSOR_DEFINITIONS=SYPHON_UNIQUE_CLASS_NAME_PREFIX=SyphonUnity";
+			shellScript = "cd \"$PROJECT_DIR/../../../../../Syphon-Framework/\"\nxcodebuild -configuration \"$CONFIGURATION\" ARCHS=\"$ARCHS\" VALID_ARCHS=\"$VALID_ARCHS\" OBJROOT=\"$OBJROOT\" SYMROOT=\"$SYMROOT\" GCC_PREPROCESSOR_DEFINITIONS=SYPHON_UNIQUE_CLASS_NAME_PREFIX=SyphonUnity";
 		};
 /* End PBXShellScriptBuildPhase section */
 

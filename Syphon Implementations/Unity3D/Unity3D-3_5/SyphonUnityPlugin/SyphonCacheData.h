@@ -48,7 +48,7 @@ class SyphonCacheData
 		int textureHeight; 
 
         NSString* serverName;
-        CGLContextObj cachedContext;
+//        CGLContextObj cachedContext;
         SyphonServer* syphonServer;
 		BOOL cannotDrawUntilTextureResize;
         //initialized once data is cached

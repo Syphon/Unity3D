@@ -71,8 +71,7 @@ extern "C" {
                 NSLog(@"Syphon Unity OnGraphicsDeviceEvent(Initialize).\n");
                 s_DeviceType = s_Graphics->GetRenderer();
                 currentDeviceType = s_DeviceType;
-                SyphonUnityRenderEvent(200);
-
+                cacheGraphicsContext();
                 break;
             }
                 
@@ -93,7 +92,6 @@ extern "C" {
             case kUnityGfxDeviceEventAfterReset:
             {
                 NSLog(@"Syphon Unity OnGraphicsDeviceEvent(AfterReset).\n");
-                SyphonUnityRenderEvent(200);
                 break;
             }
         };
@@ -232,8 +230,9 @@ extern "C" {
 
 
    static void cacheGraphicsContext(){
-        if(cachedContext != CGLGetCurrentContext()){
-			cachedContext = CGLGetCurrentContext();
+           CGLContextObj kCGLContext = CGLGetCurrentContext();
+           CGLCreateContext(CGLGetPixelFormat(kCGLContext), kCGLContext, &cachedContext);
+
             if(syphonFBO){
 //				NSLog(@"CACHING CONTEXT +  DELETING FBO at RESOURCE ID: %i", syphonFBO);
 				glDeleteFramebuffersEXT(1, &syphonFBO);
@@ -266,7 +265,6 @@ extern "C" {
 					(*list_iter)->syphonClient = [[SyphonClient alloc] initWithServerDescription:ptr options:nil newFrameHandler:nil];
                 }
             }
-		}
     }
     
 
@@ -287,12 +285,12 @@ extern "C" {
         
 
 		SyphonCacheData* ptr = (SyphonCacheData*)instanceID;
-		if((NSUInteger)ptr == 200){
-			//			NSLog(@"WE GOOD?!");
-			cacheGraphicsContext();
-
-			return;
-		}
+//		if((NSUInteger)ptr == 200){
+//			//			NSLog(@"WE GOOD?!");
+//			cacheGraphicsContext();
+//
+//			return;
+//		}
 		
 		if(ptr == nil){
 //			NSLog(@"early out DATA!: %i " , instanceID);
