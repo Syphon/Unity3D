@@ -1,12 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Plugins/SyphonTexture/SyphonServerTexture.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Plugins/Syphon.cs">
     <Files>
       <File FileName="Assets/Plugins/SyphonTexture/SyphonClientTexture.cs" Line="37" Column="32" />
-      <File FileName="Assets/Plugins/SyphonTexture-AdvancedUsers/SyphonServerTextureCustomResolution.cs" Line="141" Column="59" />
-      <File FileName="Assets/Plugins/Syphon.cs" Line="577" Column="5" />
+      <File FileName="Assets/Plugins/SyphonTexture-AdvancedUsers/SyphonServerTextureCustomResolution.cs" Line="1" Column="1" />
+      <File FileName="Assets/Plugins/Syphon.cs" Line="46" Column="54" />
       <File FileName="Assets/Plugins/SyphonTexture-AdvancedUsers/SyphonServerTextureViewRenderer.cs" Line="1" Column="1" />
-      <File FileName="Assets/Plugins/SyphonObject/SyphonClientObject.cs" Line="241" Column="58" />
+      <File FileName="Assets/Plugins/SyphonObject/SyphonClientObject.cs" Line="1" Column="1" />
       <File FileName="Assets/Plugins/SyphonTexture/SyphonServerTexture.cs" Line="107" Column="55" />
     </Files>
   </MonoDevelop.Ide.Workbench>
